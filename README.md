@@ -1,2 +1,2 @@
 # wallet_stats
-Accounting your incomes and expenses to view statistics.
+Make records of your incomes and expenses and view statistics of that.
