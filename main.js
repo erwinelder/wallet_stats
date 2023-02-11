@@ -323,17 +323,7 @@ const subcategories_icons = [
 	]
 ];
 
-var categories_income_titles = [
-  /* 1 */ 'Salary',
-  /* 2 */ 'Scholarship',
-  /* 3 */ 'Sale',
-  /* 4 */ 'Rent',
-  /* 5 */ 'Investments',
-  /* 6 */ 'Gifts',
-  /* 7 */ 'Lottery',
-  /* 8 */ 'Refund',
-  /* 9 */ 'Transfers'
-];
+var categories_income_titles = [];
 
 const categories_income_icons = [
   /* 1 */
@@ -3165,15 +3155,8 @@ function prepareEditAccountWindow (account_num) {
 	id('edit-account-color-button').style.background = '#' + localStorage.getItem(`AColor${account_num}`);
 	id('edit-account-color-button').setAttribute('color', localStorage.getItem(`AColor${account_num}`));
 
-	
 	// check color if dark theme is on
-	if (
-		(localStorage.getItem('T') == 'b' || localStorage.getItem('T') == 'd') &&
-		id('edit-account-color-button').style.background == 'rgb(5, 5, 5)'
-	)
-		id('edit-account-color-button').classList.add('invert-color');
-	else
-		id('edit-account-color-button').classList.remove('invert-color');
+	checkColorOfEditAccountColorButton();
 
 	// upload currency
 	id('edit-account-currency').value = localStorage.getItem(`ACurrency${account_num}`);
@@ -3182,6 +3165,17 @@ function prepareEditAccountWindow (account_num) {
 	// upload balance
 	id('edit-account-balance').value = localStorage.getItem(`ABalance${account_num}`);
 	adaptInputLengthExplicitly(id('edit-account-balance'));
+}
+
+function checkColorOfEditAccountColorButton () {
+
+	if (
+		(localStorage.getItem('T') == 'b' || localStorage.getItem('T') == 'd') &&
+		id('edit-account-color-button').style.background == 'rgb(5, 5, 5)'
+	)
+		id('edit-account-color-button').classList.add('invert-color');
+	else
+		id('edit-account-color-button').classList.remove('invert-color');
 }
 
 function resetEditAccountWindow () {
@@ -3460,6 +3454,9 @@ function setUpChoosingAccountColor (clickEl, windowEl_cont, windowEl) {
 			let color = button.getAttribute('color');
 			clickEl.setAttribute('color', color);
 			clickEl.style.background = '#' + color;
+
+			// check color if dark theme is on
+			checkColorOfEditAccountColorButton();
 			
 			closeFloatingWindow(clickEl, windowEl_cont, windowEl);
 			
