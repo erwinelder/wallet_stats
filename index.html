@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet React</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body id="body">
+    <div class="preloader" id="preloader"></div>
+
+	<div class="wallet" id="root">
+
+		<div class="content adaptive-background" id="content">
+
+			<div class="sticky-topbar blur">
+
+				<div accountnum="" class="accounts" id="accounts"></div>
+
+				<div class="history-nav history-nav-sticky" id="history-period-nav-cont">
+					<div period="week" class="window-floating-nav" id="history-period-nav">
+						<div period="week" class="active-input-cont">
+							<input type="button" value="Week">
+						</div>
+						<div period="month">
+							<input type="button" value="Month">
+						</div>
+						<div period="all">
+							<input type="button" value="All time">
+						</div>
+					</div>
+				</div> <!-- history-nav period -->
+
+			</div>
+
+			<div class="widget-cont">
+				<div class="expenses-incomes-columns-cont widget" id="stats-column">
+
+					<div class="incomes-column-cont">
+						<div class="stats-column-title">
+							<h3>Incomes</h3>
+							<h3 id="incomes-column-amount"></h3>
+						</div>
+						<div>
+							<div id="incomes-column" class="incomes-column column"></div>
+						</div>
+					</div>
+
+					<div class="expenses-column-cont">
+						<div class="stats-column-title">
+							<h3>Expenses</h3>
+							<h3 id="expenses-column-amount"></h3>
+						</div>
+						<div>
+							<div id="expenses-column" class="expenses-column column"></div>
+						</div>
+					</div>
+
+				</div>
+			</div> <!-- expenses and incomes columns -->
+
+			<div class="history-nav">
+				<div history-type="all" class="window-floating-nav" id="history-type-nav">
+					<div history-type="-">
+						<input type="button" value="Expenses">
+					</div>
+					<div history-type="+">
+						<input type="button" value="Incomes">
+					</div>
+					<div history-type="all" class="active-input-cont">
+						<input type="button" value="View all">
+					</div>
+				</div>
+			</div> <!-- history-nav type (incomes or expenses) -->
+
+			<div class="history-cont widget-cont" id="history-cont">
+				<div class="history-touch-area left" id="history-touch-area-left"></div>
+				<div class="history-touch-area right" id="history-touch-area-right"></div>
+				<div class="history widget" id="history"></div>
+				<div class="history-reloading-background" id="history-reloading-background"></div>
+			</div> <!-- history-cont -->
+
+			<div class="widget-cont">
+				<div class="pie-chart-cont widget" id="pie-chart-cont">
+
+					<canvas class="pie-chart" id="pie-chart" width="800" height="800"></canvas>
+
+					<div class="pie-chart-background" id="pie-chart-background">
+						<div class="adaptive-background">
+							<h3 id="pie-chart-amount"></h3>
+						</div>
+					</div>
+					
+				</div>
+			</div> <!-- pie-chart -->
+
+			<div class="make-record-button-cont blur" id="make-record-button-cont">
+				<input type="button" value="New record" class="button-for-floating-window make-record-button clickable-button" id="make-record-button">
+			</div>
+
+			<div class="content-buttons">
+				<input type="button" value="Settings" class="button-for-floating-window settings-button clickable-button" id="settings-button">
+			</div>
+
+		</div> <!-- content -->
+
+
+        
+		<div class="floating-window-cont make-record-window-cont" id="make-record-window-cont">
+
+			<div></div>
+
+			<div id="make-record-window" recordnum="" status="">
+
+				<div class="window-nav" id="record-types" record-type="-">
+					<div id="record-type-transfer" record-type=">">
+						<input type="button" value="Transfer">
+					</div>
+					<div class="active-input-cont" id="record-type-expense" record-type="-">
+						<input type="button" value="Expense">
+					</div>
+					<div id="record-type-income" record-type="+">
+						<input type="button" value="Income">
+					</div>
+				</div>
+
+				<div class="button-block-top" id="remove-record-button-block">
+                    <input type="button" value="Remove record" class="clickable-button" id="remove-record">
+					<hr class="big-hr">
+				</div>
+
+                <div class="field">
+                    <input class="field-date interective-field" type="datetime-local" id="make-record-date">
+                </div>
+
+                
+				<div class="field">
+					<h6 class="field-title">Amount</h6>
+					<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-record-amount">
+				</div>
+
+				<div class="field">
+					<h6 class="field-title">Account</h6>
+					<div id="make-record-account" accountnum=""></div>
+				</div>
+
+				<!-- <div class="field make-record-transfer-account-cont make-record-transfer-account-cont-hide" id="make-record-transfer-account-cont">
+					<h6 class="field-title">To account</h6>
+					<div id="make-record-transfer-account"></div>
+				</div> -->
+
+				<div class="field category-cont" id="make-record-category-cont">
+					<h6 class="field-title">Category</h6>
+					<div class="button-for-floating-window interective-field" id="make-record-category" categorynum="-" subcategorynum="">
+						<div></div>
+						<input type="button" placeholder="None" readonly>
+					</div>
+				</div>
+
+				<div class="button-block-bottom">
+					<hr class="big-hr">
+					<input type="button" value="Save record" class="clickable-button" id="make-record-save-button">
+				</div>
+
+			</div>
+
+		</div> <!-- make-record-cont -->
+
+		<div class="floating-window-cont accounts-window-cont" id="accounts-window-cont">
+			<div></div>
+			<div class="floating-window" id="accounts-window"></div>
+		</div>
+
+
+        
+		<div class="floating-window-cont categories-cont" id="categories-expense-cont">
+			<div></div>
+			<div class="floating-window" id="categories-expense" categorynum="" top-position="">
+
+                <!-- place for expense categories -->
+
+				<div class="subcategories-cont adaptive-background" id="subcategories-cont">
+
+					<div class="subcategories-title-cont">
+						<h1 class="subcategories-title" id="subcategories-title"></h1>
+						<hr class="big-hr">
+					</div>
+
+					<div class="subcategories" id="subcategories"></div>
+
+					<div class="subcategories-back-cont">
+						<hr class="big-hr">
+						<div class="subcategories-back" id="subcategories-back-button">
+							<input type="button" value="Back" class="back-button">
+							<div class="back-svg-cont">
+								<svg class="back-svg" viewBox="0 0 250 500" xmlns="http://www.w3.org/2000/svg">
+									<polyline style="fill: none; stroke-linecap: round; stroke-miterlimit: 5; stroke-width: 50px; stroke-linejoin: round;" points="220 30 30 250 220 470"></polyline>
+								</svg>
+							</div>
+						</div>
+					</div>
+					
+				</div> <!-- subcategories-cont -->
+
+			</div> <!-- categories-expense -->
+		</div> <!-- categories-expense-cont -->
+
+		<div class="floating-window-cont categories-cont" id="categories-income-cont">
+			<div></div>
+			<div class="floating-window" id="categories-income" categorynum="" top-position=""></div>
+		</div> <!-- categories-income-cont -->
+
+
+
+		<div class="floating-fullview-window-cont settings-cont" id="settings-cont">
+			<div class="floating-fullview-window adaptive-background" id="settings">
+
+				<div class="title-block">
+					<h1>Settings</h1>
+					<hr class="big-hr">
+				</div>
+
+				<div class="settings-categories" id="settings-categories">
+					<input type="button" category-name="Language" value="Language" class="settings-categories-button">
+					<hr class="small-hr">
+					<input type="button" category-name="Reset data" value="Reset data" class="settings-categories-button">
+					<hr class="small-hr">
+					<input type="button" category-name="Themes" value="Themes" class="settings-categories-button">
+					<hr class="small-hr">
+					<input type="button" category-name="Top margin" value="Top margin" class="settings-categories-button">
+					<hr class="small-hr">
+					<input type="button" category-name="Accounts" value="Accounts" class="settings-categories-button">
+				</div>
+                
+				<div class="button-window-block">
+					<hr class="big-hr">
+					<div class="window-close-button">
+						<div>
+							<svg class="settings-close-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+								<line style="stroke-linecap: round; stroke-miterlimit: 5; stroke-width: 50px;" x1="30" y1="30" x2="470" y2="470"></line>
+								<line style="stroke-linecap: round; stroke-miterlimit: 5; stroke-width: 50px;" x1="470" y1="30" x2="30" y2="470"></line>
+							</svg>
+						</div>
+						<input type="button" value="Close" class="close-button">
+					</div>
+				</div>
+
+			</div>
+		</div> <!-- settings-cont -->
+
+
+
+		<div class="settings-category-window-cont window-block-cont" id="settings-category-window-cont">
+			<div></div>
+			<div class="settings-category window-block">
+
+                <div class="title-block">
+                    <h1></h1>
+                    <hr class="big-hr">
+                </div>
+
+                <div class="window-content" id="settings-category-window-content"></div>
+
+                <div class="button-block" id="settings-category-window-button"></div>
+
+			</div>
+		</div> <!-- settings-category-window-cont -->
+
+
+        
+		<div class="topmargin-preview-window adaptive-background" id="topmargin-preview-window"></div>
+        
+
+
+		<div class="floating-window-cont edit-account-cont" id="edit-account-cont">
+			<div></div>
+
+			<div class="popup-connected-notification-cont">
+				<div class="popup-connected-notification adaptive-background">
+					<div class="timer-line-cont"><hr></div>
+					<div class="notification-content"><h3></h3></div>
+				</div>
+			</div>
+
+			<div class="floating-window" id="edit-account" accountnum="">
+
+				<div class="button-block-top">
+					<input type="button" value="Remove account" class="clickable-button" id="remove-account">
+					<hr class="big-hr">
+				</div>
+
+				<div class="field">
+					<h3 class="field-title">Currency</h3>
+					<input type="text" value="" class="field-input active-input interective-field" id="edit-account-currency">
+				</div>
+
+				<div class="field">
+					<h3 class="field-title">Balance</h3>
+					<input type="number" value="" class="field-input active-input interective-field input-ban-specsym" id="edit-account-balance">
+				</div>
+
+				<div class="field">
+					<h3 class="field-title">Color</h3>
+					<div class="edit-account-color-button" id="edit-account-color-button"></div>
+				</div>
+
+				<div class="button-block-bottom">
+					<hr class="big-hr">
+					<input type="button" value="Save" class="clickable-button" id="save-account">
+				</div>
+
+			</div>
+		</div>
+
+		<div class="floating-window-cont edit-account-color-cont" id="edit-account-color-cont">
+			<div></div>
+			<div class="floating-window" id="edit-account-color">
+				<div class="edit-account-color-choose" id="edit-account-color-choose">
+					<input class="color" type="button" style="background: #cc4343" color="cc4343">
+					<input class="color" type="button" style="background: #ab4545" color="ab4545">
+					<input class="color" type="button" style="background: #c92898" color="c92898">
+					<input class="color" type="button" style="background: #994f82" color="994f82">
+					<input class="color" type="button" style="background: #9232c8" color="9232c8">
+					<input class="color" type="button" style="background: #946aab" color="946aab">
+					<input class="color" type="button" style="background: #3830cb" color="3830cb">
+					<input class="color" type="button" style="background: #5f5ba1" color="5f5ba1">
+					<input class="color" type="button" style="background: #29a8d0" color="29a8d0">
+					<input class="color" type="button" style="background: #649aab" color="649aab">
+					<input class="color" type="button" style="background: #6ebeab" color="6ebeab">
+					<input class="color" type="button" style="background: #20b65a" color="20b65a">
+					<input class="color" type="button" style="background: #62b180" color="62b180">
+					<input class="color" type="button" style="background: #afb32b" color="afb32b">
+					<input class="color" type="button" style="background: #acae6e" color="acae6e">
+					<input class="color" type="button" style="background: #d8731a" color="d8731a">
+					<input class="color" type="button" style="background: #b38c69" color="b38c69">
+					<input class="color" type="button" style="background: #8c7154" color="8c7154">
+					<input class="color" type="button" style="background: #ae9479" color="ae9479">
+					<input class="color" type="button" style="background: #050505" color="050505">
+				</div>
+			</div>
+		</div> <!-- edit-account-color-cont -->
+
+	</div>
+    
+    <!-- <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+    <script src="main.js"></script>
+</body>
+</html>
