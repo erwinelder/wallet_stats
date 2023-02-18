@@ -483,7 +483,8 @@ function uploadAppData () {
 		localStorage.setItem('ACount', 0);
 		addAccount();
 	}
-	for (let a = 1; a <= localStorage.getItem('ACount'); a++) uploadAccount(a, id('accounts'));
+	for (let a = 1; a <= localStorage.getItem('ACount'); a++)
+		uploadAccount(a, id('accounts'));
 	setUpClickOnAccounts();
 
 	// invert all account's black colores in dark theme 
@@ -1307,9 +1308,9 @@ function addAccount () {
 	localStorage.setItem('ACount', Number(localStorage.getItem('ACount')) + 1);
 	let acc_count = localStorage.getItem('ACount');
 
-  localStorage.setItem('AColor' + acc_count, '050505');
-  localStorage.setItem('ACurrency' + acc_count, 'USD');
-  localStorage.setItem('ABalance' + acc_count, (0).toFixed(2));
+	localStorage.setItem('AColor' + acc_count, '050505');
+	localStorage.setItem('ACurrency' + acc_count, 'USD');
+	localStorage.setItem('ABalance' + acc_count, (0).toFixed(2));
 }
 
 function uploadAccount (account_num, container) {
@@ -2896,7 +2897,7 @@ function uploadSettingsCategoryData_Reset (content_cont, button_cont) {
 	setUpButtonsValue_ResetData(id('reset-data-button'), lang);
 
 	id('reset-data-button').onclick = () => {
-		localStorage.clear();
+		clearLocalStorage();
 		window.location.reload();
 	}
 }
@@ -2926,6 +2927,45 @@ function setUpButtonsValue_ResetData (button, lang) {
 	}
 }
 
+function clearLocalStorage () {
+
+	localStorage.removeItem('L'); // language
+	localStorage.removeItem('T'); // theme
+	localStorage.removeItem('TM'); // top margin
+
+	clearAccountsDataFromStorage(localStorage.getItem('ACount')); // accounts
+	clearRecordsDataFromStorage(localStorage.getItem('RCount')); // records
+}
+
+function clearAccountsDataFromStorage (count) {
+	
+	for (let a = 1; a <= count; a++) {
+		localStorage.removeItem(`AColor${a}`);
+		localStorage.removeItem(`ACurrency${a}`);
+		localStorage.removeItem(`ABalance${a}`);
+	}
+	
+	localStorage.removeItem('ACount');
+}
+
+function clearRecordsDataFromStorage (count) {
+
+	for (let a = 1; a <= count; a++) {
+		localStorage.removeItem(`RType${a}`);
+		localStorage.removeItem(`RAmount${a}`);
+		localStorage.removeItem(`RAccount${a}`);
+		localStorage.removeItem(`RCategory${a}`);
+		localStorage.removeItem(`RSubcategory${a}`);
+
+		localStorage.removeItem(`RMinute${a}`);
+		localStorage.removeItem(`RHour${a}`);
+		localStorage.removeItem(`RDay${a}`);
+		localStorage.removeItem(`RMonth${a}`);
+		localStorage.removeItem(`RYear${a}`);	
+	}
+
+	localStorage.removeItem('RCount');
+}
 
 
 // themes - settings category content
