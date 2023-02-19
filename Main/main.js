@@ -1329,7 +1329,7 @@ function checkAccountColor (account) {
 function applyTopmargin () {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
-  positionateDateFilterMenu();
+  id('date-filter-menu').style.top = `${id('sticky-topbar').getBoundingClientRect().bottom}px`;
   // id('popup-notification-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
 }
 
@@ -2045,9 +2045,6 @@ function uploadAmountToPieChart () {
 
 
 function positionateDateFilterMenu () {
-	
-	let top = Number(id('sticky-topbar').getBoundingClientRect().bottom);
-	id('date-filter-menu').style.top = `${top}px`;
 
 	let x = window.innerWidth - id('date-filter-menu').getBoundingClientRect().left;
 	id('date-filter-menu').style.transform = `translateX(calc(${x}px + 10vw))`;
