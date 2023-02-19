@@ -1778,7 +1778,7 @@ function getTotalAmountOfExactlyType (type) {
 		amount = getTotalAmountOfExactlyTypeByPrevMonth(getDateFormat(compare_date), type, account, amount);
 
 	} else if (period == 'custom')
-		amount = getTotalAmountOfExactlyTypeByCustomPeriod(amount);
+		amount = getTotalAmountOfExactlyTypeByCustomPeriod(type, account, amount);
 
 	return amount;
 }
@@ -1820,12 +1820,10 @@ function getTotalAmountOfExactlyTypeByPrevMonth (compare_date_pattern, type, acc
 	return amount;
 }
 
-function getTotalAmountOfExactlyTypeByCustomPeriod (amount) {
+function getTotalAmountOfExactlyTypeByCustomPeriod (type, account, amount) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
-	let account = id('accounts').getAttribute('accountnum'),
-		type = id('history-type-nav').getAttribute('history-type');
 	let date_border_from = new Date(inputs[0].value),
 		date_border_to = new Date(inputs[1].value),
 		record_date;
@@ -1925,7 +1923,7 @@ function getCategoriesStats () {
 		results = getCategoriesStatsByPrevMonth(getDateFormat(compare_date), type, account, results);
 
 	} else if (period == 'custom')
-		results = getCategoriesStatsByCustomPeriod(results);
+		results = getCategoriesStatsByCustomPeriod(type, account, results);
 
 	return results;
 }
@@ -1999,12 +1997,10 @@ function getCategoriesStatsByPrevMonth (compare_date_pattern, type, account, res
 	return results;
 }
 
-function getCategoriesStatsByCustomPeriod (results) {
+function getCategoriesStatsByCustomPeriod (type, account, results) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
-	let account = id('accounts').getAttribute('accountnum'),
-		type = id('history-type-nav').getAttribute('history-type');
 	let date_border_from = new Date(inputs[0].value),
 		date_border_to = new Date(inputs[1].value),
 		record_date;
