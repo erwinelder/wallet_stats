@@ -1329,8 +1329,8 @@ function checkAccountColor (account) {
 function applyTopmargin () {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
+  positionateDateFilterMenu();
   // id('popup-notification-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
-  // id('cancel-removing-account-window-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
 }
 
 
@@ -2046,7 +2046,7 @@ function uploadAmountToPieChart () {
 
 function positionateDateFilterMenu () {
 	
-	let top = id('sticky-topbar').getBoundingClientRect().bottom;
+	let top = Number(id('sticky-topbar').getBoundingClientRect().bottom);
 	id('date-filter-menu').style.top = `${top}px`;
 
 	let x = window.innerWidth - id('date-filter-menu').getBoundingClientRect().left;
