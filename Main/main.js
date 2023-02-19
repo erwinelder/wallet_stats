@@ -502,6 +502,7 @@ function uploadAppData () {
 	// upload date filter menu
 	uploadDataToCustomDateFilterMenu();
 	positionateDateFilterMenu();
+	setTimeout(setDateFilterMenuTopPosition, 100);
 }
 
 
@@ -1329,7 +1330,7 @@ function checkAccountColor (account) {
 function applyTopmargin () {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
-  id('date-filter-menu').style.top = `${id('sticky-topbar').getBoundingClientRect().bottom}px`;
+  setDateFilterMenuTopPosition();
   // id('popup-notification-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
 }
 
@@ -2045,9 +2046,12 @@ function uploadAmountToPieChart () {
 
 
 function positionateDateFilterMenu () {
-
 	let x = window.innerWidth - id('date-filter-menu').getBoundingClientRect().left;
 	id('date-filter-menu').style.transform = `translateX(calc(${x}px + 10vw))`;
+}
+
+function setDateFilterMenuTopPosition () {
+	id('date-filter-menu').style.top = `${id('sticky-topbar').getBoundingClientRect().bottom}px`;
 }
 
 
