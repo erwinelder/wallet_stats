@@ -491,13 +491,17 @@ function uploadAppData () {
 	checkAccountsColor();
 
 	// upload records to history
-	if (localStorage.getItem('RCount'))
-		uploadRecordsToHistory();
+	if (localStorage.getItem('RCount')) uploadRecordsToHistory();
 	else localStorage.setItem('RCount', 0);
-
+	
+	// upload statistic
 	uploadExpensesIncomesStats();
 	fitPieChartSize();
 	uploadDataToPieChart();
+	
+	// upload date filter menu
+	uploadDataToCustomDateFilterMenu();
+	positionateDateFilterMenu();
 }
 
 
@@ -1009,21 +1013,21 @@ function uploadLanguageToHistoryNavbars (lang) {
 	let array = id('history-period-nav').getElementsByTagName('input');
 
 	if (lang == 'en') {
-		array[0].value = 'Week';
-		array[1].value = 'Month';
-		array[2].value = 'All time';
+		array[0].value = 'This month';
+		array[1].value = 'Prev month';
+		array[2].value = 'Custom';
 	} else if (lang == 'cz') {
-		array[0].value = 'Týden';
-		array[1].value = 'Měsíc';
-		array[2].value = 'Všechno';
+		array[0].value = 'Tento měsíc';
+		array[1].value = 'Před měsíc';
+		array[2].value = 'Vlastní';
 	} else if (lang == 'ru') {
 		array[0].value = 'Неделя';
 		array[1].value = 'Месяц';
-		array[2].value = 'Всё время';
+		array[2].value = 'Фильтр';
 	} else if (lang == 'ua') {
 		array[0].value = 'Тиждень';
 		array[1].value = 'Місяць';
-		array[2].value = 'Весь час';
+		array[2].value = 'Фільтр';
 	}
 
 	array = id('history-type-nav').getElementsByTagName('input');
@@ -1108,6 +1112,22 @@ function uploadLanguageToTitles(lang) {
 		el[0].innerHTML = 'Валюта';
 		el[1].innerHTML = 'Баланс';
 		el[2].innerHTML = 'Колір';
+	}
+
+	el = id('date-filter-menu').getElementsByClassName('field-title');
+
+	if (lang == 'en') {
+		el[0].innerHTML = 'From';
+		el[1].innerHTML = 'To';
+	} else if (lang == 'cz') {
+		el[0].innerHTML = 'Od';
+		el[1].innerHTML = 'Do';
+	} else if (lang == 'ru') {
+		el[0].innerHTML = 'От';
+		el[1].innerHTML = 'До';
+	} else if (lang == 'ua') {
+		el[0].innerHTML = 'Від';
+		el[1].innerHTML = 'До';
 	}
 }
 
@@ -1257,6 +1277,17 @@ function uploadLanguageToButtons (lang) {
 		el.value = 'Сохранить';
 	else if (lang == 'ua')
 		el.value = 'Зберегти';
+
+	el = id('submit-date-filter');
+
+	if (lang == 'en')
+		el.value = 'Confirm';
+	else if (lang == 'cz')
+		el.value = 'Potvrdit';
+	else if (lang == 'ru')
+		el.value = 'Подтвердить';
+	else if (lang == 'ua')
+		el.value = 'Підтвердити';
 }
 
 
@@ -1398,42 +1429,124 @@ function getDateFormat (input_date) {
 }
 
 function uploadRecordsToHistory () {
-	let account = id('accounts').getAttribute('accountnum');
-	let period = id('history-period-nav').getAttribute('period');
-	let type = id('history-type-nav').getAttribute('history-type');
-	let compare_date = new Date();
+
+	let period = id('history-period-nav').getAttribute('period'),
+		account = id('accounts').getAttribute('accountnum'),
+		type = id('history-type-nav').getAttribute('history-type'),
+		compare_date = new Date();
 
 	id('history').innerHTML = null;
 	
-	if (period == 'week')
-		compare_date.setDate(compare_date.getDate() - 7);
-	else if (period == 'month')
+	if (period == 'month 0') {
+
+		compare_date.setDate(1);
+		uploadRecordsByThisMonth(getDateFormat(compare_date), type, account);
+		
+	} else if (period == 'month -1') {
+		
 		compare_date.setMonth(compare_date.getMonth() - 1);
-	else {
-		for (let record_num = localStorage.getItem('RCount'); record_num >= 1; record_num--)
-			if (
-				(type == 'all' || localStorage.getItem(`RType${record_num}`) == type) &&
-				localStorage.getItem(`RAccount${record_num}`) == account
-			)
-				addRecordToHistory(record_num, localStorage.getItem(`RAccount${record_num}`), 'beforeend');
-		
-		for (let record of id('history').getElementsByClassName('record'))
-			setUpClickOnRecord(record);
-		return;
-	}
-		
-	for (let record_num = localStorage.getItem('RCount'); record_num >= 1; record_num--)
-		if (( getRecordDateFormat(record_num) ) > getDateFormat(compare_date)) {
+		compare_date.setDate(1);
+		uploadRecordsByPrevMonth(getDateFormat(compare_date), type, account);
+
+	} else if (period == 'custom')
+		uploadRecordsByCustomPeriod();
+	
+	for (let record of id('history').getElementsByClassName('record'))
+		setUpClickOnRecord(record);
+}
+
+function uploadRecordsByThisMonth (compare_date, type, account) {
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
+		if ( (getRecordDateFormat(record_num)) > compare_date ) {
 			if (
 				(type == 'all' || localStorage.getItem(`RType${record_num}`) == type) &&
 				localStorage.getItem(`RAccount${record_num}`) == account
 			)
 				addRecordToHistory(record_num, localStorage.getItem(`RAccount${record_num}`), 'beforeend');
 		} else break;
+}
 
+function uploadRecordsByPrevMonth (compare_date_pattern, type, account) {
+
+	let compare_date = new Date(compare_date_pattern), 
+		record_date;
 	
-	for (let record of id('history').getElementsByClassName('record'))
-		setUpClickOnRecord(record);
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date.getMonth() == compare_date.getMonth()) {
+			if (
+				(type == 'all' || localStorage.getItem(`RType${record_num}`) == type) &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				addRecordToHistory(record_num, localStorage.getItem(`RAccount${record_num}`), 'beforeend');
+		} else if (record_date.getMonth() < compare_date.getMonth())
+			break;
+		
+	}
+}
+
+function uploadDataToCustomDateFilterMenu() {
+
+	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+
+	let date_border1 = new Date();
+	date_border1.setDate(1);
+	inputs[0].value = getDateFormat(date_border1);
+
+	let date_border2 = new Date();
+	date_border2.setMonth(date_border2.getMonth() - 1);
+	date_border2.setDate(1);
+	inputs[1].value = getDateFormat(date_border2);
+}
+
+function showCustomDateFilterMenu () {
+
+	id('date-filter-menu').classList.add('show');
+	
+	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+		
+	id('submit-date-filter').onclick = () => {
+		if ( (new Date(inputs[0].value)) > (new Date(inputs[1].value)) ) {
+			hideCustomDateFilterMenu();
+			uploadRecordsToHistoryAnimated();
+			uploadExpensesIncomesStats();
+			updatePieChart();
+		} else
+			animateEmptyFieldError(inputs[1]);
+	}
+}
+
+function hideCustomDateFilterMenu () {
+	id('date-filter-menu').classList.remove('show');
+}
+
+function uploadRecordsByCustomPeriod () {
+	
+	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+	
+	let account = id('accounts').getAttribute('accountnum'),
+		type = id('history-type-nav').getAttribute('history-type');
+	let date_border_from = new Date(inputs[0].value),
+		date_border_to = new Date(inputs[1].value),
+		record_date;
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date < date_border_from && record_date > date_border_to) {
+			if (
+				(type == 'all' || localStorage.getItem(`RType${record_num}`) == type) &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				addRecordToHistory(record_num, localStorage.getItem(`RAccount${record_num}`), 'beforeend');
+		} else if (record_date < date_border_to)
+			break;
+		
+	}
 }
 
 function uploadRecordsToHistoryAnimated () {
@@ -1653,23 +1766,27 @@ function getTotalAmountOfExactlyType (type) {
 	let compare_date = new Date();
 	let amount = 0;
 
-	if (period == 'week')
-		compare_date.setDate(compare_date.getDate() - 7);
-	else if (period == 'month')
-		compare_date.setMonth(compare_date.getMonth() - 1);
-	else {
-		for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
-			if (
-				localStorage.getItem(`RType${record_num}`) == type &&
-				localStorage.getItem(`RAccount${record_num}`) == account
-			)
-				amount += Number(localStorage.getItem(`RAmount${record_num}`));
+	if (period == 'month 0') {
 
-		return amount;
-	}
+		compare_date.setDate(1);
+		amount = getTotalAmountOfExactlyTypeByThisMonth(getDateFormat(compare_date), type, account, amount);
 		
+	} else if (period == 'month -1') {
+		
+		compare_date.setMonth(compare_date.getMonth() - 1);
+		compare_date.setDate(1);
+		amount = getTotalAmountOfExactlyTypeByPrevMonth(getDateFormat(compare_date), type, account, amount);
+
+	} else if (period == 'custom')
+		amount = getTotalAmountOfExactlyTypeByCustomPeriod(amount);
+
+	return amount;
+}
+
+function getTotalAmountOfExactlyTypeByThisMonth (compare_date, type, account, amount) {
+
 	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
-		if (( getRecordDateFormat(record_num) ) > getDateFormat(compare_date)) {
+		if ( (getRecordDateFormat(record_num)) > compare_date ) {
 			if (
 				localStorage.getItem(`RType${record_num}`) == type &&
 				localStorage.getItem(`RAccount${record_num}`) == account
@@ -1679,6 +1796,59 @@ function getTotalAmountOfExactlyType (type) {
 
 	return amount;
 }
+
+function getTotalAmountOfExactlyTypeByPrevMonth (compare_date_pattern, type, account, amount) {
+
+	let compare_date = new Date(compare_date_pattern), 
+		record_date;
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date.getMonth() == compare_date.getMonth()) {
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				amount += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else if (record_date.getMonth() < compare_date.getMonth())
+			break;
+		
+	}
+
+	return amount;
+}
+
+function getTotalAmountOfExactlyTypeByCustomPeriod (amount) {
+
+	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+	
+	let account = id('accounts').getAttribute('accountnum'),
+		type = id('history-type-nav').getAttribute('history-type');
+	let date_border_from = new Date(inputs[0].value),
+		date_border_to = new Date(inputs[1].value),
+		record_date;
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date < date_border_from && record_date > date_border_to) {
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				amount += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else if (record_date < date_border_to)
+			break;
+		
+	}
+
+	return amount;
+}
+
+
 
 
 
@@ -1735,37 +1905,27 @@ function uploadDataToPieChart () {
 
 function getCategoriesStats () {
 
-	let account = id('accounts').getAttribute('accountnum');
-	let period = id('history-period-nav').getAttribute('period');
-	let type = id('history-type-nav').getAttribute('history-type');
+	let account = id('accounts').getAttribute('accountnum'),
+		period = id('history-period-nav').getAttribute('period'),
+		type = id('history-type-nav').getAttribute('history-type');
 	if (type == 'all') type = '-';
-	let compare_date = new Date();
 
+	let compare_date = new Date();
 	let results = getArrayForStatsResults(type);
 	
-	if (period == 'week')
-		compare_date.setDate(compare_date.getDate() - 7);
-	else if (period == 'month')
-		compare_date.setMonth(compare_date.getMonth() - 1);
-	else {
-		for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
-			if (
-				localStorage.getItem(`RType${record_num}`) == type &&
-				localStorage.getItem(`RAccount${record_num}`) == account
-			)
-				results[localStorage.getItem(`RCategory${record_num}`)].total += Number(localStorage.getItem(`RAmount${record_num}`));
+	if (period == 'month 0') {
 
-		return results;
-	}
-	
-	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
-		if (( getRecordDateFormat(record_num) ) > getDateFormat(compare_date)) {
-			if (
-				localStorage.getItem(`RType${record_num}`) == type &&
-				localStorage.getItem(`RAccount${record_num}`) == account
-			)
-				results[localStorage.getItem(`RCategory${record_num}`)].total += Number(localStorage.getItem(`RAmount${record_num}`));
-		} else break;
+		compare_date.setDate(1);
+		results = getCategoriesStatsByThisMonth(getDateFormat(compare_date), type, account, results);
+		
+	} else if (period == 'month -1') {
+		
+		compare_date.setMonth(compare_date.getMonth() - 1);
+		compare_date.setDate(1);
+		results = getCategoriesStatsByPrevMonth(getDateFormat(compare_date), type, account, results);
+
+	} else if (period == 'custom')
+		results = getCategoriesStatsByCustomPeriod(results);
 
 	return results;
 }
@@ -1802,6 +1962,71 @@ function getArrayForStatsResults (type) {
 	return results;
 }
 
+function getCategoriesStatsByThisMonth (compare_date, type, account, results) {
+
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
+		if ( (getRecordDateFormat(record_num)) > compare_date ) {
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				results[localStorage.getItem(`RCategory${record_num}`)].total += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else break;
+
+	return results;
+}
+
+function getCategoriesStatsByPrevMonth (compare_date_pattern, type, account, results) {
+
+	let compare_date = new Date(compare_date_pattern), 
+		record_date;
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date.getMonth() == compare_date.getMonth()) {
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				results[localStorage.getItem(`RCategory${record_num}`)].total += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else if (record_date.getMonth() < compare_date.getMonth())
+			break;
+		
+	}
+
+	return results;
+}
+
+function getCategoriesStatsByCustomPeriod (results) {
+
+	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+	
+	let account = id('accounts').getAttribute('accountnum'),
+		type = id('history-type-nav').getAttribute('history-type');
+	let date_border_from = new Date(inputs[0].value),
+		date_border_to = new Date(inputs[1].value),
+		record_date;
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date < date_border_from && record_date > date_border_to) {
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				results[localStorage.getItem(`RCategory${record_num}`)].total += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else if (record_date < date_border_to)
+			break;
+		
+	}
+
+	return results;
+}
+
 function uploadAmountToPieChart () {
 
 	let type = id('history-type-nav').getAttribute('history-type');
@@ -1817,6 +2042,19 @@ function uploadAmountToPieChart () {
 
 		id('pie-chart-amount').classList.remove('pie-chart-amount-hide');
 	}, 350);
+}
+
+
+
+
+
+function positionateDateFilterMenu () {
+	
+	let top = id('sticky-topbar').getBoundingClientRect().bottom;
+	id('date-filter-menu').style.top = `${top}px`;
+
+	let x = window.innerWidth - id('date-filter-menu').getBoundingClientRect().left;
+	id('date-filter-menu').style.transform = `translateX(calc(${x}px + 10vw))`;
 }
 
 
@@ -2032,12 +2270,14 @@ const history_period_nav_buttons = id('history-period-nav').getElementsByTagName
 for (let button of history_period_nav_buttons) {
 	button.onclick = function() {
 
-		if (!(button.classList.contains('active-input-cont'))) {
+		if ( !(button.classList.contains('active-input-cont')) ) {
 			// change active button
 			for (let button of history_period_nav_buttons)
 				if (button == this) {
+
 					button.classList.add('active-input-cont');
 					id('history-period-nav').setAttribute('period', button.getAttribute('period'));
+
 				} else if (button.classList.contains('active-input-cont'))
 					button.classList.remove('active-input-cont');
 	
@@ -2046,6 +2286,14 @@ for (let button of history_period_nav_buttons) {
 			uploadExpensesIncomesStats();
 			updatePieChart();
 		}
+
+		if (
+			button.getAttribute('period') == 'custom' &&
+			!(id('date-filter-menu').classList.contains('show'))
+		)
+			showCustomDateFilterMenu();
+		else if (id('date-filter-menu').classList.contains('show'))
+			hideCustomDateFilterMenu();
 		
 	}
 }

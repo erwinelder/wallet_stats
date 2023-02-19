@@ -14,25 +14,45 @@
 
 		<div class="content adaptive-background" id="content">
 
-			<div class="sticky-topbar blur">
+			<div class="sticky-topbar blur" id="sticky-topbar">
 
 				<div accountnum="" class="accounts" id="accounts"></div>
+				<!-- container with accounts -->
 
-				<div class="history-nav history-nav-sticky" id="history-period-nav-cont">
-					<div period="week" class="window-floating-nav" id="history-period-nav">
-						<div period="week" class="active-input-cont">
-							<input type="button" value="Week">
+				<div class="history-nav history-nav-period" id="history-period-nav-cont">
+					<div period="month 0" class="window-floating-nav" id="history-period-nav">
+						<div period="month 0" class="active-input-cont">
+							<input type="button" value="">
 						</div>
-						<div period="month">
-							<input type="button" value="Month">
+						<div period="month -1">
+							<input type="button" value="">
 						</div>
-						<div period="all">
-							<input type="button" value="All time">
+						<div period="custom">
+							<input type="button" value="">
 						</div>
 					</div>
 				</div> <!-- history-nav period -->
 
 			</div>
+
+			<div class="date-filter-menu blur" id="date-filter-menu">
+				
+				<div class="field">
+					<h6 class="field-title"></h6>
+					<input class="field-date interective-field" type="datetime-local">
+				</div>
+				
+				<div class="field">
+					<h6 class="field-title"></h6>
+					<input class="field-date interective-field" type="datetime-local">
+				</div>
+
+				<div class="button-block-bottom">
+					<hr class="small-hr">
+					<input type="button" value="" class="clickable-button" id="submit-date-filter">
+				</div>
+
+			</div> <!-- date-filter-menu -->
 
 			<div class="widget-cont">
 				<div class="expenses-incomes-columns-cont widget" id="stats-column">
