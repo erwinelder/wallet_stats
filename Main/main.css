@@ -800,7 +800,8 @@ body.font2 .account :last-child {
 	flex-direction: column;
 }
 .history-nav-period {
-	padding-inline: 0vw;	
+	padding-top: 0.5vh;
+	padding-inline: 0vw;
 }
 .history-nav-period > div > div {
 	font-size: 1rem;
