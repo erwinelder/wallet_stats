@@ -736,23 +736,27 @@ body.font2 .window-floating-nav > div {
 }
 
 .account {
-	border-radius: 14px;
+	border-radius: 1rem;
 	font-size: 1.4rem;
 	text-align: center;
     display: flex;
 	cursor: pointer;
 }
+.accounts .account {
+	border-radius: 0.9rem;
+	font-size: 1.3rem;
+}
 .account :first-child {
-	padding-inline: 10px 8px;
+	padding-inline: 7px 4px;
 }
 .account :last-child {
-    padding-inline: 5px;
+    padding-inline: 3px;
     border-radius: 14px;
     transition: .4s width;
 }
 body.font1 .account :first-child,
 body.font1 .account :last-child {
-	padding-block: 4px;
+	padding-block: 3px;
 }
 body.font2 .account :first-child,
 body.font2 .account :last-child {
@@ -763,7 +767,7 @@ body.font2 .account :last-child {
 }
 .accounts .account :first-child {
     padding-block: 2px;
-    padding-inline: 8px 6px;
+    padding-inline: 7px 4px;
 }
 .accounts .account :last-child {
     padding-block: 2px;
