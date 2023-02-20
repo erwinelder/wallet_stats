@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WalletStats</title>
     <link rel="stylesheet" href="Main/main.css">
+	<link rel="icon" type="svg" href="Main/Icons/main_icon.svg">
+	<link rel="manifest" href="manifest.json">
+	<link rel="apple-touch-icon" href="Main/Icons/main_icon.svg"/>
 </head>
 <body id="body">
     <div class="preloader" id="preloader"></div>
@@ -363,6 +366,12 @@
 
 	</div>
     
+	<script>
+		if('serviceWorker' in navigator)
+			navigator.serviceWorker.register('/service-worker.js');
+		else
+			console.log("Service worker is not supported");
+	</script>
     <!-- <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
