@@ -1058,17 +1058,17 @@ function uploadLanguageToWidgets (lang) {
 	let array = id('stats-column').getElementsByClassName('stats-column-title');
 
 	if (lang == 'en') {
-		array[0].firstElementChild.innerHTML = 'Expenses';
-		array[1].firstElementChild.innerHTML = 'Incomes';
+		array[0].firstElementChild.innerHTML = 'Incomes';
+		array[1].firstElementChild.innerHTML = 'Expenses';
 	} else if (lang == 'cz') {
-		array[0].firstElementChild.innerHTML = 'Výdaje';
-		array[1].firstElementChild.innerHTML = 'Příjmy';
+		array[0].firstElementChild.innerHTML = 'Příjmy';
+		array[1].firstElementChild.innerHTML = 'Výdaje';
 	} else if (lang == 'ru') {
-		array[0].firstElementChild.innerHTML = 'Расходы';
-		array[1].firstElementChild.innerHTML = 'Доходы';
+		array[0].firstElementChild.innerHTML = 'Доходы';
+		array[1].firstElementChild.innerHTML = 'Расходы';
 	} else if (lang == 'ua') {
-		array[0].firstElementChild.innerHTML = 'Витрати';
-		array[1].firstElementChild.innerHTML = 'Доходи';
+		array[0].firstElementChild.innerHTML = 'Доходи';
+		array[1].firstElementChild.innerHTML = 'Витрати';
 	}
 }
 
