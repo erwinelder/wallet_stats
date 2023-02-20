@@ -1,6 +1,6 @@
 // Installing service workker
 const CACHE_NAME  = 'WalletStats';
-let resourcesToCache = ["./", "./img/game.png", "./game.js", "./sounds/wrong.mp3", "./sounds/blue.mp3", "./sounds/green.mp3", "./sounds/red.mp3", "./sounds/yellow.mp3", "./styles.css"];
+let resourcesToCache = ["./", "./Main/Icons/main_icon.svg", "./main.js", "./Main/main.css"];
 
 self.addEventListener("install", e=>{
     e.waitUntil(
