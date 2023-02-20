@@ -4,9 +4,10 @@
     "description": "Accounting your incomes and expenses to view statistics.",
     "icons": [
       {
-        "src": "Main/Icons/main_icon.svg",
-        "sizes": "150x150",
-        "type": "image/svg"
+        "src": "Main/Icons/main_icon_144.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "any"
       }
     ],
     "start_url": "/index.html",
