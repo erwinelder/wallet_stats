@@ -11,7 +11,7 @@
       }
     ],
     "start_url": "/walletstats/index.html",
-    "display": "fullscreen",
+    "display": "standalone",
     "theme_color": "#ECF0F3",
     "background_color": "#ECF0F3",
     "orientation":"portrait"
