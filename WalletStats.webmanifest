@@ -10,8 +10,8 @@
         "purpose": "any"
       }
     ],
-    "start_url": "/index.html",
-    "display": "browser",
+    "start_url": "/walletstats/index.html",
+    "display": "fullscreen",
     "theme_color": "#ECF0F3",
     "background_color": "#ECF0F3",
     "orientation":"portrait"
