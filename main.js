@@ -1022,12 +1022,12 @@ function uploadLanguageToHistoryNavbars (lang) {
 		array[1].value = 'Před měsíc';
 		array[2].value = 'Vlastní';
 	} else if (lang == 'ru') {
-		array[0].value = 'Неделя';
-		array[1].value = 'Месяц';
+		array[0].value = 'Этот месяц';
+		array[1].value = 'Предыдущий';
 		array[2].value = 'Фильтр';
 	} else if (lang == 'ua') {
-		array[0].value = 'Тиждень';
-		array[1].value = 'Місяць';
+		array[0].value = 'Цей місяць';
+		array[1].value = 'Попередній';
 		array[2].value = 'Фільтр';
 	}
 
