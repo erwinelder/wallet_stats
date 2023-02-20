@@ -1,0 +1,22 @@
+{
+    "name": "WalletStats",
+    "short_name": "WalletStats",
+    "description": "Accounting your incomes and expenses to view statistics.",
+    "icons": [
+      {
+        "src": "Main/Icons/main_icon.svg",
+        "sizes": "32x32",
+        "type": "image/svg"
+      },
+      {
+        "src": "Main/Icons/main_icon.svg",
+        "sizes": "512x512",
+        "type": "image/svg"
+      }
+    ],
+    "start_url": "/index.html",
+    "display": "standalone",
+    "theme_color": "#ECF0F3",
+    "background_color": "#ECF0F3",
+    "orientation":"portrait"
+  }
