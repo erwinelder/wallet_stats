@@ -777,7 +777,7 @@ body.font2 .account :last-child {
 }
 
 .accounts > .account {
-	transition: transform .3s, outline .3s;
+	transition: transform .3s;
 }
 .accounts > .account:active {
 	transform: scale(0.95);
@@ -1694,39 +1694,39 @@ body.font2 .history-nav-period > div > div {
 
 
 .wallet-light .account {
-    outline: 2px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.15);
 }
 .wallet-darkblue .account {
-    outline: 2px solid rgba(47, 64, 82, 0.4);
+    box-shadow: 0 0 0 2px rgba(47, 64, 82, 0.4);
 	filter: brightness(0.9);
 }
 .wallet-dark .account {
-	outline: 2px solid rgba(20, 20, 20, 0.45);
+	box-shadow: 0 0 0 2px rgba(20, 20, 20, 0.45);
 	filter: brightness(0.9);
 }
 .wallet-darkblue .account.invert-color {
-    outline: 2px solid rgba(208, 191, 173, 0.4);
+    box-shadow: 0 0 0 2px rgba(208, 191, 173, 0.4);
 }
 .wallet-dark .account.invert-color {
-    outline: 2px solid rgba(230, 230, 230, 0.55);
+    box-shadow: 0 0 0 2px rgba(230, 230, 230, 0.55);
 }
 
 .wallet-light .active-account {
-    outline: 3px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
 }
 .wallet-darkblue .active-account {
-    outline: 3px solid rgba(47, 64, 82, 0.5);
+    box-shadow: 0 0 0 3px rgba(47, 64, 82, 0.5);
 	filter: brightness(0.9);
 }
 .wallet-dark .active-account {
-	outline: 3px solid rgba(20, 20, 20, 0.4);
+	box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.4);
 	filter: brightness(0.9);
 }
 .wallet-darkblue .active-account.invert-color {
-    outline: 3px solid rgba(208, 191, 173, 0.5);
+    box-shadow: 0 0 0 3px rgba(208, 191, 173, 0.5);
 }
 .wallet-dark .active-account.invert-color {
-    outline: 3px solid rgba(230, 230, 230, 0.7);
+    box-shadow: 0 0 0 3px rgba(230, 230, 230, 0.7);
 }
 
 
