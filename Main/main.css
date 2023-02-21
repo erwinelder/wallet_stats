@@ -708,6 +708,7 @@ body.font2 .window-floating-nav > div {
 
 .blur {
 	backdrop-filter: saturate(120%) blur(15px);
+	-webkit-backdrop-filter: saturate(120%) blur(15px);
 }
 
 
