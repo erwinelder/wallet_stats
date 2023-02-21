@@ -1429,6 +1429,9 @@ body.font2 .history-nav-period > div > div {
 .settings-cont .title-block {
     gap: 15px;
 }
+.settings-cont > :first-child {
+    border-radius: 0;
+}
 .settings-categories {
 	width: 100%;
 	padding: 20px;
