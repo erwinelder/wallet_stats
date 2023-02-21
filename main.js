@@ -454,6 +454,8 @@ const category_list_hr = `<hr class="categories-hr">`;
 uploadAppData();
 function uploadAppData () {
 
+	startPreloaderAnimation();
+
 	// upload language
 	if (!(localStorage.getItem('L'))) localStorage.setItem('L', 'en');
 	uploadLanguage(localStorage.getItem('L'));
@@ -503,6 +505,53 @@ function uploadAppData () {
 	uploadDataToCustomDateFilterMenu();
 	positionateDateFilterMenu();
 	setTimeout(setDateFilterMenuTopPosition, 100);
+
+	hidePreloader();
+}
+
+
+
+
+
+function startPreloaderAnimation () {
+	
+	setTimeout(() => {
+		
+		disableScrolling();
+		
+		id('preloader').setAttribute('status', 'loading');
+		id('preloader-path').classList.add('draw');
+	
+		setTimeout(() => {
+			id('preloader-svg').classList.add('draw-start');
+		}, 1);
+		
+		setTimeout(() => {
+			id('preloader-svg').classList.add('draw-before-end');
+			id('preloader-path-second').classList.add('show');
+			
+			setTimeout(() => {
+				id('preloader-svg').classList.add('draw-end');
+				id('preloader').setAttribute('status', 'done');
+			}, 200);
+		}, 980);
+
+	}, 200);
+	
+}
+
+function hidePreloader () {
+
+	if (id('preloader').getAttribute('status') == 'done') {
+
+		id('preloader').classList.add('hide');
+		
+		setTimeout(() => {
+			id('preloader').style.display = 'none';
+			enableScrolling();
+		}, 300);
+		
+	} else setTimeout(hidePreloader, 100);
 }
 
 
@@ -1308,6 +1357,21 @@ function applyTheme (theme) {
 		id('root').classList.remove('wallet-darkblue');
 		id('root').classList.remove('wallet-light');
 		id('root').classList.add('wallet-dark');
+	}
+
+	setTimeout(() => {
+		applyThemeForPreloader(theme);
+	}, 1);
+}
+
+function applyThemeForPreloader (theme) {
+
+	if (theme == 'l') {
+		id('preloader').classList.add('light');
+	} else if (theme == 'b') {
+		id('preloader').classList.add('darkblue');
+	} else if (theme == 'd') {
+		id('preloader').classList.add('dark');
 	}
 }
 
