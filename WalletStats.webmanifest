@@ -10,6 +10,12 @@
         "purpose": "any"
       },
       {
+        "src": "Main/Icons/main_icon_144.png",
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "maskable"
+      },
+      {
         "src": "Main/Icons/main_icon.png",
         "sizes": "1080x1080",
         "type": "image/png",
