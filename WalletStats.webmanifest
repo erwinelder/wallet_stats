@@ -20,12 +20,6 @@
         "sizes": "1080x1080",
         "type": "image/png",
         "purpose": "any"
-      },
-      {
-        "src": "Main/Icons/wallet_icon.svg",
-        "sizes": "1080x1080",
-        "type": "image/svg",
-        "purpose": "any"
       }
     ],
     "start_url": "/walletstats/index.html",
