@@ -383,7 +383,7 @@ body.font2 .window-close-button > div > svg {
     overflow-x: scroll;
 }
 .floating-window-cont .field-date {
-    padding-block: 4px;
+    padding: 4px;
     border-radius: 13px;
 }
 .floating-window-cont .field-date::-webkit-calendar-picker-indicator {
