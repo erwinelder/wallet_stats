@@ -7,12 +7,24 @@
         "src": "Main/Icons/wallet_icon_bg_144.png",
         "sizes": "144x144",
         "type": "image/png",
-        "purpose": "maskable any"
+        "purpose": "any"
       },
       {
-        "src": "Main/Icons/wallet_icon.png",
+        "src": "Main/Icons/wallet_icon_bg_512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "Main/Icons/wallet_icon_bg.png",
         "sizes": "1080x1080",
         "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "Main/Icons/wallet_icon.svg",
+        "sizes": "1080x1080",
+        "type": "image/svg",
         "purpose": "any"
       }
     ],
