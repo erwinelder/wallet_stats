@@ -4,16 +4,10 @@
     "description": "Accounting your incomes and expenses to view statistics.",
     "icons": [
       {
-        "src": "Main/Icons/main_icon_144.png",
+        "src": "Main/Icons/wallet_icon_bg_144.png",
         "sizes": "144x144",
         "type": "image/png",
-        "purpose": "any"
-      },
-      {
-        "src": "Main/Icons/main_icon_144.png",
-        "sizes": "144x144",
-        "type": "image/png",
-        "purpose": "maskable"
+        "purpose": "maskable any"
       },
       {
         "src": "Main/Icons/main_icon.png",
