@@ -10,7 +10,7 @@
         "purpose": "maskable any"
       },
       {
-        "src": "Main/Icons/main_icon.png",
+        "src": "Main/Icons/wallet_icon.png",
         "sizes": "1080x1080",
         "type": "image/png",
         "purpose": "any"
