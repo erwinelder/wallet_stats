@@ -2925,10 +2925,11 @@ function updateHistoryForEditedRecord (record_num, record) {
 	if (period == 'week') compare_date.setDate(compare_date.getDate() - 7);
 	else if (period == 'month') compare_date.setMonth(compare_date.getMonth() - 1);
 	else compare_date = new Date(getRecordDateFormat(record_num));
-	
+
 	if (
 		checkRecordsOrderByDate(Number(record_num)) != record_num ||
-		getRecordDateFormat(record_num) < getDateFormat(compare_date)
+		getRecordDateFormat(record_num) < getDateFormat(compare_date) ||
+		id('make-record-account').getAttribute('accountnum') != id('make-record-account').firstElementChild.getAttribute('accountnum')
 	) {
 		reconnectFloatingWindow(record, id('history'), id('make-record-window-cont'), id('make-record-window'));
 		closeReconnectedFloatingWindow(id('make-record-window-cont'), id('make-record-window'));
