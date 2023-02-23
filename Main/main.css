@@ -856,7 +856,7 @@ body.font2 .history-nav-period > div > div {
 
 
 .date-filter-menu {
-	max-width: 100%;
+	max-width: 70%;
 	max-height: 75vh;
 	margin-top: 1vh;
 	padding: 0.7rem 0.6rem;
@@ -885,20 +885,22 @@ body.font2 .history-nav-period > div > div {
 	row-gap: .5rem;
 	display: grid;
 }
+
+.date-filter-other {
+	justify-items: center;
+	grid-template-columns: repeat(1);
+}
+
+.date-filter-months {
+	grid-template-columns: repeat(3, 4.5ch);
+}
+
 :is(.date-filter-other, .date-filter-months) input {
 	transition: .2s transform;
 }
 :is(.date-filter-other, .date-filter-months) input:active {
 	transform: scale(0.93);
 	transition: .1s transform;
-}
-
-.date-filter-other {
-	grid-template-columns: repeat(1, 45vw);
-}
-
-.date-filter-months {
-	grid-template-columns: repeat(3, 4.5ch);
 }
 
 .date-filter-menu .field-title {

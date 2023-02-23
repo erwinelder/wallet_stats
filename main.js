@@ -502,9 +502,9 @@ function uploadAppData () {
 	uploadDataToPieChart();
 	
 	// upload date filter menu
-	uploadDataToCustomDateFilterMenu();
-	positionateDateFilterMenu();
-	setTimeout(setDateFilterMenuTopPosition, 100);
+	setTimeout(uploadDataToCustomDateFilterMenu, 100);
+	setTimeout(positionateDateFilterMenu, 101);
+	setTimeout(setDateFilterMenuTopPosition, 102);
 
 	hidePreloader();
 }
@@ -1644,6 +1644,11 @@ function uploadDataToCustomDateFilterMenu() {
 	
 	inputs[0].value = getDateFormat(border1);
 	inputs[1].value = getDateFormat(border2);
+
+	inputs = id('date-filter-other').getElementsByTagName('input');
+
+	for (let a = 0; a < inputs.length; a++)
+		adaptInputLengthExplicitly(inputs[a]);
 }
 
 function showCustomDateFilterMenu () {
