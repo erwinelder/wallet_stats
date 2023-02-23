@@ -1338,6 +1338,86 @@ function uploadLanguageToButtons (lang) {
 		el.value = 'Подтвердить';
 	else if (lang == 'ua')
 		el.value = 'Підтвердити';
+
+	el = id('date-filter-other').getElementsByTagName('input');
+
+	if (lang == 'en') {
+		el[0].value = 'This week';
+		el[1].value = '7 days';
+		el[2].value = 'This year';
+		el[3].value = 'Prev year';
+	} else if (lang == 'cz') {
+		el[0].value = 'Tento týden';
+		el[1].value = '7 dní';
+		el[2].value = 'Tento rok';
+		el[3].value = 'Před rok';
+	} else if (lang == 'ru') {
+		el[0].value = 'Эта неделя';
+		el[1].value = '7 дней';
+		el[2].value = 'Этот год';
+		el[3].value = 'Пред год';
+	} else if (lang == 'ua') {
+		el[0].value = 'Цей тиждень';
+		el[1].value = '7 днів';
+		el[2].value = 'Цей рік';
+		el[3].value = 'Попер рік';
+	}
+
+	el = id('date-filter-months').getElementsByTagName('input');
+
+	if (lang == 'en') {
+		el[0].value = 'Jan';
+		el[1].value = 'Feb';
+		el[2].value = 'Mar';
+		el[3].value = 'Apr';
+		el[4].value = 'May';
+		el[5].value = 'June';
+		el[6].value = 'July';
+		el[7].value = 'Aug';
+		el[8].value = 'Sept';
+		el[9].value = 'Oct';
+		el[10].value = 'Nov';
+		el[11].value = 'Dec';
+	} else if (lang == 'cz') {
+		el[0].value = 'Led';
+		el[1].value = 'Ún';
+		el[2].value = 'Brez';
+		el[3].value = 'Dub';
+		el[4].value = 'Kvet';
+		el[5].value = 'Cerv';
+		el[6].value = 'Cerven';
+		el[7].value = 'Srp';
+		el[8].value = 'Září';
+		el[9].value = 'Říj';
+		el[10].value = 'List';
+		el[11].value = 'Pros';
+	} else if (lang == 'ru') {
+		el[0].value = 'Янв';
+		el[1].value = 'Фев';
+		el[2].value = 'Мар';
+		el[3].value = 'Апр';
+		el[4].value = 'Май';
+		el[5].value = 'Июн';
+		el[6].value = 'Июл';
+		el[7].value = 'Авг';
+		el[8].value = 'Сен';
+		el[9].value = 'Окт';
+		el[10].value = 'Ноя';
+		el[11].value = 'Дек';
+	} else if (lang == 'ua') {
+		el[0].value = 'Січ';
+		el[1].value = 'Лют';
+		el[2].value = 'Бер';
+		el[3].value = 'Квіт';
+		el[4].value = 'Трав';
+		el[5].value = 'Черв';
+		el[6].value = 'Лип';
+		el[7].value = 'Серп';
+		el[8].value = 'Вер';
+		el[9].value = 'Жовт';
+		el[10].value = 'Лист';
+		el[11].value = 'Груд';
+	}
 }
 
 
@@ -1557,14 +1637,13 @@ function uploadDataToCustomDateFilterMenu() {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 
-	let date_border1 = new Date();
-	date_border1.setDate(1);
-	inputs[0].value = getDateFormat(date_border1);
-
-	let date_border2 = new Date();
-	date_border2.setMonth(date_border2.getMonth() - 1);
-	date_border2.setDate(1);
-	inputs[1].value = getDateFormat(date_border2);
+	let this_month = (new Date()).getMonth();
+	let this_year = (new Date()).getFullYear();
+	let border1 = getDateBorderByInput(59, 59, 23, 0, this_month + 1, this_year);
+	let border2 = getDateBorderByInput(0, 0, 0, 1, this_month, this_year);
+	
+	inputs[0].value = getDateFormat(border1);
+	inputs[1].value = getDateFormat(border2);
 }
 
 function showCustomDateFilterMenu () {
@@ -1572,7 +1651,7 @@ function showCustomDateFilterMenu () {
 	id('date-filter-menu').classList.add('show');
 	
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
-		
+			
 	id('submit-date-filter').onclick = () => {
 		if ( (new Date(inputs[0].value)) > (new Date(inputs[1].value)) ) {
 			hideCustomDateFilterMenu();
@@ -2357,6 +2436,97 @@ for (let button of history_period_nav_buttons) {
 			hideCustomDateFilterMenu();
 		
 	}
+}
+
+for (let button of id('date-filter-other').getElementsByTagName('input')) {
+	button.onclick = function() {
+
+		applyOtherDateToDateFieldsOfDateFilterMenu(this);
+		
+	}
+}
+
+function applyOtherDateToDateFieldsOfDateFilterMenu (button) {
+
+	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+	let button_period = button.getAttribute('period');
+	let border1 = new Date(), border2 = new Date();
+
+	if (button_period == 'thisweek') {
+		
+		border1 = getDateBySunday(border1);
+		border2 = getDateByMonday(border2);
+
+		border1 = getDateBorderByInput(59, 59, 23, border1.getDate(), border1.getMonth(), border1.getFullYear());
+		border2 = getDateBorderByInput(0, 0, 0, border2.getDate(), border2.getMonth(), border2.getFullYear());
+		
+	} else if (button_period == '7days') {
+
+		border2.setDate(Number((new Date()).getDate()) - 6);
+
+		border1 = getDateBorderByInput(59, 59, 23, border1.getDate(), border1.getMonth(), border1.getFullYear());
+		border2 = getDateBorderByInput(0, 0, 0, border2.getDate(), border2.getMonth(), border2.getFullYear());
+		
+	} else if (button_period == 'thisyear') {
+
+		border1 = getDateBorderByInput(59, 59, 23, 31, 11, border1.getFullYear());
+		border2 = getDateBorderByInput(0, 0, 0, 1, 0, border2.getFullYear());
+
+	} else if (button_period == 'prevyear') {
+
+		border1.setFullYear((new Date()).getFullYear() - 1);
+		border2.setFullYear((new Date()).getFullYear() - 1);
+
+		border1 = getDateBorderByInput(59, 59, 23, 31, 11, border1.getFullYear());
+		border2 = getDateBorderByInput(0, 0, 0, 1, 0, border2.getFullYear());
+		
+	}
+		
+	inputs[0].value = getDateFormat(border1);
+	inputs[1].value = getDateFormat(border2);
+}
+
+function getDateByMonday (date) {
+
+	while (date.getDay() != 1)
+		date.setDate(Number(date.getDate()) - 1);
+
+	return date;
+}
+
+function getDateBySunday (date) {
+
+	while (date.getDay() != 0)
+		date.setDate(Number(date.getDate()) + 1);
+	
+	return date;
+}
+
+for (let button of id('date-filter-months').getElementsByTagName('input')) {
+	button.onclick = function() {
+
+		let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+	
+		let border_year = (new Date(inputs[0].value)).getFullYear();
+		let border1 = getDateBorderByInput(59, 59, 23, 0, Number(button.getAttribute('num')) + 1, border_year);
+		let border2 = getDateBorderByInput(0, 0, 0, 1, button.getAttribute('num'), border_year);
+		
+		inputs[0].value = getDateFormat(border1);
+		inputs[1].value = getDateFormat(border2);
+		
+	}
+}
+
+function getDateBorderByInput (seconds, minutes, hours, day, month, year) {
+	let date = new Date();
+	
+	date.setSeconds(seconds);
+	date.setMinutes(minutes);
+	date.setHours(hours);
+	date.setMonth(month, day);
+	date.setFullYear(year);
+
+	return date;
 }
 
 // set up clicks on history type nav buttons
