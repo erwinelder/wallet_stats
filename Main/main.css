@@ -894,7 +894,7 @@ body.font2 .history-nav-period > div > div {
 }
 
 .date-filter-other {
-	grid-template-columns: repeat(1, 100%);
+	grid-template-columns: repeat(1, 45vw);
 }
 
 .date-filter-months {
