@@ -417,9 +417,40 @@ const account_el = (accountnum, color, currency, balance) => {
 	return (`
 		<div accountnum="${accountnum}" style="color: #ddd; background: #${color};" class="account">
 			<input type="text" value="${currency}" class="account-currency active-input" readonly>
-			<input type="number" value="${balance}" class="account-balance active-input" style="background: rgba(255, 255, 255, 0.1);" readonly>
+			<input type="text" value="${getReadableNumber(balance)}" amount="${balance}" class="account-balance active-input" style="background: rgba(255, 255, 255, 0.1);" readonly>
 		</div>
 	`);
+}
+
+function getReadableNumber (number) {
+
+	
+	let number_as_string = '' + number;
+	let readable_number = '';
+	let addit_char = 0;
+	
+	let count_of_numbers = number_as_string.length - 3;
+	if (number_as_string[0] == '-') {
+		readable_number += '- ';
+		addit_char = 1;
+		count_of_numbers--;
+	}
+
+	let start_step = (count_of_numbers % 3) - 3;
+
+	// alert(number + ' | ' + count_of_numbers);
+
+	for (let a = 0; a < count_of_numbers; a++) {
+		if ((a + 1 + start_step) % 3 == 0) readable_number += ' ';
+		readable_number += number_as_string[a + addit_char];
+	}
+
+	readable_number += number_as_string[count_of_numbers + addit_char];
+	readable_number += number_as_string[count_of_numbers + addit_char + 1];
+	readable_number += number_as_string[count_of_numbers + addit_char + 2];
+
+	// return readable_number;
+	return number;
 }
 
 
@@ -3064,7 +3095,7 @@ function constructRecordEl (record_num, record_account) {
                     </div>
                     <div class="record-amount">
                       <h3>${localStorage.getItem('RType' + record_num)}</h3>
-                      <h3>${localStorage.getItem('RAmount' + record_num)}</h3>
+                      <h3>${getReadableNumber( Number(localStorage.getItem('RAmount' + record_num)).toFixed(2) )}</h3>
                       <h3>${localStorage.getItem('ACurrency' + record_account)}</h3>
                     </div>
                   </div>`;
