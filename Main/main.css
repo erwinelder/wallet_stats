@@ -88,6 +88,7 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 .button-slider button {
 	border: none;
 	opacity: 0;
+	background: none;
 	transition: .5s opacity, .2s transform;
 }
 .button-slider > :first-child:active {
