@@ -2105,6 +2105,8 @@ function getCategoriesStats () {
 	} else if (period == 'custom')
 		results = getCategoriesStatsByCustomPeriod(type, account, results);
 
+	uploadCategoriesToDetailPieChartPreview(type, account, results);
+		
 	return results;
 }
 
@@ -2218,6 +2220,60 @@ function uploadAmountToPieChart () {
 
 		id('pie-chart-amount').classList.remove('pie-chart-amount-hide');
 	}, 350);
+}
+
+function uploadCategoriesToDetailPieChartPreview (type, account, results) {
+
+	id('pie-chart-categories-details').innerHTML = null;
+
+	for (let a = 0; results[a]; a++)
+		if (results[a].total != 0)
+			uploadCategoryToDetailPieChartPreview(a, results[a].total, results[a].color, type, account);
+
+	if (!(id('pie-chart-categories-details').firstElementChild))
+		id('pie-chart-categories-details').classList.add('hide');
+	else
+		id('pie-chart-categories-details').classList.remove('hide');
+}
+
+function uploadCategoryToDetailPieChartPreview (unit_num, amount, color, type, account) {
+	let el;
+	
+	if (type == '-')
+		el = constructCategoryPreviewEl(
+			categories_expense_icons[unit_num],
+			categories_expense_titles[unit_num],
+			unit_num, type, amount,
+			localStorage.getItem(`ACurrency${account}`)
+		);
+	else if (type == '+')
+		el = constructCategoryPreviewEl(
+			categories_income_icons[unit_num],
+			categories_income_titles[unit_num],
+			type, amount, unit_num,
+			localStorage.getItem(`ACurrency${account}`)
+		);
+
+	id('pie-chart-categories-details').insertAdjacentHTML('beforeend', el);
+	id('pie-chart-categories-details').lastElementChild.style.borderLeft = `4px solid ${color}`;
+	id('pie-chart-categories-details').lastElementChild.style.borderRight = `4px solid ${color}`;
+}
+
+function constructCategoryPreviewEl (icon, title, category_num, type, amount, account_currency) {
+
+	let el = `<div class="category-details">
+				<div class="category" categorynum="${category_num}">
+					<div>${icon}</div>
+					<h3>${title}</h3>
+				</div>
+				<div class="category-amount">
+					<h3>${type}</h3>
+					<h3>${getReadableNumber( amount.toFixed(2) )}</h3>
+					<h3>${account_currency}</h3>
+				</div>
+			</div>`;
+
+	return el;
 }
 
 
