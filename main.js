@@ -2053,31 +2053,19 @@ function updatePieChart () {
 }
 
 function uploadDataToPieChart () {
-	
-	let ctx = id('pie-chart').getContext('2d');
-	ctx.clearRect(0, 0, id('pie-chart').width, id('pie-chart').height);
 
 	let results = getCategoriesStats();
 
-	let sum = 0, currentAngle = 0,
-		totalNumberOfPeople = results.reduce((sum, {total}) => sum + total, 0);
+	let type = id('history-type-nav').getAttribute('history-type');
+	if (type == 'all') type = '-';
+	uploadCategoriesToDetailPieChartPreview(
+		type,
+		id('accounts').getAttribute('accountnum'),
+		results
+	);
+	// setUpClickOnDetailCategoriesPreview();
 
-    for (let unit of results) {
-        //calculating the angle the slice (portion) will take in the chart
-        let portionAngle = (unit.total / totalNumberOfPeople) * 2 * Math.PI;
-        //drawing an arc and a line to the center to differentiate the slice from the rest
-        ctx.beginPath();
-        ctx.arc(400, 400, 400, currentAngle, currentAngle + portionAngle);
-        currentAngle += portionAngle;
-        ctx.lineTo(400, 400);
-        //filling the slices with the corresponding mood's color
-        ctx.fillStyle = unit.color;
-        ctx.fill();
-    }
-
-	for (let a = 0; a < results.length - 1; a++)
-		results[a].total = 0;
-		
+	drawPieChart(results);
 	uploadAmountToPieChart();
 }
 
@@ -2104,8 +2092,6 @@ function getCategoriesStats () {
 
 	} else if (period == 'custom')
 		results = getCategoriesStatsByCustomPeriod(type, account, results);
-
-	uploadCategoriesToDetailPieChartPreview(type, account, results);
 		
 	return results;
 }
@@ -2205,23 +2191,6 @@ function getCategoriesStatsByCustomPeriod (type, account, results) {
 	return results;
 }
 
-function uploadAmountToPieChart () {
-
-	let type = id('history-type-nav').getAttribute('history-type');
-	if (type == 'all') type = '-';
-	
-	id('pie-chart-amount').classList.add('pie-chart-amount-hide');
-
-	setTimeout(() => {
-		if (type == '-')
-			id('pie-chart-amount').innerHTML = id('expenses-column-amount').innerHTML;
-		else if (type == '+')
-			id('pie-chart-amount').innerHTML = id('incomes-column-amount').innerHTML;
-
-		id('pie-chart-amount').classList.remove('pie-chart-amount-hide');
-	}, 350);
-}
-
 function uploadCategoriesToDetailPieChartPreview (type, account, results) {
 
 	id('pie-chart-categories-details').innerHTML = null;
@@ -2232,7 +2201,7 @@ function uploadCategoriesToDetailPieChartPreview (type, account, results) {
 
 	if (!(id('pie-chart-categories-details').firstElementChild))
 		id('pie-chart-categories-details').classList.add('hide');
-	else
+	else if (id('pie-chart-categories-details').classList.contains('hide'))
 		id('pie-chart-categories-details').classList.remove('hide');
 }
 
@@ -2261,8 +2230,8 @@ function uploadCategoryToDetailPieChartPreview (unit_num, amount, color, type, a
 
 function constructCategoryPreviewEl (icon, title, category_num, type, amount, account_currency) {
 
-	let el = `<div class="category-details">
-				<div class="category" categorynum="${category_num}">
+	let el = `<div class="category-details" categorynum="${category_num}">
+				<div class="category">
 					<div>${icon}</div>
 					<h3>${title}</h3>
 				</div>
@@ -2274,6 +2243,62 @@ function constructCategoryPreviewEl (icon, title, category_num, type, amount, ac
 			</div>`;
 
 	return el;
+}
+
+function setUpClickOnDetailCategoriesPreview () {
+
+	for (let el in id('pie-chart-categories-details').getElementsByClassName('category-details')) {
+		el.onclick = function() {
+			uploadSubcategoriesToDetailCatagoryPreview(this.getAttribute('categorynum'));
+		}
+	}
+}
+
+function uploadSubcategoriesToDetailCatagoryPreview (category_num) {
+
+	
+}
+
+function drawPieChart (results) {
+
+	let ctx = id('pie-chart').getContext('2d');
+	ctx.clearRect(0, 0, id('pie-chart').width, id('pie-chart').height);
+
+	let sum = 0, currentAngle = 0,
+		totalNumberOfPeople = results.reduce((sum, {total}) => sum + total, 0);
+
+    for (let unit of results) {
+        //calculating the angle the slice (portion) will take in the chart
+        let portionAngle = (unit.total / totalNumberOfPeople) * 2 * Math.PI;
+        //drawing an arc and a line to the center to differentiate the slice from the rest
+        ctx.beginPath();
+        ctx.arc(400, 400, 400, currentAngle, currentAngle + portionAngle);
+        currentAngle += portionAngle;
+        ctx.lineTo(400, 400);
+        //filling the slices with the corresponding mood's color
+        ctx.fillStyle = unit.color;
+        ctx.fill();
+    }
+
+	for (let a = 0; a < results.length - 1; a++)
+		results[a].total = 0;
+}
+
+function uploadAmountToPieChart () {
+
+	let type = id('history-type-nav').getAttribute('history-type');
+	if (type == 'all') type = '-';
+	
+	id('pie-chart-amount').classList.add('pie-chart-amount-hide');
+
+	setTimeout(() => {
+		if (type == '-')
+			id('pie-chart-amount').innerHTML = id('expenses-column-amount').innerHTML;
+		else if (type == '+')
+			id('pie-chart-amount').innerHTML = id('incomes-column-amount').innerHTML;
+
+		id('pie-chart-amount').classList.remove('pie-chart-amount-hide');
+	}, 350);
 }
 
 
