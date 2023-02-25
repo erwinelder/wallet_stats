@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text&display=swap');
 
 * {
 	margin: 0;
@@ -48,6 +49,91 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 .body-preload {
   height: 100vh;
   overflow-y: hidden;
+}
+
+
+
+
+
+.hello-screen {
+	width: 100vw;
+	height: 100vh;
+	gap: 20vh;
+	
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
+	font-family: 'Golos Text', sans-serif;
+	z-index: 900;
+}
+.hello-screen.hide {
+	display: none;
+}
+
+.hello-screen h1 {
+	font-size: 3.5rem;
+	opacity: 0;
+	color: #080808;
+	transition: .5s opacity;
+}
+
+.button-slider {
+	gap: 2vw;
+	display: flex;
+	justify-content: center;
+}
+.button-slider button {
+	border: none;
+	opacity: 0;
+	transition: .5s opacity, .2s transform;
+}
+.button-slider > :first-child:active {
+	transform: translateX(-0.7rem);
+}
+.button-slider > :last-child:active {
+	transform: translateX(0.7rem);
+}
+.button-slider button:active {
+    transform: scale(0.9);
+    transition: .1s transform;
+}
+.button-slider h3 {
+	width: 12ch;
+	font-size: 1.5rem;
+	text-align: center;
+	opacity: 0;
+	transition: .5s opacity;
+}
+.button-slider > :last-child > :first-child {
+	transform: rotateY(180deg);
+}
+.button-slider svg {
+	height: 1.5rem;
+	display: block;
+	stroke: #080808;
+}
+
+.hello-submit-language {
+	width: 5rem;
+	height: 5rem;
+	padding: 1rem;
+	border-radius: 1.5rem;
+	border: none;
+
+	display: block;
+	background: #080808;
+	stroke: #fff;
+	box-shadow: 5px 5px 10px #b7c6d280,
+		-5px -5px 10px #FFF;
+	opacity: 0;
+	transition: 1s opacity, .2s transform;
+}
+.hello-submit-language:active {
+    transform: scale(0.93);
+    transition: .1s transform;
 }
 
 

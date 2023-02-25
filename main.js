@@ -482,7 +482,195 @@ const category_list_hr = `<hr class="categories-hr">`;
 
 // upload app data
 
-uploadAppData();
+if (localStorage.getItem('L')) uploadAppData();
+else openHelloScreen();
+
+function openHelloScreen () {
+
+	disableScrolling();
+
+	id('hello-screen').classList.remove('hide');
+
+	uploadHelloTitle(0);
+
+	id('hello-language').setAttribute('langnum', 0);
+	setTimeout(() => {
+		uploadHelloLanguageName(0);
+		id('hello-language').style.opacity = '1';
+
+		setTimeout(() => {
+			setUpClickOnHelloSliderButtons();
+		}, 200);
+	}, 1000);
+
+	setTimeout(() => {
+		setUpClickOnHelloSubmitLanguageButton();
+	}, 1800);
+}
+
+function uploadHelloTitle (lang) {
+
+	let el = id('hello-screen').firstElementChild;
+
+	el.style.transition = 'opacity .5s';
+	el.style.opacity = '0';
+	
+	setTimeout(() => {
+		if (lang == 0) el.innerHTML = 'Hello!';
+		else if (lang == 1) el.innerHTML = 'Ahoj!';
+		else if (lang == 2) el.innerHTML = 'Привет!';
+		else if (lang == 3) el.innerHTML = 'Привіт!';
+		
+		el.style.opacity = '1';
+	}, 500);
+}
+
+function uploadHelloLanguageName (lang_num) {
+
+	if (lang_num == -1) lang_num = 3;
+	else if (lang_num == 4) lang_num = 0;
+
+	let el = id('hello-language');
+	
+	if (lang_num == 0) el.innerHTML = 'English';
+	else if (lang_num == 1) el.innerHTML = 'Čeština';
+	else if (lang_num == 2) el.innerHTML = 'Русский';
+	else if (lang_num == 3) el.innerHTML = 'Українська';
+
+	return lang_num;
+}
+
+function hideHelloLanguageName (direction) {
+	let el = id('hello-language');
+	let x = 50 * direction;
+
+	el.style.transition = '.5s transform, .5s opacity';
+	el.style.transform = `scale(0.8) translateX(${x}px)`;
+	el.style.opacity = '0';
+}
+
+function showHelloLanguage (direction) {
+	let el = id('hello-language');
+	let x = 50 * direction;
+
+	el.style.transition = '0s transform, 0s opacity';
+	el.style.transform = `scale(0.8) translateX(${x}px)`;
+	
+	setTimeout(() => {
+		el.style.transition = '.5s transform, .5s opacity';
+		el.style.opacity = '1';
+		id('hello-language').style.transform = 'scale(1) translateX(0px)';
+	}, 50);
+}
+
+function setUpClickOnHelloSliderButtons () {
+
+	id('button-slider').firstElementChild.style.opacity = '1';
+
+	id('button-slider').firstElementChild.onclick = function() {
+		if (id('hello-screen').getAttribute('animstatus') == 'done')
+			clickOnHelloScreenLeftButton();
+	}
+	
+	id('button-slider').lastElementChild.style.opacity = '1';
+
+	id('button-slider').lastElementChild.onclick = function() {
+		if (id('hello-screen').getAttribute('animstatus') == 'done')
+			clickOnHelloScreenRightButton();
+	}
+}
+
+function clickOnHelloScreenLeftButton () {
+
+	id('hello-screen').setAttribute('animstatus', 'processing');
+	hideHelloLanguageName(1);
+
+	let lang_num = id('hello-language').getAttribute('langnum');
+	
+	setTimeout(() => {
+		lang_num = uploadHelloLanguageName(Number(lang_num) - 1);
+		uploadHelloTitle(lang_num);
+		id('hello-language').setAttribute('langnum', lang_num);
+		showHelloLanguage(-1);
+
+		setTimeout(() => {
+			id('hello-screen').setAttribute('animstatus', 'done');
+		}, 500);
+	}, 500);
+}
+
+function clickOnHelloScreenRightButton () {
+
+	id('hello-screen').setAttribute('animstatus', 'processing');
+	hideHelloLanguageName(-1);
+	
+	let lang_num = id('hello-language').getAttribute('langnum');
+	
+	setTimeout(() => {
+		lang_num = uploadHelloLanguageName(Number(lang_num) + 1);
+		uploadHelloTitle(lang_num);
+		id('hello-language').setAttribute('langnum', lang_num);
+		showHelloLanguage(1);
+
+		setTimeout(() => {
+			id('hello-screen').setAttribute('animstatus', 'done');
+		}, 500);
+	}, 500);
+}
+
+function setUpClickOnHelloSubmitLanguageButton () {
+
+	id('hello-submit-language').style.opacity = '1';
+
+	id('hello-submit-language').onclick = () => {
+
+		id('hello-title').style.transition = '.5s opacity, .5s transform';
+		id('hello-title').style.transform = 'scale(0.8)';
+		id('hello-title').style.opacity = '0';
+
+		setTimeout(() => {
+			id('hello-language').style.transition = '.5s opacity, .5s transform';
+			id('hello-language').style.transform = 'scale(0.8)';
+			id('hello-language').style.opacity = '0';
+		}, 500);
+
+		setTimeout(() => {
+			id('button-slider').firstElementChild.style.transform = 'scale(0.8)';
+			id('button-slider').firstElementChild.style.opacity = '0';
+			id('button-slider').lastElementChild.style.transform = 'scale(0.8)';
+			id('button-slider').lastElementChild.style.opacity = '0';
+		}, 700);
+
+		setTimeout(() => {
+			id('hello-submit-language').style.transition = '1s opacity, 1s transform';
+			id('hello-submit-language').style.transform = 'scale(0.8)';
+			id('hello-submit-language').style.opacity = '0';
+
+			setTimeout(() => {
+				localStorage.setItem('L', getLanguageByNumber(id('hello-language').getAttribute('langnum')));
+				closeHelloScreen();
+			}, 1000);
+		}, 1200);
+		
+	}
+}
+
+function getLanguageByNumber (lang_num) {
+
+	if (lang_num == 0) return 'en';
+	else if (lang_num == 1) return 'cz';
+	else if (lang_num == 2) return 'ru';
+	else if (lang_num == 3) return 'ua';
+	return lang_num;
+}
+
+function closeHelloScreen () {
+	id('hello-screen').classList.add('hide');
+	uploadAppData();
+}
+
+
+
 function uploadAppData () {
 
 	startPreloaderAnimation();
