@@ -1642,6 +1642,17 @@ function uploadLanguageToButtons (lang) {
 		el[10].value = 'Лист';
 		el[11].value = 'Груд';
 	}
+
+	el = id('enable-history-scroll-button');
+
+	if (lang == 'en')
+		el.value = 'Enable scrolling';
+	else if (lang == 'cz')
+		el.value = 'Povolit rolování';
+	else if (lang == 'ru')
+		el.value = 'Включить прокрутку';
+	else if (lang == 'ua')
+		el.value = 'Увімкнути прокручування';
 }
 
 
@@ -2079,29 +2090,29 @@ function removeRecordFromStorage (n) {
 
 
 
-id('history-touch-area-left').onclick = function() {
-	unblockHistoryScroll();
-}
-id('history-touch-area-right').onclick = function() {
-	unblockHistoryScroll();
+id('enable-history-scroll-button').onclick = function() {
+
+	if (this.classList.contains('active'))
+		this.classList.remove('active');
+	else
+		this.classList.add('active');
+	
+	changeHistoryScroll();
 }
 
-function unblockHistoryScroll () {
-	if (id('history').classList.contains('history-scroll')) {
-		animateClickOnHistory(id('history'));
-		setTimeout(() => {
+function changeHistoryScroll () {
+
+	animateClickOnHistory(id('history'));
+
+	setTimeout(() => {
+		if (id('history').classList.contains('history-scroll'))
 			id('history').classList.remove('history-scroll');
-		}, 200);
-	} else {
-		animateClickOnHistory(id('history'));
-		setTimeout(() => {
-			id('history').classList.add('history-scroll');
-		}, 200);
-	}
+		else id('history').classList.add('history-scroll');
+	}, 200);
 }
 
 function animateClickOnHistory (el) {
-	el.style.transform = 'scale(0.95)';
+	el.style.transform = 'scale(0.99)';
 	setTimeout(() => { el.style.transform = 'scale(1)'; }, 100);
 }
 
