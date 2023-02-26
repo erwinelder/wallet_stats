@@ -12,50 +12,55 @@ const id = function (id) {
 var categories_expense_titles = [];
 
 const categories_expense_icons = [
-  /* 1 */ 
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <path d="M 64.718 294.71 C 21.635 305.658 1.317 354.368 12.825 404.515 C 22.187 445.309 50.427 466.598 70.822 476.317 C 105.585 492.068 161.955 489.324 199.072 474.932 C 237.565 460.328 260.896 423.962 265.897 395.598 C 271.77 332.371 242.875 295.329 191.188 291.704"></path>
-    <path d="M 124.088 272.482 C 105.315 272.604 74.98 280.717 57.862 293.33 C 73.793 295.983 88.732 299.268 97.529 304.05 L 91.098 345.504 L 134.694 312.627 L 178.293 344.073 L 173.648 300.835 C 180.476 294.03 202.218 287.77 210.096 286.181 C 196.257 276.291 160.531 270.951 143.48 271.53"></path>
-    <path d="M 128.814 291.082 C 128.34 276.409 118.336 245.987 114.006 238.551 L 122.188 228.789 C 134.815 239.51 142.577 266.425 147.461 290.367"></path>
-    <path d="M 298.973 492.575 L 431.129 492.575 C 414.076 478.365 387.077 484.049 364.34 452.787 L 364.34 280.84 C 394.182 242.472 473.761 204.104 480.866 177.105 C 489.392 148.683 449.603 63.421 435.392 8 L 294.709 8 C 280.499 63.421 240.711 148.683 249.236 177.105 C 256.341 204.104 334.498 242.472 364.34 280.84 L 364.34 452.787 C 340.184 484.049 316.025 478.365 298.973 492.575 Z"></path>
-    <path d="M 252 151.7 C 302.899 143.105 310.183 125.644 364.3 137 C 398.851 147.66 429.044 160.627 478 150.9"></path>
-  </svg>`,
-  /* 2 */ 
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 3 */ 
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 4 */
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 5 */
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 6 */
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 7 */
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 8 */
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 9 */
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
-  /* 10 */
-  `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`
+	/* 1 */ 
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<path d="M 64.718 294.71 C 21.635 305.658 1.317 354.368 12.825 404.515 C 22.187 445.309 50.427 466.598 70.822 476.317 C 105.585 492.068 161.955 489.324 199.072 474.932 C 237.565 460.328 260.896 423.962 265.897 395.598 C 271.77 332.371 242.875 295.329 191.188 291.704"></path>
+		<path d="M 124.088 272.482 C 105.315 272.604 74.98 280.717 57.862 293.33 C 73.793 295.983 88.732 299.268 97.529 304.05 L 91.098 345.504 L 134.694 312.627 L 178.293 344.073 L 173.648 300.835 C 180.476 294.03 202.218 287.77 210.096 286.181 C 196.257 276.291 160.531 270.951 143.48 271.53"></path>
+		<path d="M 128.814 291.082 C 128.34 276.409 118.336 245.987 114.006 238.551 L 122.188 228.789 C 134.815 239.51 142.577 266.425 147.461 290.367"></path>
+		<path d="M 298.973 492.575 L 431.129 492.575 C 414.076 478.365 387.077 484.049 364.34 452.787 L 364.34 280.84 C 394.182 242.472 473.761 204.104 480.866 177.105 C 489.392 148.683 449.603 63.421 435.392 8 L 294.709 8 C 280.499 63.421 240.711 148.683 249.236 177.105 C 256.341 204.104 334.498 242.472 364.34 280.84 L 364.34 452.787 C 340.184 484.049 316.025 478.365 298.973 492.575 Z"></path>
+		<path d="M 252 151.7 C 302.899 143.105 310.183 125.644 364.3 137 C 398.851 147.66 429.044 160.627 478 150.9"></path>
+	</svg>`,
+	/* 2 */ 
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`,
+	/* 3 */ 
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`,
+	/* 4 */
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`,
+	/* 5 */
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`,
+	/* 6 */
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`,
+	/* 7 */
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<g transform="matrix(4.888889, 0, 0, 4.888889, -972.222229, -1600.681519)">
+			<ellipse style="stroke-width: 3px;" cx="250" cy="406.597" rx="4.5" ry="4.5"></ellipse>
+			<path style="stroke-width: 3px;" d="M 235 393 C 240 382 260 382 265 393"></path>
+			<path style="stroke-width: 3px;" d="M 220 380 C 235 360 265 360 280 380"></path>
+			<path style="stroke-width: 3px;" d="M 205 367 C 233 339 267 339 295 367"></path>
+		</g>
+  	</svg>`,
+	/* 8 */
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`,
+	/* 9 */
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`,
+	/* 10 */
+	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
+	</svg>`
 
 ];
 
