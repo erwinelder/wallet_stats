@@ -495,13 +495,18 @@ body.font2 .window-close-button > div > svg {
 }
 .floating-window-cont .field > .field-input {
     max-width: 80%;
-	padding: 5px 10px;
 	border-radius: 15px;
     font-size: 1.8rem;
     
 	text-align: center;
 	transition: .2s width,
-		.15s transform;
+	.15s transform;
+}
+body.font1 .floating-window-cont .field > .field-input {
+	padding: 5px 10px;
+}
+body.font2 .floating-window-cont .field > .field-input {
+	padding: 11px 10px 8px 10px;
 }
 .floating-window-cont .field > div {
     max-width: 100%;
@@ -512,8 +517,13 @@ body.font2 .window-close-button > div > svg {
     overflow-x: scroll;
 }
 .floating-window-cont .field-date {
-    padding: 4px;
-    border-radius: 13px;
+	border-radius: 13px;
+}
+body.font1 .floating-window-cont .field-date {
+	padding: 4px;
+}
+body.font2 .floating-window-cont .field-date {
+	padding: 9px 4px 4px 4px;
 }
 .floating-window-cont .field-date::-webkit-calendar-picker-indicator {
     margin: 3px 15px 0 -10px;
@@ -570,7 +580,6 @@ body.font2 .window-close-button > div > svg {
 .window-block-cont > :last-child {
 	width: 100%;
 	max-height: 90%;
-	padding-block: 10px calc(20px + 1vh);
 	gap: 25px;
 	border-radius: 22px 22px 0 0;
 	box-sizing: border-box;
@@ -590,6 +599,12 @@ body.font2 .window-close-button > div > svg {
 		.3s color;
     will-change: opacity, transform;
 }
+body.font1 .window-block-cont > :last-child {
+	padding-block: 10px calc(20px + 1vh);
+}
+body.font2 .window-block-cont > :last-child {
+	padding-block: 14px calc(20px + 1vh);
+}
 .window-block-cont-darker > :last-child {
 	transform: scale(1) translateY(0vh);
 	opacity: 1;
@@ -600,8 +615,13 @@ body.font2 .window-close-button > div > svg {
 
 
 .window-block-cont .title-block {
-    gap: 10px;
-    font-size: 0.95rem;
+	font-size: 0.95rem;
+}
+body.font1 .window-block-cont .title-block {
+	gap: 10px;
+}
+body.font2 .window-block-cont .title-block {
+	gap: 12px;
 }
 .window-block-cont .window-content {
     width: 100%;
@@ -634,7 +654,7 @@ body.font1 .window-el-amount {
 	padding: 5px 10px;
 }
 body.font2 .window-el-amount {
-	padding: 15px 10px 12px 10px;
+	padding: 15px 10px 11px 10px;
 }
 
 
@@ -878,13 +898,21 @@ body.font2 .window-floating-nav > div {
 	border-radius: 0.9rem;
 	font-size: 1.3rem;
 }
-.account :first-child {
+body.font1 .account :first-child {
 	padding-inline: 7px 4px;
 }
+body.font2 .account :first-child {
+	padding-inline: 10px 8px;
+}
 .account :last-child {
-    padding-inline: 3px;
-    border-radius: 14px;
+	border-radius: 14px;
     transition: .4s width;
+}
+body.font1 .account :last-child {
+	padding-inline: 3px;
+}
+body.font2 .account :last-child {
+	padding-inline: 5px;
 }
 body.font1 .account :first-child,
 body.font1 .account :last-child {
@@ -892,7 +920,7 @@ body.font1 .account :last-child {
 }
 body.font2 .account :first-child,
 body.font2 .account :last-child {
-	padding-block: 6px 4px;
+	padding-block: 0.6rem 0.42rem;
 }
 .account-block-animation :last-child {
     transition: 0s all;
@@ -940,7 +968,7 @@ body.font1 .history-nav-period > div > div {
 	padding-block: 0.45rem;
 }
 body.font2 .history-nav-period > div > div {
-	padding-block: 0.55rem;
+	padding-block: 0.65rem;
 }
 
 
@@ -1075,8 +1103,6 @@ body.font2 .history-nav-period > div > div {
 }
 .record {
     max-width: calc(100% - 24px);
-	padding: 3px 9px;
-	gap: 7px;
 	border-radius: 20px;
 	box-sizing: border-box;
 	font-size: 1.05rem;
@@ -1086,6 +1112,14 @@ body.font2 .history-nav-period > div > div {
 	align-items: center;
     
 	transition: .2s transform;
+}
+body.font1 .record {
+	padding: 3px 9px;
+	gap: 7px;
+}
+body.font2 .record {
+	padding: 7px 10px;
+	gap: 9px;
 }
 .record:active {
     transform: scale(0.95);
@@ -1664,7 +1698,6 @@ body.font2 .history-nav-period > div > div {
 .settings-categories {
 	width: 100%;
 	padding: 20px;
-	gap: 10px;
 	font-size: 1.5em;
 	display: flex;
 	flex-direction: column;
@@ -1672,6 +1705,12 @@ body.font2 .history-nav-period > div > div {
 	justify-content: flex-end;
 	flex-grow: 1;
 	overflow-y: scroll;
+}
+body.font1 .settings-categories {
+	gap: 10px;
+}
+body.font2 .settings-categories {
+	gap: 13px;
 }
 .settings-categories > input {
 	cursor: pointer;
