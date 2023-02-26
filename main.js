@@ -3699,6 +3699,8 @@ function uploadSettingsCategoryData_Reset (content_cont, button_cont) {
 
 	id('reset-data-button').onclick = () => {
 		clearLocalStorage();
+		enableScrolling();
+		window.scrollTo(0, 0);
 		window.location.reload();
 	}
 }
@@ -3945,8 +3947,8 @@ function uploadAccountsToSettingsWindow (windowEl_cont) {
 }
 
 function setUpClickOnAccount (account) {
-
 	account.onclick = function() {
+		enableScrolling();
 
 		let clickEl = this,
 			windowEl_cont = id('edit-account-cont'),
