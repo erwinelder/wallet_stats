@@ -2909,6 +2909,8 @@ function prepareMakeRecordWindow () {
 	id('remove-record-button-block').classList.add('element-hide');
 	
 	id('make-record-date').value = getDateFormat(new Date());
+
+	adaptInputLengthExplicitly(id('make-record-amount'));
 	
 	id('make-record-account').innerHTML = account_el( 1, localStorage.getItem('AColor1'), localStorage.getItem('ACurrency1'), Number(localStorage.getItem('ABalance1')).toFixed(2) );
 	id('make-record-account').setAttribute('accountnum', 1);
