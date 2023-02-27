@@ -519,6 +519,7 @@ body.font2 .floating-window-cont .field > .field-input {
 }
 .floating-window-cont .field-date {
 	border-radius: 13px;
+	cursor: pointer;
 }
 body.font1 .floating-window-cont .field-date {
 	padding: 4px;
@@ -1548,6 +1549,7 @@ body.font2 .enable-history-scroll-button-cont input {
 	justify-content: center;
 	overflow: hidden;
 
+	cursor: pointer;
 	transition: transform .2s, opacity .2s;
 }
 .category-button-changing-hide {
