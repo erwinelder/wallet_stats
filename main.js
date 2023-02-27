@@ -3964,6 +3964,7 @@ function setUpClickOnAccount (account) {
 
 		// set up closing edit account window
 		id('edit-account-cont').firstElementChild.onclick = () => {
+			disableScrolling();
 			closeFloatingWindow(clickEl, windowEl_cont, windowEl);
 			resetEditAccountWindow();
 		}
