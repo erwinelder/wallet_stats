@@ -390,8 +390,9 @@ const categories_income_icons = [
   </svg>`,
   /* 9 */
   `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`
+		<polyline points="70.704 25 280.69 250 70.704 475"></polyline>
+		<polyline points="219.281 25 429.296 250 219.281 475"></polyline>
+	</svg>`
 ];
 
 const category_transfer_icon = `
