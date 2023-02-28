@@ -76,8 +76,10 @@ const categories_expense_icons = [
   	</svg>`,
 	/* 10 */
 	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-		<line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-	</svg>`
+		<ellipse cx="153.928" cy="219.257" rx="38.428" ry="38.428"></ellipse>
+		<ellipse cx="346.072" cy="142.4" rx="38.428" ry="38.428"></ellipse>
+		<ellipse cx="269.215" cy="357.6" rx="38.428" ry="38.428"></ellipse>
+  	</svg>`
 
 ];
 
@@ -839,7 +841,7 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 			/* 7 */ 'Communication',
 			/* 8 */ 'Financial expenses',
 			/* 9 */ 'Investments',
-			/* 10 */ 'Others'
+			/* 10 */ 'Other'
 		];
 	else if (lang == 'cz')
 		return [
