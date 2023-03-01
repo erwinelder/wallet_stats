@@ -1874,12 +1874,18 @@ function uploadRecordsToHistory () {
 	if (period == 'month 0') {
 
 		compare_date.setDate(1);
+		compare_date.setHours(0);
+		compare_date.setMinutes(0);
+		compare_date.setSeconds(0);
 		uploadRecordsByThisMonth(getDateFormat(compare_date), type, account);
 		
 	} else if (period == 'month -1') {
 		
 		compare_date.setMonth(compare_date.getMonth() - 1);
 		compare_date.setDate(1);
+		compare_date.setHours(0);
+		compare_date.setMinutes(0);
+		compare_date.setSeconds(0);
 		uploadRecordsByPrevMonth(getDateFormat(compare_date), type, account);
 
 	} else if (period == 'custom')
@@ -1891,7 +1897,7 @@ function uploadRecordsToHistory () {
 
 function uploadRecordsByThisMonth (compare_date, type, account) {
 	
-	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)		
 		if ( (getRecordDateFormat(record_num)) > compare_date ) {
 			if (
 				(type == 'all' || localStorage.getItem(`RType${record_num}`) == type) &&
