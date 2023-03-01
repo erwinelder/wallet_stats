@@ -358,8 +358,10 @@ var categories_income_titles = [];
 const categories_income_icons = [
   /* 1 */
   `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-    <line stroke-miterlimit: 5; x1="30" y1="30" x2="470" y2="470"></line>
-  </svg>`,
+		<ellipse cx="250" cy="250" rx="225" ry="225"></ellipse>
+		<path d="M 346.154 125 C 346.154 125 153.846 138.471 153.846 208.333 C 153.846 278.196 346.154 221.804 346.154 291.667 C 346.154 361.53 153.846 375 153.846 375"></path>
+		<line x1="250" y1="97" x2="250" y2="403"></line>
+	</svg>`,
   /* 2 */
   `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 		<path d="M 21.662 82.418 C 21.526 69.392 209.941 25 250 25 C 290.06 25 478.339 69.065 478.339 82.418 C 478.339 95.772 290.06 139.837 250 139.837 C 209.941 139.837 21.802 95.77 21.662 82.418 Z"></path>
@@ -523,9 +525,14 @@ const category_list_el = (category_num, icons_array, titles_array) => {
 	`);
 }
 const subcategory_list_el = (subcategory_num, icons_array, titles_array, array_num, nested_array_num) => {
-	return (`
+	/* return (`
 		<div class="subcategory" subcategorynum="${subcategory_num}">
 			<div class="subcategory-svg-cont">${icons_array[array_num][nested_array_num]}</div>
+			<h3 class="subcategory-title">${titles_array[array_num][nested_array_num]}</h3>
+		</div>
+	`); */
+	return (`
+		<div class="subcategory" subcategorynum="${subcategory_num}">
 			<h3 class="subcategory-title">${titles_array[array_num][nested_array_num]}</h3>
 		</div>
 	`);
@@ -3427,7 +3434,8 @@ function constructRecordEl (record_num, record_account) {
 		icon, title;
 
 	if (localStorage.getItem(`RType${record_num}`) == '-') {
-		icon = subcategories_icons[category_num][subcategory_num];
+		// icon = subcategories_icons[category_num][subcategory_num];
+		icon = categories_expense_icons[category_num];
 		title = subcategories_titles[category_num][subcategory_num];
 	} else {
 		icon = categories_income_icons[category_num];
