@@ -2483,7 +2483,7 @@ function uploadCategoryToDetailPieChartPreview (unit_num, amount, color, type, a
 		el = constructCategoryPreviewEl(
 			categories_income_icons[unit_num],
 			categories_income_titles[unit_num],
-			type, amount, unit_num,
+			unit_num, type, amount,
 			localStorage.getItem(`ACurrency${account}`)
 		);
 
