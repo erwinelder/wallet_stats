@@ -1882,10 +1882,6 @@ function uploadRecordsToHistory () {
 	} else if (period == 'month -1') {
 		
 		compare_date.setMonth(compare_date.getMonth() - 1);
-		compare_date.setDate(1);
-		compare_date.setHours(0);
-		compare_date.setMinutes(0);
-		compare_date.setSeconds(0);
 		uploadRecordsByPrevMonth(getDateFormat(compare_date), type, account);
 
 	} else if (period == 'custom')
@@ -2213,12 +2209,14 @@ function getTotalAmountOfExactlyType (type) {
 	if (period == 'month 0') {
 
 		compare_date.setDate(1);
+		compare_date.setHours(0);
+		compare_date.setMinutes(0);
+		compare_date.setSeconds(0);
 		amount = getTotalAmountOfExactlyTypeByThisMonth(getDateFormat(compare_date), type, account, amount);
 		
 	} else if (period == 'month -1') {
 		
 		compare_date.setMonth(compare_date.getMonth() - 1);
-		compare_date.setDate(1);
 		amount = getTotalAmountOfExactlyTypeByPrevMonth(getDateFormat(compare_date), type, account, amount);
 
 	} else if (period == 'custom')
@@ -2346,12 +2344,14 @@ function getCategoriesStats () {
 	if (period == 'month 0') {
 
 		compare_date.setDate(1);
+		compare_date.setHours(0);
+		compare_date.setMinutes(0);
+		compare_date.setSeconds(0);
 		results = getCategoriesStatsByThisMonth(getDateFormat(compare_date), type, account, results);
 		
 	} else if (period == 'month -1') {
 		
 		compare_date.setMonth(compare_date.getMonth() - 1);
-		compare_date.setDate(1);
 		results = getCategoriesStatsByPrevMonth(getDateFormat(compare_date), type, account, results);
 
 	} else if (period == 'custom')
