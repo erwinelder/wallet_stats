@@ -858,8 +858,8 @@ body.font2 .window-floating-nav > div {
 }
 
 .blur {
-	/* backdrop-filter: saturate(120%) blur(15px);
-	-webkit-backdrop-filter: saturate(120%) blur(15px); */
+	backdrop-filter: saturate(120%) blur(15px);
+	-webkit-backdrop-filter: saturate(120%) blur(15px);
 }
 
 
@@ -1770,6 +1770,61 @@ body.font2 .settings-categories {
 
 
 
+.switch {
+	width: 68px;
+	height: 38px;
+	margin-bottom: 10px;
+	position: relative;
+	display: inline-block;
+}
+.switch input {
+	width: 68px;
+	height: 38px;
+	opacity: 1;
+	left: 0;
+	position: absolute;
+	z-index: 211;
+}
+.switch-slider {
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border-radius: 34px;
+	border: 1px solid rgb(190, 190, 190);
+
+	position: absolute;
+	z-index: 210;
+	
+	background-color: #e6e6e6;
+	box-shadow: inset 0 0 5px #9d9d9d;
+	transition: .2s background;
+}
+.switch-slider:before {
+	width: 38px;
+	height: 38px;
+	top: -2px;
+	left: -2px;
+	border-radius: 50%;
+	border: 1px solid rgb(190, 190, 190);
+
+	position: absolute;
+	content: "";
+	
+	background-color: #fff;
+	box-shadow: 0 0 2px #9d9d9d;
+	transition: .2s left;
+}
+
+.switch > input:checked + .switch-slider {
+	background-color: #0c0c0c;
+}
+.switch > input:checked + .switch-slider:before {
+	left: 28px;
+}
+
+
+
 
 
 .themes-cont {
@@ -2283,6 +2338,15 @@ body.font2 .settings-categories {
 }
 .wallet-dark .blur {
 	background-color: rgba(11, 11, 11, 0.6);
+}
+.wallet-light .solid-background {
+	background-color: rgba(236, 240, 243, 1);
+}
+.wallet-darkblue .solid-background {
+	background-color: rgba(27, 37, 47, 1);
+}
+.wallet-dark .solid-background {
+	background-color: rgba(11, 11, 11, 1);
 }
 
 .wallet-light .widget,

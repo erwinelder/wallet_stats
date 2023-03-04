@@ -871,6 +871,11 @@ function uploadAppData () {
 	if (!(localStorage.getItem('L'))) localStorage.setItem('L', 'en');
 	uploadLanguage(localStorage.getItem('L'));
 
+	// upload blur
+	if (!(localStorage.getItem('B')))
+		localStorage.setItem('B', '1');
+	reapplyBlur(Number(localStorage.getItem('B')));
+
 	// upload categories to its windows
 
 	uploadCategoriesToItsWindow(id('categories-expense'), categories_expense_titles, categories_expense_icons);
@@ -1677,29 +1682,33 @@ function uploadLanguageToButtons (lang) {
 	el = id('settings-categories').getElementsByClassName('settings-categories-button');
 
 	if (lang == 'en') {
-		el[0].value = 'Language';
-		el[1].value = 'Reset data';
-		el[2].value = 'Themes';
-		el[3].value = 'Top margin';
-		el[4].value = 'Accounts';
+		el[0].value = 'Reset data';
+		el[1].value = 'Language';
+		el[2].value = 'Blurring';
+		el[3].value = 'Themes';
+		el[4].value = 'Top margin';
+		el[5].value = 'Accounts';
 	} else if (lang == 'cz') {
-		el[0].value = 'Jazyk';
-		el[1].value = 'Resetovat data';
-		el[2].value = 'Motivy';
-		el[3].value = 'Horní okraj';
-		el[4].value = 'Účty';
+		el[0].value = 'Resetovat data';
+		el[1].value = 'Jazyk';
+		el[2].value = 'Rozmazání';
+		el[3].value = 'Motivy';
+		el[4].value = 'Horní okraj';
+		el[5].value = 'Účty';
 	} else if (lang == 'ru') {
-		el[0].value = 'Язык';
-		el[1].value = 'Сбросить данные';
-		el[2].value = 'Темы';
-		el[3].value = 'Верхний отступ';
-		el[4].value = 'Счета';
+		el[0].value = 'Сбросить данные';
+		el[1].value = 'Язык';
+		el[2].value = 'Размытие';
+		el[3].value = 'Темы';
+		el[4].value = 'Верхний отступ';
+		el[5].value = 'Счета';
 	} else if (lang == 'ua') {
-		el[0].value = 'Мова';
-		el[1].value = 'Скинути дані';
-		el[2].value = 'Теми';
-		el[3].value = 'Верхній відступ';
-		el[4].value = 'Рахунки';
+		el[0].value = 'Скинути дані';
+		el[1].value = 'Мова';
+		el[2].value = 'Розмиття';
+		el[3].value = 'Теми';
+		el[4].value = 'Верхній відступ';
+		el[5].value = 'Рахунки';
 	}
 
 	el = id('root').getElementsByClassName('close-button');
@@ -1840,6 +1849,28 @@ function uploadLanguageToButtons (lang) {
 		el.value = 'Включить прокрутку';
 	else if (lang == 'ua')
 		el.value = 'Увімкнути прокручування';
+}
+
+
+
+
+
+function reapplyBlur (blur_status) {
+
+	if (blur_status)
+		for (let el of document.getElementsByClassName('solid-background')) {
+			el.classList.add('blur');
+			setTimeout(() => {
+				el.classList.remove('solid-background');
+			}, 1);
+		}
+	else
+		for (let el of document.getElementsByClassName('blur')) {
+			el.classList.add('solid-background');
+			setTimeout(() => {
+				el.classList.remove('blur');
+			}, 1);
+		}
 }
 
 
@@ -3779,8 +3810,9 @@ function prepareSettingsCategoryWindow (windowEl_cont, category, clickEl) {
 
 	windowEl_cont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.value;
 
-	if (category == 'Language') uploadSettingsCategoryData_Language(content_cont, button_cont);
-	else if (category == 'Reset data') uploadSettingsCategoryData_Reset(content_cont, button_cont);
+	if (category == 'Reset data') uploadSettingsCategoryData_Reset(content_cont, button_cont);
+	else if (category == 'Language') uploadSettingsCategoryData_Language(content_cont, button_cont);
+	else if (category == 'Blurring') uploadSettingsCategoryData_Blurring(content_cont, button_cont);
 	else if (category == 'Themes') uploadSettingsCategoryData_Themes(content_cont, button_cont);
 	else if (category == 'Top margin') uploadSettingsCategoryData_Margin(content_cont, button_cont);
 	else if (category == 'Accounts') uploadSettingsCategoryData_Accounts(content_cont, button_cont);
@@ -3795,86 +3827,6 @@ function closeSettingsCategoryWindow () {
 		id('settings-category-window-button').innerHTML = null;
 		id('settings-category-window-button').classList.remove('button-block-hide');
 	}, 300);
-}
-
-
-
-function uploadSettingsCategoryData_Language (content_cont, button_cont) {
-	let lang = localStorage.getItem('L');
-
-	content_cont.insertAdjacentHTML('afterbegin',
-		`<p class="description">
-			${getDescription_Language(lang)}
-		</p>
-		<input type="button" lang="en" value="English" class="language-button clickable-button">
-		<input type="button" lang="cz" value="Czech" class="language-button clickable-button">
-		<input type="button" lang="ru" value="Russian" class="language-button clickable-button">
-		<input type="button" lang="ua" value="Ukrainian" class="language-button clickable-button">`
-	);
-	button_cont.insertAdjacentHTML('afterbegin',
-		`<hr class="big-hr">
-		<input type="button" value="Save" class="clickable-button" id="save-language-button">`	
-	);
-
-	id('save-language-button').setAttribute('lang', lang);
-	
-	setUpButtonsValue_Language(id('settings-category-window-cont'), lang);
-	setClickOnLanguageButtons(content_cont);
-
-	id('save-language-button').onclick = function() {
-		localStorage.setItem('L', this.getAttribute('lang'));
-		window.location.reload();
-	}
-}
-
-function setClickOnLanguageButtons (container) {
-
-	for (let button of container.getElementsByClassName('language-button'))
-		button.onclick = function() {
-			id('save-language-button').setAttribute('lang', this.getAttribute('lang'));
-		}
-}
-
-function getDescription_Language (lang) {
-	
-	if (lang == 'en')
-		return ('After setting the new language, web-application will be reloaded.');
-	else if (lang == 'cz')
-		return ('Po nastavení nového jazyka se web-aplikace restartuje.');
-	else if (lang == 'ru')
-		return ('После установки нового языка веб-приложение будет перезагружено.');
-	else if (lang == 'ua')
-		return ('Після встановлення нової мови веб-додаток буде перезавантажено.');
-}
-
-function setUpButtonsValue_Language (container, lang) {
-	let buttons = container.getElementsByTagName('input');
-
-	if (lang == 'en') {
-		buttons[0].value = 'English';
-		buttons[1].value = 'Czech';
-		buttons[2].value = 'Russian';
-		buttons[3].value = 'Ukrainian';
-		buttons[4].value = 'Save';
-	} else if (lang == 'cz') {
-		buttons[0].value = 'Angličtina';
-		buttons[1].value = 'Čeština';
-		buttons[2].value = 'Ruština';
-		buttons[3].value = 'Ukrainština';
-		buttons[4].value = 'Uložit';
-	} else if (lang == 'ru') {
-		buttons[0].value = 'Английский';
-		buttons[1].value = 'Чешский';
-		buttons[2].value = 'Русский';
-		buttons[3].value = 'Украинский';
-		buttons[4].value = 'Сохранить';
-	} else if (lang == 'ua') {
-		buttons[0].value = 'Англійська';
-		buttons[1].value = 'Чеська';
-		buttons[2].value = 'Російська';
-		buttons[3].value = 'Українська';
-		buttons[4].value = 'Зберегти';
-	}
 }
 
 
@@ -3964,6 +3916,132 @@ function clearRecordsDataFromStorage (count) {
 
 	localStorage.removeItem('RCount');
 }
+
+
+
+// language - settings category content
+function uploadSettingsCategoryData_Language (content_cont, button_cont) {
+	let lang = localStorage.getItem('L');
+
+	content_cont.insertAdjacentHTML('afterbegin',
+		`<p class="description">
+			${getDescription_Language(lang)}
+		</p>
+		<input type="button" lang="en" value="English" class="language-button clickable-button">
+		<input type="button" lang="cz" value="Czech" class="language-button clickable-button">
+		<input type="button" lang="ru" value="Russian" class="language-button clickable-button">
+		<input type="button" lang="ua" value="Ukrainian" class="language-button clickable-button">`
+	);
+	button_cont.insertAdjacentHTML('afterbegin',
+		`<hr class="big-hr">
+		<input type="button" value="Save" class="clickable-button" id="save-language-button">`	
+	);
+
+	id('save-language-button').setAttribute('lang', lang);
+	
+	setUpButtonsValue_Language(id('settings-category-window-cont'), lang);
+	setClickOnLanguageButtons(content_cont);
+
+	id('save-language-button').onclick = function() {
+		localStorage.setItem('L', this.getAttribute('lang'));
+		window.location.reload();
+	}
+}
+
+function setClickOnLanguageButtons (container) {
+
+	for (let button of container.getElementsByClassName('language-button'))
+		button.onclick = function() {
+			id('save-language-button').setAttribute('lang', this.getAttribute('lang'));
+		}
+}
+
+function getDescription_Language (lang) {
+	
+	if (lang == 'en')
+		return ('After setting the new language, web-application will be reloaded.');
+	else if (lang == 'cz')
+		return ('Po nastavení nového jazyka se web-aplikace restartuje.');
+	else if (lang == 'ru')
+		return ('После установки нового языка веб-приложение будет перезагружено.');
+	else if (lang == 'ua')
+		return ('Після встановлення нової мови веб-додаток буде перезавантажено.');
+}
+
+function setUpButtonsValue_Language (container, lang) {
+	let buttons = container.getElementsByTagName('input');
+
+	if (lang == 'en') {
+		buttons[0].value = 'English';
+		buttons[1].value = 'Czech';
+		buttons[2].value = 'Russian';
+		buttons[3].value = 'Ukrainian';
+		buttons[4].value = 'Save';
+	} else if (lang == 'cz') {
+		buttons[0].value = 'Angličtina';
+		buttons[1].value = 'Čeština';
+		buttons[2].value = 'Ruština';
+		buttons[3].value = 'Ukrainština';
+		buttons[4].value = 'Uložit';
+	} else if (lang == 'ru') {
+		buttons[0].value = 'Английский';
+		buttons[1].value = 'Чешский';
+		buttons[2].value = 'Русский';
+		buttons[3].value = 'Украинский';
+		buttons[4].value = 'Сохранить';
+	} else if (lang == 'ua') {
+		buttons[0].value = 'Англійська';
+		buttons[1].value = 'Чеська';
+		buttons[2].value = 'Російська';
+		buttons[3].value = 'Українська';
+		buttons[4].value = 'Зберегти';
+	}
+}
+
+
+
+function uploadSettingsCategoryData_Blurring (content_cont, button_cont) {
+	let lang = localStorage.getItem('L');
+	
+	content_cont.insertAdjacentHTML('afterbegin',
+		`<p class="description">
+			${getDescription_Blurring(lang)}
+		</p>
+		<div class="switch">
+			${getSwitchInput(Number(localStorage.getItem('B')))}
+			<span class="switch-slider"></span>
+		</div>`
+	);
+	button_cont.classList.add('button-block-hide');
+
+	id('switch-input').onclick = function() {
+
+		if (this.checked) localStorage.setItem('B', '1');
+		else localStorage.setItem('B', '0');
+
+		reapplyBlur(Number(localStorage.getItem('B')));
+	}
+}
+
+function getSwitchInput (blur_status) {
+
+	if (blur_status)
+		return (`<input type="checkbox" id="switch-input" checked>`);
+	else return (`<input type="checkbox" id="switch-input">`);
+}
+
+function getDescription_Blurring (lang) {
+	
+	if (lang == 'en')
+		return ('You can turn blurring off for better performance.');
+	else if (lang == 'cz')
+		return ('Můžete pro lepší výkon vypnout rozmazání.');
+	else if (lang == 'ru')
+		return ('Вы можете отключить размытие для лучшей производительности.');
+	else if (lang == 'ua')
+		return ('Ви можете вимкнути розмиття для кращої продуктивності.');
+}
+
 
 
 // themes - settings category content
