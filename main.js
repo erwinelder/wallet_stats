@@ -3582,7 +3582,6 @@ id('make-record-save-button').onclick = () => {
 		saveRecordToStorage(record_num, record_type, record_amount, record_account, record_category, record_subcategory);
 	
 		if (id('make-record-window').getAttribute('status') == 'new') {
-
 			updateHistoryForNewRecord(record_num, record_type, record_account);
 			closeFloatingWindow(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
 		} else
@@ -3686,13 +3685,18 @@ function updateHistoryForNewRecord (record_num, record_type, record_account) {
 	localStorage.setItem('RCount', record_num);
 
 	let history_type = id('history-type-nav').getAttribute('history-type');
-	
+
 	if (
-		checkRecordsOrderByDate(Number(record_num)) != record_num ||
+		(
+			id('history').firstElementChild &&
+			getRecordDateFormat( id('history').firstElementChild.getAttribute('recordnum') ) > getRecordDateFormat(record_num)
+		) ||
 		(history_type != 'all' && record_type != history_type)
 	) {
+		checkRecordsOrderByDate(Number(record_num));
 		reuploadRecordsToHistoryAnimated();
 	} else {
+		record_num = checkRecordsOrderByDate(Number(record_num));
 		// add record to history
 		addRecordToHistory(record_num, record_account, 'afterbegin');
 		animateAddingRecord(id('history').firstElementChild);
