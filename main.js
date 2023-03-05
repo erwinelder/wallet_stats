@@ -1571,6 +1571,17 @@ function uploadLanguageToTitles(lang) {
 		el[0].innerHTML = 'Від';
 		el[1].innerHTML = 'До';
 	}
+
+	el = id('settings').firstElementChild.firstElementChild;
+
+	if (lang == 'en')
+		el.innerHTML = 'Settings';
+	else if (lang == 'cz')
+		el.innerHTML = 'Nastavení';
+	else if (lang == 'ru')
+		el.innerHTML = 'Настройки';
+	else if (lang == 'ua')
+		el.innerHTML = 'Налаштування';
 }
 
 
@@ -4118,6 +4129,7 @@ function setUpButtonsValue_Language (container, lang) {
 
 
 
+// blurring - settings category content
 function uploadSettingsCategoryData_Blurring (content_cont, button_cont) {
 	let lang = localStorage.getItem('L');
 	
@@ -4125,10 +4137,15 @@ function uploadSettingsCategoryData_Blurring (content_cont, button_cont) {
 		`<p class="description">
 			${getDescription_Blurring(lang)}
 		</p>
-		<div class="switch">
-			${getSwitchInput(Number(localStorage.getItem('B')))}
-			<span class="switch-slider"></span>
-		</div>`
+		<div class="switch-cont">
+			<p>${getOffWordByLanguage(lang)}</p>
+			<div class="switch">
+				${getSwitchInput(Number(localStorage.getItem('B')))}
+				<span class="switch-slider"></span>
+			</div>
+			<p>${getOnWordByLanguage(lang)}</p>
+		</div>
+		`
 	);
 	button_cont.classList.add('button-block-hide');
 
@@ -4158,6 +4175,28 @@ function getDescription_Blurring (lang) {
 		return ('Вы можете отключить размытие для лучшей производительности.');
 	else if (lang == 'ua')
 		return ('Ви можете вимкнути розмиття для кращої продуктивності.');
+}
+
+function getOffWordByLanguage (lang) {
+	if (lang == 'en')
+		return ('Off');
+	else if (lang == 'cz')
+		return ('Vyp');
+	else if (lang == 'ru')
+		return ('Выкл');
+	else if (lang == 'ua')
+		return ('Вимк');
+}
+
+function getOnWordByLanguage (lang) {
+	if (lang == 'en')
+		return ('On');
+	else if (lang == 'cz')
+		return ('Zap');
+	else if (lang == 'ru')
+		return ('Вкл');
+	else if (lang == 'ua')
+		return ('Вкл');
 }
 
 

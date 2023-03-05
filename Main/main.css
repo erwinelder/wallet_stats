@@ -1801,10 +1801,25 @@ body.font2 .settings-categories {
 
 
 
+.switch-cont {
+	gap: 12px;
+	margin-bottom: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.switch-cont > :is(:first-child, :last-child) {
+	width: 6ch;
+}
+.switch-cont > :first-child {
+	text-align: right;
+}
+.switch-cont > :last-child {
+	text-align: left;
+}
 .switch {
 	width: 68px;
 	height: 38px;
-	margin-bottom: 10px;
 	position: relative;
 	display: inline-block;
 	cursor: pointer;
