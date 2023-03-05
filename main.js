@@ -2707,15 +2707,15 @@ function uploadSubcategoriesToDetailCatagoryPreview (category_num, container) {
 		compare_date.setHours(0);
 		compare_date.setMinutes(0);
 		compare_date.setSeconds(0);
-		results = getSubcategoriesStatsByThisMonth(getDateFormat(compare_date), account, results);
+		results = getSubcategoriesStatsByThisMonth(getDateFormat(compare_date), type, account, results);
 		
 	} else if (period == 'month -1') {
 		
 		compare_date.setMonth(compare_date.getMonth() - 1);
-		results = getSubcategoriesStatsByPrevMonth(getDateFormat(compare_date), account, results);
+		results = getSubcategoriesStatsByPrevMonth(getDateFormat(compare_date), type, account, results);
 
 	} else if (period == 'custom')
-		results = getSubcategoriesStatsByCustomPeriod(account, results);
+		results = getSubcategoriesStatsByCustomPeriod(type, account, results);
 	
 	for (let a = 0; results[category_num][a]; a++)
 		if (results[category_num][a].total != 0) {
@@ -2757,11 +2757,14 @@ function getArrayForSubcategoriesStatsResult () {
 	]);
 }
 
-function getSubcategoriesStatsByThisMonth (compare_date, account, results) {
+function getSubcategoriesStatsByThisMonth (compare_date, type, account, results) {
 
 	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
 		if ( (getRecordDateFormat(record_num)) > compare_date ) {
-			if (localStorage.getItem(`RAccount${record_num}`) == account)
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
 				results[
 					localStorage.getItem(`RCategory${record_num}`)
 				][
@@ -2772,7 +2775,7 @@ function getSubcategoriesStatsByThisMonth (compare_date, account, results) {
 	return results;
 }
 
-function getSubcategoriesStatsByPrevMonth (compare_date_pattern, account, results) {
+function getSubcategoriesStatsByPrevMonth (compare_date_pattern, type, account, results) {
 
 	let compare_date = new Date(compare_date_pattern), 
 		record_date;
@@ -2782,7 +2785,10 @@ function getSubcategoriesStatsByPrevMonth (compare_date_pattern, account, result
 		record_date = new Date(getRecordDateFormat(record_num));
 		
 		if (record_date.getMonth() == compare_date.getMonth()) {
-			if (localStorage.getItem(`RAccount${record_num}`) == account)
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
 				results[
 					localStorage.getItem(`RCategory${record_num}`)
 				][
@@ -2796,7 +2802,7 @@ function getSubcategoriesStatsByPrevMonth (compare_date_pattern, account, result
 	return results;
 }
 
-function getSubcategoriesStatsByCustomPeriod (account, results) {
+function getSubcategoriesStatsByCustomPeriod (type, account, results) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
@@ -2809,7 +2815,10 @@ function getSubcategoriesStatsByCustomPeriod (account, results) {
 		record_date = new Date(getRecordDateFormat(record_num));
 		
 		if (record_date < date_border_from && record_date > date_border_to) {
-			if (localStorage.getItem(`RAccount${record_num}`) == account)
+			if (
+				localStorage.getItem(`RType${record_num}`) == type &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
 				results[
 					localStorage.getItem(`RCategory${record_num}`)
 				][
