@@ -2239,10 +2239,16 @@ function prepareEditRecordWindow (record_num) {
 	
 	if (localStorage.getItem(`RType${record_num}`) == '-') {
 		
+		id('record-type-expense').classList.add('active-input-cont');
+		id('record-type-income').classList.remove('active-input-cont');
+		
 		id('make-record-category').firstElementChild.innerHTML = subcategories_icons[localStorage.getItem(`RCategory${record_num}`)][localStorage.getItem(`RSubcategory${record_num}`)];
 		id('make-record-category').lastElementChild.value = subcategories_titles[localStorage.getItem(`RCategory${record_num}`)][localStorage.getItem(`RSubcategory${record_num}`)];
 		
 	} else if (localStorage.getItem(`RType${record_num}`) == '+') {
+		
+		id('record-type-expense').classList.remove('active-input-cont');
+		id('record-type-income').classList.add('active-input-cont');
 		
 		id('make-record-category').firstElementChild.innerHTML = categories_income_icons[localStorage.getItem(`RCategory${record_num}`)];
 		id('make-record-category').lastElementChild.value = categories_income_titles[localStorage.getItem(`RCategory${record_num}`)];
