@@ -987,7 +987,7 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 			/* 4 */ 'Transport',
 			/* 5 */ 'Vehicle',
 			/* 6 */ 'Life and entertainment',
-			/* 7 */ 'Communication',
+			/* 7 */ 'Communications',
 			/* 8 */ 'Financial expenses',
 			/* 9 */ 'Investments',
 			/* 10 */ 'Other'
