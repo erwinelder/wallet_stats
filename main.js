@@ -2467,7 +2467,8 @@ function updatePieChart () {
 	
 	setTimeout(() => {
 		uploadDataToPieChart();
-		id('pie-chart').style.transform = `scale(${scaleX})`;
+		if(id('pie-chart-categories-details').firstElementChild)
+			id('pie-chart').style.transform = `scale(${scaleX})`;
 	}, 350);
 }
 
