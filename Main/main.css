@@ -326,12 +326,14 @@ body.font2 .clickable-button {
     display: flex;
     flex-direction: column;
     align-items: center;
+	cursor: default;
 }
 .window-close-button {
     gap: 10px;
     font-size: 1.6em;
     display: flex;
     align-items: center;
+	cursor: pointer;
 }
 body.font1 .window-close-button > div {
 	height: 1.4em;
@@ -493,6 +495,7 @@ body.font2 .window-close-button > div > svg {
 
 .floating-window-cont .field > .field-title {
     font-size: 1.1rem;
+	cursor: default;
 }
 .floating-window-cont .field > .field-input {
     max-width: 80%;
@@ -1061,6 +1064,57 @@ body.font2 .history-nav-period > div > div {
 
 
 
+
+
+.expenses-incomes-columns-cont {
+	padding: 12px;
+	gap: 12px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	cursor: default;
+}
+.expenses-incomes-columns-cont > div {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+}
+.stats-column-title {
+	width: 100%;
+	font-size: 1.2rem;
+	display: flex;
+	justify-content: space-around;
+	text-align: center;
+	transition: opacity .3s;
+}
+.stats-column-title > :last-child {
+	font-size: 1.5rem;
+}
+.expenses-incomes-columns-cont > div > :last-child {
+	width: 100%;
+	height: 1.2rem;
+	margin-block: 10px;
+	border-radius: 15px;
+}
+.expenses-incomes-columns-cont .column {
+	height: 100%;
+	border-radius: 15px;
+	transition: .7s width;
+}
+.incomes-column {
+	background: linear-gradient(60deg, rgba(69, 173, 25, 0.5), rgba(69, 173, 25, 0.9));
+}
+.expenses-column {
+	background: linear-gradient(60deg, rgba(169, 25, 25, 0.5), rgba(169, 25, 25, 0.9));
+}
+
+
+
+
 .history-block {
 	margin-bottom: 20px;
 }
@@ -1117,6 +1171,7 @@ body.font2 .history-nav-period > div > div {
 	flex-direction: column;
 	align-items: center;
     
+	cursor: pointer;
 	transition: .2s transform;
 }
 body.font1 .record {
@@ -1190,6 +1245,7 @@ body.font2 .record {
 	font-size: 1.2rem;
 	
 	background: none;
+	cursor: pointer;
 	transition: .2s transform, .3s border-color, .3s color, .3s background;
 }
 body.font1 .enable-history-scroll-button-cont input {
@@ -1200,53 +1256,6 @@ body.font2 .enable-history-scroll-button-cont input {
 }
 .enable-history-scroll-button-cont input:active {
     transform: scale(0.95);
-}
-
-
-
-.expenses-incomes-columns-cont {
-	padding: 12px;
-	gap: 12px;
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-.expenses-incomes-columns-cont > div {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: flex-start;
-}
-.stats-column-title {
-	width: 100%;
-	font-size: 1.2rem;
-	display: flex;
-	justify-content: space-around;
-	text-align: center;
-	transition: opacity .3s;
-}
-.stats-column-title > :last-child {
-	font-size: 1.5rem;
-}
-.expenses-incomes-columns-cont > div > :last-child {
-	width: 100%;
-	height: 1.2rem;
-	margin-block: 10px;
-	border-radius: 15px;
-}
-.expenses-incomes-columns-cont .column {
-	height: 100%;
-	border-radius: 15px;
-	transition: .7s width;
-}
-.incomes-column {
-	background: linear-gradient(60deg, rgba(69, 173, 25, 0.5), rgba(69, 173, 25, 0.9));
-}
-.expenses-column {
-	background: linear-gradient(60deg, rgba(169, 25, 25, 0.5), rgba(169, 25, 25, 0.9));
 }
 
 
@@ -1293,6 +1302,7 @@ body.font2 .enable-history-scroll-button-cont input {
 	align-items: center;
 }
 .pie-chart-background h3 {
+	cursor: default;
 	transition: transform .3s, opacity .3s;
 }
 .pie-chart-amount-hide {
@@ -1350,11 +1360,14 @@ body.font2 .enable-history-scroll-button-cont input {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	
-	transition: .2s transform;
+	cursor: default;
 }
 
-.category-details:active {
+.pie-chart-categories-details .category-details {
+	cursor: pointer;
+	transition: .2s transform;
+}
+.pie-chart-categories-details .category-details:active {
     transform: scale(0.95);
 }
 .category-details > div {
@@ -1376,6 +1389,23 @@ body.font2 .enable-history-scroll-button-cont input {
     gap: 7px;
     font-size: 1.1em;
     letter-spacing: 1px;
+}
+
+
+
+.subcategories-detail-view-cont {
+	justify-content: center;
+	z-index: 101;
+}
+.subcategories-detail-view-cont > :first-child {
+	z-index: 102;
+}
+.subcategories-detail-view-cont > :last-child {
+	padding: 25px 2vw;
+	z-index: 103;
+}
+.subcategories-detail-view-cont .category-details .category {
+	cursor: default;
 }
 
 
@@ -1766,6 +1796,7 @@ body.font2 .settings-categories {
 }
 .settings-category-window-cont .description {
 	font-size: 1.1em;
+	cursor: default;
 }
 
 
@@ -1776,6 +1807,7 @@ body.font2 .settings-categories {
 	margin-bottom: 10px;
 	position: relative;
 	display: inline-block;
+	cursor: pointer;
 }
 .switch input {
 	width: 68px;
@@ -1964,6 +1996,9 @@ body.font2 .settings-categories {
 .topmargin-preview-window-transform {
 	transform: translateY(-1vh);
 }
+.topmargin-preview-window .account {
+	cursor: default;
+}
 
 
 
@@ -2016,6 +2051,7 @@ body.font2 .settings-categories {
 }
 .edit-account-cont .popup-connected-notification-cont {
 	z-index: 303;
+	cursor: pointer;
 }
 .edit-account-cont > :last-child {
 	z-index: 304;
@@ -2038,6 +2074,7 @@ body.font2 .settings-categories {
 	width: 120px;
 	height: 60px;
 	border-radius: 18px;
+	cursor: pointer;
 }
 
 .edit-account-color-choose {
@@ -2048,6 +2085,7 @@ body.font2 .settings-categories {
 .edit-account-color-choose > input {
 	width: 18.8vw;
 	height: 18.8vw;
+	cursor: pointer;
 }
 
 

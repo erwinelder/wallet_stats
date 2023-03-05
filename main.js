@@ -563,31 +563,7 @@ const category_transfer_icon = `
 `;
 
 
-var expense_subcategories_results = [
-	/* 1 */
-	[ {total: 0}, {total: 0}, {total: 0} ],
-	/* 2 */
-	[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0},
-		{total: 0}, {total: 0}, {total: 0}, {total: 0} ],
-	/* 3 */
-	[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
-	/* 4 */
-	[ {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
-	/* 5 */
-	[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
-	/* 6 */
-	[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0},
-		{total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0},
-		{total: 0} ],
-	/* 7 */
-	[ {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
-	/* 8 */
-	[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
-	/* 9 */
-	[ {total: 0}, {total: 0}, {total: 0} ],
-	/* 10 */
-	[ {total: 0}, {total: 0} ]
-];
+var expense_subcategories_results = [];
 
 
 
@@ -2489,7 +2465,8 @@ function uploadDataToPieChart () {
 		id('accounts').getAttribute('accountnum'),
 		results
 	);
-	// setUpClickOnDetailCategoriesPreview();
+	if (type == '-')
+		setUpClickOnDetailCategoriesPreview();
 
 	drawPieChart(results);
 	uploadAmountToPieChart();
@@ -2675,16 +2652,158 @@ function constructCategoryPreviewEl (icon, title, category_num, type, amount, ac
 
 function setUpClickOnDetailCategoriesPreview () {
 
-	for (let el in id('pie-chart-categories-details').getElementsByClassName('category-details')) {
+	for (let el of id('pie-chart-categories-details').getElementsByClassName('category-details')) {
 		el.onclick = function() {
-			uploadSubcategoriesToDetailCatagoryPreview(this.getAttribute('categorynum'));
+
+			let windowEl_cont = id('subcategories-detail-view-cont'),
+				windowEl = id('subcategories-detail-view-cont').lastElementChild;
+				clickEl = this;
+			
+			windowEl.innerHTML = null;
+			uploadSubcategoriesToDetailCatagoryPreview(clickEl.getAttribute('categorynum'), windowEl);
+
+			disableScrolling();
+			openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
+
+			windowEl_cont.firstElementChild.onclick = () => {
+				closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+				enableScrolling();
+			}
+			
 		}
 	}
 }
 
-function uploadSubcategoriesToDetailCatagoryPreview (category_num) {
+function uploadSubcategoriesToDetailCatagoryPreview (category_num, container) {
 
+	let account = id('accounts').getAttribute('accountnum'),
+		period = id('history-period-nav').getAttribute('period'),
+		type = id('history-type-nav').getAttribute('history-type');
+	if (type == 'all') type = '-';
+
+	let compare_date = new Date();
+	let results = getArrayForSubcategoriesStatsResult();
 	
+	if (period == 'month 0') {
+
+		compare_date.setDate(1);
+		compare_date.setHours(0);
+		compare_date.setMinutes(0);
+		compare_date.setSeconds(0);
+		results = getSubcategoriesStatsByThisMonth(getDateFormat(compare_date), account, results);
+		
+	} else if (period == 'month -1') {
+		
+		compare_date.setMonth(compare_date.getMonth() - 1);
+		results = getSubcategoriesStatsByPrevMonth(getDateFormat(compare_date), account, results);
+
+	} else if (period == 'custom')
+		results = getSubcategoriesStatsByCustomPeriod(account, results);
+	
+	for (let a = 0; results[category_num][a]; a++)
+		if (results[category_num][a].total != 0) {
+			el = constructCategoryPreviewEl(
+				subcategories_icons[category_num][a],
+				subcategories_titles[category_num][a],
+				a, '-', results[category_num][a].total,
+				localStorage.getItem(`ACurrency${id('accounts').getAttribute('accountnum')}`)
+			);
+			container.insertAdjacentHTML('beforeend', el);
+		}
+}
+
+function getArrayForSubcategoriesStatsResult () {
+	return ([
+		/* 1 */
+		[ {total: 0}, {total: 0}, {total: 0} ],
+		/* 2 */
+		[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0},
+			{total: 0}, {total: 0}, {total: 0}, {total: 0} ],
+		/* 3 */
+		[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
+		/* 4 */
+		[ {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
+		/* 5 */
+		[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
+		/* 6 */
+		[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0},
+			{total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0},
+			{total: 0} ],
+		/* 7 */
+		[ {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
+		/* 8 */
+		[ {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0}, {total: 0} ],
+		/* 9 */
+		[ {total: 0}, {total: 0}, {total: 0} ],
+		/* 10 */
+		[ {total: 0}, {total: 0} ]
+	]);
+}
+
+function getSubcategoriesStatsByThisMonth (compare_date, account, results) {
+
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
+		if ( (getRecordDateFormat(record_num)) > compare_date ) {
+			if (localStorage.getItem(`RAccount${record_num}`) == account)
+				results[
+					localStorage.getItem(`RCategory${record_num}`)
+				][
+					localStorage.getItem(`RSubcategory${record_num}`)
+				].total += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else break;
+
+	return results;
+}
+
+function getSubcategoriesStatsByPrevMonth (compare_date_pattern, account, results) {
+
+	let compare_date = new Date(compare_date_pattern), 
+		record_date;
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date.getMonth() == compare_date.getMonth()) {
+			if (localStorage.getItem(`RAccount${record_num}`) == account)
+				results[
+					localStorage.getItem(`RCategory${record_num}`)
+				][
+					localStorage.getItem(`RSubcategory${record_num}`)
+				].total += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else if (record_date.getMonth() < compare_date.getMonth())
+			break;
+		
+	}
+
+	return results;
+}
+
+function getSubcategoriesStatsByCustomPeriod (account, results) {
+
+	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+	
+	let date_border_from = new Date(inputs[0].value),
+		date_border_to = new Date(inputs[1].value),
+		record_date;
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--) {
+
+		record_date = new Date(getRecordDateFormat(record_num));
+		
+		if (record_date < date_border_from && record_date > date_border_to) {
+			if (localStorage.getItem(`RAccount${record_num}`) == account)
+				results[
+					localStorage.getItem(`RCategory${record_num}`)
+				][
+					localStorage.getItem(`RSubcategory${record_num}`)
+				].total += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else if (record_date < date_border_to)
+			break;
+		
+	}
+
+	return results;
 }
 
 function drawPieChart (results) {
@@ -2728,7 +2847,6 @@ function uploadAmountToPieChart () {
 		id('pie-chart-amount').classList.remove('pie-chart-amount-hide');
 	}, 350);
 }
-
 
 
 
@@ -3106,14 +3224,14 @@ const make_record_types = id('record-types').getElementsByTagName('div');
 
 id('make-record-button').onclick = () => {
 
-	let windowEl_cont = id('make-record-window-cont');
-	let windowEl = id('make-record-window');
-	let clickEl = id('make-record-button');
+	let windowEl_cont = id('make-record-window-cont'),
+		windowEl = id('make-record-window'),
+		clickEl = id('make-record-button');
 	
 	disableScrolling();
 	prepareMakeRecordWindow();
 
-  openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
+	openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
 
 	windowEl_cont.firstElementChild.onclick = () => {
 		enableScrolling();
