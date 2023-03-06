@@ -882,6 +882,7 @@ body.font2 .window-floating-nav > div {
 
 .accounts {
 	width: 100%;
+	max-height: 19vh;
 	padding-bottom: 15px;
 	gap: 10px;
 	box-sizing: border-box;
@@ -890,6 +891,7 @@ body.font2 .window-floating-nav > div {
 	display: flex;
 	justify-content: space-evenly;
 	flex-wrap: wrap;
+	overflow-y: scroll;
 }
 
 .account {
@@ -1099,6 +1101,7 @@ body.font2 .history-nav-period > div > div {
 	height: 1.2rem;
 	margin-block: 10px;
 	border-radius: 15px;
+	overflow: hidden;
 }
 .expenses-incomes-columns-cont .column {
 	height: 100%;
