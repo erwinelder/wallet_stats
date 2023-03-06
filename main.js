@@ -896,7 +896,7 @@ function uploadAppData () {
 	// upload date filter menu
 	setTimeout(uploadDataToCustomDateFilterMenu, 100);
 	setTimeout(positionateDateFilterMenu, 101);
-	setTimeout(setDateFilterMenuTopPosition, 102);
+	// setTimeout(setDateFilterMenuTopPosition, 102);
 
 	hidePreloader();
 }
@@ -1914,8 +1914,8 @@ function checkAccountColor (account) {
 function applyTopmargin () {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
-  setDateFilterMenuTopPosition();
-  // id('popup-notification-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
+//   setDateFilterMenuTopPosition();
+//   id('popup-notification-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
 }
 
 
@@ -2095,9 +2095,9 @@ function uploadDataToCustomDateFilterMenu() {
 
 function showCustomDateFilterMenu () {
 
-	id('date-filter-menu').classList.add('show');
+	id('date-filter-menu-cont').classList.add('show');
 	
-	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+	let inputs = id('date-filter-menu-cont').getElementsByClassName('field-date');
 			
 	id('submit-date-filter').onclick = () => {
 		if ( (new Date(inputs[0].value)) > (new Date(inputs[1].value)) ) {
@@ -2111,7 +2111,7 @@ function showCustomDateFilterMenu () {
 }
 
 function hideCustomDateFilterMenu () {
-	id('date-filter-menu').classList.remove('show');
+	id('date-filter-menu-cont').classList.remove('show');
 }
 
 function uploadRecordsByCustomPeriod () {
@@ -2881,8 +2881,8 @@ function uploadAmountToPieChart () {
 
 
 function positionateDateFilterMenu () {
-	let x = window.innerWidth - id('date-filter-menu').getBoundingClientRect().left;
-	id('date-filter-menu').style.transform = `translateX(calc(${x}px + 10vw))`;
+	let x = window.innerWidth - id('date-filter-menu-cont').getBoundingClientRect().left;
+	id('date-filter-menu-cont').style.transform = `translateX(calc(${x}px + 10vw))`;
 }
 
 function setDateFilterMenuTopPosition () {
@@ -3121,13 +3121,17 @@ for (let button of history_period_nav_buttons) {
 
 		if (
 			button.getAttribute('period') == 'custom' &&
-			!(id('date-filter-menu').classList.contains('show'))
+			!(id('date-filter-menu-cont').classList.contains('show'))
 		)
 			showCustomDateFilterMenu();
-		else if (id('date-filter-menu').classList.contains('show'))
+		else if (id('date-filter-menu-cont').classList.contains('show'))
 			hideCustomDateFilterMenu();
 		
 	}
+}
+
+id('date-filter-menu-cont').firstElementChild.onclick = () => {
+	hideCustomDateFilterMenu();
 }
 
 for (let button of id('date-filter-other').getElementsByTagName('input')) {
