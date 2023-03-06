@@ -4779,7 +4779,13 @@ function saveEditedAccount (account_num, clickEl, windowEl_cont, windowEl) {
 
 	checkAccountColorExlicitlyEverywhere(Number(account_num));
 
-	if (previous_currency != id('edit-account-currency').value) uploadRecordsToHistory();
+	if (
+		previous_currency != id('edit-account-currency').value &&
+		id('accounts').getAttribute('accountnum') == account_num
+	) {
+		uploadRecordsToHistory();
+		uploadDataToPieChart();
+	}
 
 	// close edit account window
 
