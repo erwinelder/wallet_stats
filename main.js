@@ -4779,6 +4779,7 @@ function saveEditedAccount (account_num, clickEl, windowEl_cont, windowEl) {
 
 	checkAccountColorExlicitlyEverywhere(Number(account_num));
 
+	// update data of all widgets because of new account currency
 	if (
 		previous_currency != id('edit-account-currency').value &&
 		id('accounts').getAttribute('accountnum') == account_num
