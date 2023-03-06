@@ -1398,7 +1398,12 @@ body.font2 .enable-history-scroll-button-cont input {
 .category-details > div {
     max-width: 100%;
     display: flex;
-    justify-content: center;
+}
+.category-details > :first-child {
+	justify-content: center;
+}
+.category-details > :last-child {
+	justify-content: flex-start;
 }
 .category-details .category {
     gap: 5px;
@@ -1414,6 +1419,8 @@ body.font2 .enable-history-scroll-button-cont input {
     gap: 7px;
     font-size: 1.1em;
     letter-spacing: 1px;
+	white-space: nowrap;
+	overflow-x: scroll;
 }
 
 
@@ -1454,6 +1461,7 @@ body.font2 .enable-history-scroll-button-cont input {
 	overflow-y: scroll;
 }
 .subcategories-detail-view {
+	width: 100%;
 	gap: 20px;
 	display: flex;
 	flex-direction: column;
