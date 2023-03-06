@@ -870,7 +870,6 @@ body.font2 .window-floating-nav > div {
 .sticky-topbar {
 	width: 100%;
 	margin-bottom: 2vh;
-	padding-inline: 3vw;
 	padding-bottom: 10px;
 	border-radius: 0 0 22px 22px;
 	box-sizing: border-box;
@@ -883,6 +882,7 @@ body.font2 .window-floating-nav > div {
 .accounts {
 	width: 100%;
 	max-height: 19vh;
+	padding-inline: 3vw;
 	padding-bottom: 15px;
 	gap: 10px;
 	box-sizing: border-box;
@@ -965,8 +965,7 @@ body.font2 .account :last-child {
 	flex-direction: column;
 }
 .history-nav-period {
-	padding-top: 0.5vh;
-	padding-inline: 0vw;
+	padding-top: 0.7vh;
 }
 .history-nav-period > div > div {
 	font-size: 1rem;
@@ -1213,7 +1212,7 @@ body.font2 .record {
 .record .date {
     letter-spacing: 2px;
 }
-.record > div {
+.record > .record-category {
     max-width: 100%;
     display: flex;
     justify-content: center;
@@ -1229,9 +1228,15 @@ body.font2 .record {
     overflow-x: scroll;
 }
 .record-amount {
+	max-width: 100%;
     gap: 7px;
     font-size: 1.1em;
     letter-spacing: 1px;
+
+	display: flex;
+	justify-content: flex-start;
+	white-space: nowrap;
+	overflow-y: scroll;
 }
 
 
@@ -1327,6 +1332,7 @@ body.font2 .enable-history-scroll-button-cont input {
 	align-items: center;
 }
 .pie-chart-background h3 {
+	text-align: center;
 	cursor: default;
 	transition: transform .3s, opacity .3s;
 }
