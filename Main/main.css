@@ -1426,6 +1426,7 @@ body.font2 .enable-history-scroll-button-cont input {
 	z-index: 102;
 }
 .subcategories-detail-view-cont > :last-child {
+	max-height: 80%;
 	padding: 0 2vw 25px 2vw;
 	gap: 20px;
 	z-index: 103;
