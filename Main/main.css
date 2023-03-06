@@ -1401,11 +1401,37 @@ body.font2 .enable-history-scroll-button-cont input {
 	z-index: 102;
 }
 .subcategories-detail-view-cont > :last-child {
-	padding: 25px 2vw;
+	padding: 0 2vw 25px 2vw;
+	gap: 20px;
 	z-index: 103;
 }
 .subcategories-detail-view-cont .category-details .category {
 	cursor: default;
+}
+.subcategories-detail-view-cont .title-cont {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.subcategories-detail-view-cont .title-cont > div {
+	width: 90%;
+	padding-block: 15px;
+	gap: 10px;
+	display: flex;
+	justify-content: center;
+}
+.subcategories-detail-view-cont .title-cont > div > h3 {
+	font-size: 1.4rem;
+	white-space: nowrap;
+	overflow-y: scroll;
+}
+.subcategories-detail-view {
+	gap: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 

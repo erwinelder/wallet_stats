@@ -2677,8 +2677,10 @@ function setUpClickOnDetailCategoriesPreview () {
 				windowEl = id('subcategories-detail-view-cont').lastElementChild;
 				clickEl = this;
 			
-			windowEl.innerHTML = null;
-			uploadSubcategoriesToDetailCatagoryPreview(clickEl.getAttribute('categorynum'), windowEl);
+			windowEl.firstElementChild.firstElementChild.innerHTML = clickEl.firstElementChild.innerHTML;
+				
+			windowEl.lastElementChild.innerHTML = null;
+			uploadSubcategoriesToDetailCatagoryPreview(clickEl.getAttribute('categorynum'), windowEl.lastElementChild);
 
 			disableScrolling();
 			openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
