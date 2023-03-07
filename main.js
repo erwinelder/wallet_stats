@@ -1914,7 +1914,6 @@ function checkAccountColor (account) {
 function applyTopmargin () {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
-//   setDateFilterMenuTopPosition();
 //   id('popup-notification-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
 }
 
@@ -2348,8 +2347,8 @@ function uploadExpensesIncomesStats () {
 	
 	let currency = localStorage.getItem('ACurrency' + id('accounts').getAttribute('accountnum'));
 	setTimeout(() => {
-		id('incomes-column-amount').innerHTML = `+ ${incomes_amount} ${currency}`;
-		id('expenses-column-amount').innerHTML = `- ${expenses_amount} ${currency}`;
+		id('incomes-column-amount').innerHTML = `+ ${incomes_amount.toFixed(2)} ${currency}`;
+		id('expenses-column-amount').innerHTML = `- ${expenses_amount.toFixed(2)} ${currency}`;
 		
 		titles[0].style.opacity = '1';
 		titles[1].style.opacity = '1';
