@@ -1332,6 +1332,7 @@ body.font2 .enable-history-scroll-button-cont input {
 	align-items: center;
 }
 .pie-chart-background h3 {
+	padding-inline: 0.6rem;
 	text-align: center;
 	cursor: default;
 	transition: transform .3s, opacity .3s;
