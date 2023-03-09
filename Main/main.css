@@ -1111,6 +1111,7 @@ body.font2 .history-nav-period > div > div {
 	font-size: 1.2rem;
 	display: flex;
 	justify-content: space-around;
+	align-items: center;
 	text-align: center;
 	transition: opacity .3s;
 }
