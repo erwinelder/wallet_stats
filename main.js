@@ -592,33 +592,40 @@ const account_el = (accountnum, color, currency, balance) => {
 
 function getReadableNumber (number) {
 
+	number = number + '';
+	let number_len = number.length - 3;
+	number = number.split('');
+	number = number.reverse();
 	
-	let number_as_string = '' + number;
 	let readable_number = '';
-	let addit_char = 0;
+	readable_number = readable_number.split('');
+	readable_number[0] = number[0];
+	readable_number[1] = number[1];
+	readable_number[2] = number[2];
 	
-	let count_of_numbers = number_as_string.length - 3;
-	if (number_as_string[0] == '-') {
-		readable_number += '- ';
-		addit_char = 1;
-		count_of_numbers--;
+	let step = 2;
+
+	for (let a = 1; a <= number_len; a++) {
+
+		if (number[a + 2] == '-' || number[a + 2] == '+') {
+			readable_number[a + step] = ' ';
+			readable_number[a + step + 1] = number[a + 2];
+			break;
+		}
+
+		readable_number[a + step] = number[a + 2];
+		if (
+			a % 3 == 0 && a != number_len &&
+			number[a + 3] != '-' && number[a + 3] != '+'
+		) {
+			step++;
+			readable_number[a + step] = ' ';
+		}
 	}
 
-	let start_step = (count_of_numbers % 3) - 3;
-
-	// alert(number + ' | ' + count_of_numbers);
-
-	for (let a = 0; a < count_of_numbers; a++) {
-		if ((a + 1 + start_step) % 3 == 0) readable_number += ' ';
-		readable_number += number_as_string[a + addit_char];
-	}
-
-	readable_number += number_as_string[count_of_numbers + addit_char];
-	readable_number += number_as_string[count_of_numbers + addit_char + 1];
-	readable_number += number_as_string[count_of_numbers + addit_char + 2];
-
-	// return readable_number;
-	return number;
+	// return number;
+	readable_number = readable_number.reverse().join('');
+	return readable_number;
 }
 
 
@@ -3450,7 +3457,7 @@ function setUpChoosingAccount (clickEl, windowEl_cont, windowEl) {
 			clickEl.firstElementChild.classList.add('account-block-animation');
 			clickEl.firstElementChild.style.background = '#' + localStorage.getItem(`AColor${account_num}`);
 			clickEl.firstElementChild.firstElementChild.value = localStorage.getItem(`ACurrency${account_num}`);
-			clickEl.firstElementChild.lastElementChild.value = localStorage.getItem(`ABalance${account_num}`);
+			clickEl.firstElementChild.lastElementChild.value = getReadableNumber(localStorage.getItem(`ABalance${account_num}`));
 
 			adaptInputLengthExplicitly(clickEl.firstElementChild.firstElementChild);
 			adaptInputLengthExplicitly(clickEl.firstElementChild.lastElementChild);
@@ -3689,7 +3696,7 @@ function updateAccountInfo (account_num, info, accounts) {
 
 			} else if (info == 'Balance') {
 
-				account.lastElementChild.value = Number( localStorage.getItem(`A${info}${account_num}`) ).toFixed(2);
+				account.lastElementChild.value = getReadableNumber(Number( localStorage.getItem(`A${info}${account_num}`) ).toFixed(2));
 				adaptInputLengthExplicitly(account.lastElementChild);
 
 			} else if (info == 'Color')
