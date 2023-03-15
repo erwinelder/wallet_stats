@@ -2094,9 +2094,6 @@ function uploadDataToCustomDateFilterMenu() {
 	inputs[1].value = getDateFormat(border2);
 
 	inputs = id('date-filter-other').getElementsByTagName('input');
-
-	for (let a = 0; a < inputs.length; a++)
-		adaptInputLengthExplicitly(inputs[a]);
 }
 
 function showCustomDateFilterMenu () {
