@@ -2354,8 +2354,8 @@ function uploadExpensesIncomesStats () {
 	
 	let currency = localStorage.getItem('ACurrency' + id('accounts').getAttribute('accountnum'));
 	setTimeout(() => {
-		id('incomes-column-amount').innerHTML = `+ ${incomes_amount.toFixed(2)} ${currency}`;
-		id('expenses-column-amount').innerHTML = `- ${expenses_amount.toFixed(2)} ${currency}`;
+		id('incomes-column-amount').innerHTML = `+ ${getReadableNumber(incomes_amount.toFixed(2))} ${currency}`;
+		id('expenses-column-amount').innerHTML = `- ${getReadableNumber(expenses_amount.toFixed(2))} ${currency}`;
 		
 		titles[0].style.opacity = '1';
 		titles[1].style.opacity = '1';
