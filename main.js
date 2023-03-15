@@ -903,7 +903,6 @@ function uploadAppData () {
 	// upload date filter menu
 	setTimeout(uploadDataToCustomDateFilterMenu, 100);
 	setTimeout(positionateDateFilterMenu, 101);
-	// setTimeout(setDateFilterMenuTopPosition, 102);
 
 	hidePreloader();
 }
@@ -4038,6 +4037,7 @@ function setUpButtonsValue_ResetData (button, lang) {
 function clearLocalStorage () {
 
 	localStorage.removeItem('L'); // language
+	localStorage.removeItem('B'); // blur
 	localStorage.removeItem('T'); // theme
 	localStorage.removeItem('TM'); // top margin
 
