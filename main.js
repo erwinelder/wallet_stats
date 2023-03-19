@@ -1776,6 +1776,9 @@ function uploadLanguageToButtons (lang) {
 		el[3].value = 'Попер рік';
 	}
 
+	for (let input of id('date-filter-other').getElementsByTagName('input'))
+		adaptInputLengthExplicitly(input);
+
 	el = id('date-filter-months').getElementsByTagName('input');
 
 	if (lang == 'en') {
@@ -4900,7 +4903,7 @@ function adaptInputLengthExplicitly (el) {
 		bigger_length = 1.1;
 	} else if (lang == 'ru' || lang == 'ua') {
 		less_length = 4;
-		bigger_length = 1.1;
+		bigger_length = 1.25;
 	}
 	
 	if (el.value.length < 4)

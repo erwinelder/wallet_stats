@@ -1027,18 +1027,34 @@ body.font2 .history-nav-period > div > div {
 
 :is(.date-filter-other, .date-filter-months) {
 	font-size: 1.3rem;
-	column-gap: .3rem;
-	row-gap: .5rem;
-	display: grid;
 }
 
 .date-filter-other {
+	display: flex;
+	flex-direction: column;
 	justify-items: center;
-	grid-template-columns: repeat(1);
+	align-items: center;
+}
+body.font1 .date-filter-other {
+	padding: 0.5rem 1rem;
+	gap: .5rem;
+}
+body.font2 .date-filter-other {
+	padding: 0.8rem 1rem;
+	gap: .7rem;
 }
 
 .date-filter-months {
+	display: grid;
+	column-gap: .3rem;
+}
+body.font1 .date-filter-months {
+	row-gap: .5rem;
 	grid-template-columns: repeat(3, 4.5ch);
+}
+body.font2 .date-filter-months {
+	row-gap: .7rem;
+	grid-template-columns: repeat(3, 5.5ch);
 }
 
 :is(.date-filter-other, .date-filter-months) input {
@@ -1058,9 +1074,14 @@ body.font2 .history-nav-period > div > div {
 }
 .date-filter-menu .button-block-bottom > input {
 	margin-top: 0.4rem;
-	padding: 0.5rem 1rem;
 	border-radius: 1.1rem;
 	font-size: 1.2rem;
+}
+body.font1 .date-filter-menu .button-block-bottom > input {
+	padding: 0.5rem 1rem;
+}
+body.font2 .date-filter-menu .button-block-bottom > input {
+	padding: 0.8rem 1rem;
 }
 
 .date-filter-menu .button-block-bottom {
