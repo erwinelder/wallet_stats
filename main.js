@@ -889,7 +889,7 @@ function uploadAppData () {
 	setUpClickOnAccounts();
 
 	// invert all account's black colores in dark theme 
-	checkAccountsColor();
+	checkAccountsColorInExactlyCont(id('root'));
 
 	// upload records to history
 	if (localStorage.getItem('RCount')) uploadRecordsToHistory();
@@ -1901,8 +1901,8 @@ function applyThemeForPreloader (theme) {
 	}
 }
 
-function checkAccountsColor () {
-	for (let account of id('root').getElementsByClassName('account'))
+function checkAccountsColorInExactlyCont (cont) {
+	for (let account of cont.getElementsByClassName('account'))
 		if (account.style.background == 'rgb(5, 5, 5)')
 			if (localStorage.getItem('T') == 'b' || localStorage.getItem('T') == 'd')
 				account.classList.add('invert-color');
@@ -4267,7 +4267,7 @@ function changeTheme (theme) {
 	localStorage.setItem('T', theme);
 	applyTheme(theme);
 
-	checkAccountsColor();
+	checkAccountsColorInExactlyCont(id('root'));
 }
 
 
@@ -4563,7 +4563,7 @@ function removeAccount (account_num, clickEl, windowEl_cont, windowEl) {
 	changeAccountNumInStorageRecords(account_num);
 	uploadRecordsToHistory();
 		
-	// get this account on window
+	// get this accounts
 	let account;
 	for (let potential_account of id('settings-category-window-cont').getElementsByClassName('account'))
 		if (potential_account.getAttribute('accountnum') == account_num) account = potential_account;
@@ -4589,6 +4589,7 @@ function removeAccount (account_num, clickEl, windowEl_cont, windowEl) {
 			id('accounts').innerHTML = null;
 			for (let a = 1; a <= Number(localStorage.getItem('ACount')); a++) uploadAccount(a, id('accounts'));
 			setUpClickOnAccounts();
+			checkAccountsColorInExactlyCont(id('accounts'));
 
 			uploadExpensesIncomesStats();
 			uploadDataToPieChart();
