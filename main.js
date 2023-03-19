@@ -3430,6 +3430,7 @@ id('make-record-account').onclick = function() {
 		// upload account to window
 		windowEl.innerHTML = null;
 		for (let a = 1; a <= localStorage.getItem('ACount'); a++) uploadAccount(a, windowEl);
+		checkAccountsColorInExactlyCont(windowEl);
 	
 		let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
 		windowEl.setAttribute('top-position', top_position);
