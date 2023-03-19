@@ -2196,7 +2196,7 @@ body.font2 .settings-categories {
 	background: #1B252F;
 }
 .preloader.dark {
-	background: #0b0b0b;
+	background: #121212;
 }
 
 .preloader.light path {
@@ -2263,8 +2263,8 @@ body.font2 .settings-categories {
 }
 .wallet-dark .clickable-button,
 .wallet-dark .widget {
-	box-shadow: 18px 18px 30px #060606, 
-		-18px -18px 30px #131313;
+	box-shadow: 18px 18px 30px #0d0d0d, 
+		-18px -18px 30px #171717;
 }
 
 
@@ -2278,8 +2278,8 @@ body.font2 .settings-categories {
 		-5px -5px 10px #222e3a;
 }
 .wallet-dark .expenses-incomes-columns-cont > div > :last-child {
-	box-shadow: 5px 5px 10px #060606, 
-		-5px -5px 10px #131313;
+	box-shadow: 5px 5px 10px #0d0d0d, 
+		-5px -5px 10px #171717;
 }
 
 
@@ -2318,11 +2318,8 @@ body.font2 .settings-categories {
 
 
 
-.wallet-darkblue .pie-chart {
+:is(.wallet-darkblue, .wallet-dark) .pie-chart {
 	filter: brightness(0.8);
-}
-.wallet-dark .pie-chart {
-	filter: brightness(0.7);
 }
 
 .wallet-light .pie-chart-background {
@@ -2332,16 +2329,16 @@ body.font2 .settings-categories {
 	border: 2px solid rgba(0, 0, 0, 0.05);
 }
 .wallet-darkblue .pie-chart-background {
-	box-shadow: inset 0px 0px 15px 3px #000;
+	box-shadow: inset 0px 0px 10px 1px #0e141a;
 	/* box-shadow: 5px 5px 10px #161f27,
 		-5px -5px 10px #222e3a; */
 	border: 2px solid rgba(0, 0, 0, 0.1);
 }
 .wallet-dark .pie-chart-background {
-	box-shadow: inset 0px 0px 10px 7px #000;
+	box-shadow: inset 0px 0px 10px 1px #0d0d0d;
 	/* box-shadow: 5px 5px 10px #060606, 
 		-5px -5px 10px #131313; */
-	border: 2px solid rgba(0, 0, 0, 0.6);
+	border: 2px solid rgba(0, 0, 0, 0.3);
 }
 
 .wallet-light .pie-chart-background > div {
@@ -2351,16 +2348,16 @@ body.font2 .settings-categories {
 	border: 2px solid rgba(0, 0, 0, 0.05);
 }
 .wallet-darkblue .pie-chart-background > div {
-	box-shadow: 0px 0px 15px 3px #000;
+	box-shadow: 0px 0px 10px 1px #0e141a;
 	/* box-shadow: inset 10px 10px 10px #222e3a,
 		inset -10px -10px 10px #161f27; */
 	border: 2px solid rgba(0, 0, 0, 0.1);
 }
 .wallet-dark .pie-chart-background > div {
-	box-shadow: 0px 0px 10px 7px #000;
+	box-shadow: 0px 0px 10px 1px #0d0d0d;
 	/* box-shadow: inset 10px 10px 10px #131313, 
 		inset -10px -10px 10px #060606; */
-	border: 2px solid rgba(0, 0, 0, 0.6);
+	border: 2px solid rgba(0, 0, 0, 0.3);
 }
 
 
@@ -2390,7 +2387,7 @@ body.font2 .settings-categories {
 .wallet-dark .cancel-removing-account-window,
 .wallet-dark .adaptive-background {
 	color: #c3c3c3;
-	background: #0b0b0b;
+	background: #121212;
 }
 
 .wallet-light .window-close-button {
@@ -2442,17 +2439,7 @@ body.font2 .settings-categories {
 .wallet-dark .big-hr,
 .wallet-dark .small-hr,
 .wallet-dark .categories-hr {
-	background: rgba(255, 255, 255, 0.03);
-}
-
-.wallet-light .small-vertical-hr {
-	background: rgba(0, 0, 0, 0.05);
-}
-.wallet-darkblue .small-vertical-hr {
-	background: rgba(255, 255, 255, 0.05);
-}
-.wallet-dark .small-vertical-hr {
-	background: rgba(255, 255, 255, 0.06);
+	background: rgba(255, 255, 255, 0.04);
 }
 
 .wallet-light .timer-line-cont > hr {
@@ -2472,7 +2459,7 @@ body.font2 .settings-categories {
 	background-color: rgba(27, 37, 47, 0.4);
 }
 .wallet-dark .blur {
-	background-color: rgba(11, 11, 11, 0.6);
+	background-color: rgba(18, 18, 18, 0.6);
 }
 .wallet-light .solid-background {
 	background-color: rgba(236, 240, 243, 1);
@@ -2481,7 +2468,7 @@ body.font2 .settings-categories {
 	background-color: rgba(27, 37, 47, 1);
 }
 .wallet-dark .solid-background {
-	background-color: rgba(11, 11, 11, 1);
+	background-color: rgba(18, 18, 18, 1);
 }
 
 .wallet-light .widget,
@@ -2497,7 +2484,7 @@ body.font2 .settings-categories {
 .wallet-dark .widget,
 .wallet-dark .history-reloading-background,
 .wallet-dark .date-filter-menu {
-	border: 2px solid rgba(0, 0, 0, 0.6);
+	border: 2px solid rgba(0, 0, 0, 0.3);
 }
 
 .wallet-light .history-scroll {
@@ -2519,8 +2506,8 @@ body.font2 .settings-categories {
 	background: #1B252F;
 }
 .wallet-dark .history-reloading-background-show {
-	border: 2px solid rgba(0, 0, 0, 0.6);
-	background: #0b0b0b;
+	border: 2px solid rgba(0, 0, 0, 0.3);
+	background: #121212;
 }
 
 .wallet-light .record,
@@ -2602,7 +2589,7 @@ body.font2 .settings-categories {
 	background: #253341;
 }
 .wallet-dark .interective-field {
-	background: #131313;
+	background: #1a1a1a;
 }
 
 .wallet-light .window-el-amount::placeholder {
@@ -2638,9 +2625,9 @@ body.font2 .settings-categories {
 	box-shadow: inset 0 0 5px #06080a;
 }
 .wallet-dark .switch-slider {
-	border-color: rgb(190, 190, 190);
-	background-color: #e6e6e6;
-	box-shadow: inset 0 0 5px #9d9d9d;
+	border-color: rgb(23, 23, 23);
+	background-color: #0d0d0d;
+	box-shadow: inset 0 0 5px #000;
 }
 
 .wallet-light .switch-slider::before {
@@ -2654,9 +2641,9 @@ body.font2 .settings-categories {
 	box-shadow: 0 0 2px #06080a;
 }
 .wallet-dark .switch-slider::before {
-	border-color: rgb(190, 190, 190);
-	background-color: #fff;
-	box-shadow: 0 0 2px #9d9d9d;
+	border-color: rgb(23, 23, 23);
+	background-color: #2b2b2b;
+	box-shadow: 0 0 2px #000;
 }
 
 .wallet-light .switch > input:checked + .switch-slider {
@@ -2666,7 +2653,7 @@ body.font2 .settings-categories {
 	background-color: #202c38;
 }
 .wallet-dark .switch > input:checked + .switch-slider {
-	background-color: #0c0c0c;
+	background-color: #212121;
 }
 
 
