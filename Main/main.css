@@ -1161,7 +1161,7 @@ body.font2 .date-filter-menu .button-block-bottom > input {
 
 
 
-.history-block {
+.widget-block {
 	margin-bottom: 20px;
 }
 
@@ -1203,9 +1203,6 @@ body.font2 .date-filter-menu .button-block-bottom > input {
     overflow-y: hidden;
 	z-index: 41;
 	transition: transform .2s, border .3s;
-}
-.history-scroll {
-	overflow-y: scroll;
 }
 .record {
     max-width: calc(100% - 24px);
@@ -1284,13 +1281,13 @@ body.font2 .record {
 
 
 
-.enable-history-scroll-button-cont {
+.enable-widget-scroll-button-cont {
 	margin-top: -10px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-.enable-history-scroll-button-cont input {
+.enable-widget-scroll-button-cont input {
 	border-radius: 1.2rem;
 	border: 2px solid;
 	border-color: #505050;
@@ -1300,13 +1297,13 @@ body.font2 .record {
 	cursor: pointer;
 	transition: .2s transform, .3s border-color, .3s color, .3s background;
 }
-body.font1 .enable-history-scroll-button-cont input {
+body.font1 .enable-widget-scroll-button-cont input {
 	padding: 7px 12px;
 }
-body.font2 .enable-history-scroll-button-cont input {
+body.font2 .enable-widget-scroll-button-cont input {
 	padding: 9px 13px;
 }
-.enable-history-scroll-button-cont input:active {
+.enable-widget-scroll-button-cont input:active {
     transform: scale(0.95);
 }
 
@@ -1389,7 +1386,7 @@ body.font2 .enable-history-scroll-button-cont input {
 
 .pie-chart-categories-details {
 	width: 100%;
-	max-height: 60vh;
+	max-height: 50vh;
 	padding: 12px;
 	gap: 10px;
 
@@ -1397,7 +1394,9 @@ body.font2 .enable-history-scroll-button-cont input {
 	flex-direction: column;
 	align-items: center;
 	box-sizing: border-box;
-	overflow-y: scroll;
+	overflow-y: hidden;
+
+	transition: transform .2s, border .3s;
 }
 .pie-chart-categories-details.hide {
 	padding: 0;
@@ -1495,6 +1494,14 @@ body.font2 .enable-history-scroll-button-cont input {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+
+
+
+
+
+.widget-scroll {
+	overflow-y: scroll;
 }
 
 
@@ -2284,33 +2291,33 @@ body.font2 .settings-categories {
 
 
 
-.wallet-light .enable-history-scroll-button-cont input {
+.wallet-light .enable-widget-scroll-button-cont input {
 	border-color: #000;
 	color: #080808;
 	border: 2px solid rgba(0, 0, 0, 0.05);
 }
-.wallet-darkblue .enable-history-scroll-button-cont input {
+.wallet-darkblue .enable-widget-scroll-button-cont input {
 	border-color: #000;
 	color: #fff;
 	border: 2px solid rgba(0, 0, 0, 0.1);
 }
-.wallet-dark .enable-history-scroll-button-cont input {
+.wallet-dark .enable-widget-scroll-button-cont input {
 	border-color: #000;
 	color: #fff;
 	border: 2px solid rgba(0, 0, 0, 0.6);
 }
 
-.wallet-light .enable-history-scroll-button-cont input.active {
+.wallet-light .enable-widget-scroll-button-cont input.active {
 	border-color: #050505;
 	color: #c3c3c3;
 	background: #050505;
 }
-.wallet-darkblue .enable-history-scroll-button-cont input.active {
+.wallet-darkblue .enable-widget-scroll-button-cont input.active {
 	border-color: #2f4051;
 	color: #c3c3c3;
 	background: #2f4051;
 }
-.wallet-dark .enable-history-scroll-button-cont input.active {
+.wallet-dark .enable-widget-scroll-button-cont input.active {
 	border-color: #ECF0F3;
 	color: #080808;
 	background: #ECF0F3;
@@ -2487,15 +2494,15 @@ body.font2 .settings-categories {
 	border: 2px solid rgba(0, 0, 0, 0.3);
 }
 
-.wallet-light .history-scroll {
+/* .wallet-light .widget-scroll {
 	border: 3px solid rgba(255, 255, 255, 1);
 }
-.wallet-darkblue .history-scroll {
+.wallet-darkblue .widget-scroll {
 	border: 3px solid rgba(255, 255, 255, 0.1);
 }
-.wallet-dark .history-scroll {
+.wallet-dark .widget-scroll {
 	border: 3px solid rgba(255, 255, 255, 0.07);
-}
+} */
 
 .wallet-light .history-reloading-background-show {
 	border: 2px solid rgba(0, 0, 0, 0.05);

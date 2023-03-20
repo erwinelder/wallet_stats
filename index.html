@@ -161,35 +161,43 @@
 				</div>
 			</div> <!-- history-nav type (incomes or expenses) -->
 
-			<div class="history-block">
+			<div class="widget-block">
 				<div class="history-cont widget-cont" id="history-cont">
 					<div class="history widget" id="history"></div>
 					<div class="history-reloading-background" id="history-reloading-background"></div>
 				</div>
-				<div class="enable-history-scroll-button-cont">
+				<div class="enable-widget-scroll-button-cont">
 					<input type="button" value="" id="enable-history-scroll-button">
 				</div>
 			</div> <!-- history-block -->
 
-			<div class="widget-cont">
-				<div class="widget pie-chart-preview">
+			<div class="widget-block">
 
-					<div class="pie-chart-cont" id="pie-chart-cont">
-	
-						<canvas class="pie-chart" id="pie-chart" width="800" height="800"></canvas>
-	
-						<div class="pie-chart-background" id="pie-chart-background">
-							<div class="adaptive-background">
-								<h3 id="pie-chart-amount"></h3>
+				<div class="widget-cont">
+					<div class="widget pie-chart-preview">
+
+						<div class="pie-chart-cont" id="pie-chart-cont">
+		
+							<canvas class="pie-chart" id="pie-chart" width="800" height="800"></canvas>
+		
+							<div class="pie-chart-background" id="pie-chart-background">
+								<div class="adaptive-background">
+									<h3 id="pie-chart-amount"></h3>
+								</div>
 							</div>
+							
 						</div>
 						
+						<div class="pie-chart-categories-details" id="pie-chart-categories-details"></div>
+						
 					</div>
-					
-					<div class="pie-chart-categories-details" id="pie-chart-categories-details"></div>
-					
+				</div> <!-- pie-chart -->
+
+				<div class="enable-widget-scroll-button-cont">
+					<input type="button" value="" id="enable-categories-details-scroll-button">
 				</div>
-			</div> <!-- pie-chart -->
+
+			</div>
 
 			<div class="make-record-button-cont blur" id="make-record-button-cont">
 				<input type="button" value="New record" class="button-for-floating-window make-record-button clickable-button" id="make-record-button">

@@ -1845,6 +1845,17 @@ function uploadLanguageToButtons (lang) {
 		el.value = 'Включить прокрутку';
 	else if (lang == 'ua')
 		el.value = 'Увімкнути прокручування';
+
+	el = id('enable-categories-details-scroll-button');
+
+	if (lang == 'en')
+		el.value = 'Enable scrolling';
+	else if (lang == 'cz')
+		el.value = 'Povolit rolování';
+	else if (lang == 'ru')
+		el.value = 'Включить прокрутку';
+	else if (lang == 'ua')
+		el.value = 'Увімкнути прокручування';
 }
 
 
@@ -2312,20 +2323,27 @@ id('enable-history-scroll-button').onclick = function() {
 
 	if (this.classList.contains('active'))
 		this.classList.remove('active');
-	else
-		this.classList.add('active');
+	else this.classList.add('active');
 	
-	changeHistoryScroll();
+	changeWidgetScroll(id('history'));
+}
+id('enable-categories-details-scroll-button').onclick = function() {
+
+	if (this.classList.contains('active'))
+		this.classList.remove('active');
+	else this.classList.add('active');
+	
+	changeWidgetScroll(id('pie-chart-categories-details'));
 }
 
-function changeHistoryScroll () {
+function changeWidgetScroll (el) {
 
-	animateClickOnHistory(id('history'));
+	animateClickOnHistory(el);
 
 	setTimeout(() => {
-		if (id('history').classList.contains('history-scroll'))
-			id('history').classList.remove('history-scroll');
-		else id('history').classList.add('history-scroll');
+		if (el.classList.contains('widget-scroll'))
+			el.classList.remove('widget-scroll');
+		else el.classList.add('widget-scroll');
 	}, 200);
 }
 
