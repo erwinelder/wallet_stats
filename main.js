@@ -2543,33 +2543,63 @@ function getCategoriesStats () {
 }
 
 function getArrayForStatsResults (type) {
-	let results;
+	let results,
+		theme = localStorage.getItem('T');
 
-	if (type == '-')
-		results = [
-			/* 1 */ {total: 0, color: "#97a97c"},
-			/* 2 */ {total: 0, color: "#9a8c98"},
-			/* 3 */ {total: 0, color: "#f2e9e4"},
-			/* 4 */ {total: 0, color: "#a26769"},
-			/* 5 */ {total: 0, color: "#6d2e46"},
-			/* 6 */ {total: 0, color: "#4a4e69"},
-			/* 7 */ {total: 0, color: "#006494"},
-			/* 8 */ {total: 0, color: "#709775"},
-			/* 9 */ {total: 0, color: "#c9ada7"},
-			/* 10 */ {total: 0, color: "#22223b"}
-		];
-	else if (type == '+')
-		results = [
-			/* 1 */ {total: 0, color: "#97a97c"},
-			/* 2 */ {total: 0, color: "#4a4e69"},
-			/* 3 */ {total: 0, color: "#9a8c98"},
-			/* 4 */ {total: 0, color: "#ece2d0"},
-			/* 5 */ {total: 0, color: "#c9ada7"},
-			/* 6 */ {total: 0, color: "#006494"},
-			/* 7 */ {total: 0, color: "#6d2e46"},
-			/* 8 */ {total: 0, color: "#a26769"},
-			/* 9 */ {total: 0, color: "#709775"}
-		];
+	if (type == '-') {
+		if (theme == 'l')
+			results = [
+				/* 1 */ {total: 0, color: "#97a97c"},
+				/* 2 */ {total: 0, color: "#9a8c98"},
+				/* 3 */ {total: 0, color: "#f2e9e4"},
+				/* 4 */ {total: 0, color: "#a26769"},
+				/* 5 */ {total: 0, color: "#6d2e46"},
+				/* 6 */ {total: 0, color: "#4a4e69"},
+				/* 7 */ {total: 0, color: "#006494"},
+				/* 8 */ {total: 0, color: "#709775"},
+				/* 9 */ {total: 0, color: "#c9ada7"},
+				/* 10 */ {total: 0, color: "#22223b"}
+			];
+		else if (theme == 'b' || theme == 'd')
+			results = [
+				/* 1 */ {total: 0, color: "#798763"},
+				/* 2 */ {total: 0, color: "#7c717a"},
+				/* 3 */ {total: 0, color: "#c2bbb6"},
+				/* 4 */ {total: 0, color: "#825354"},
+				/* 5 */ {total: 0, color: "#572538"},
+				/* 6 */ {total: 0, color: "#3c3e54"},
+				/* 7 */ {total: 0, color: "#075076"},
+				/* 8 */ {total: 0, color: "#59795e"},
+				/* 9 */ {total: 0, color: "#a28a85"},
+				/* 10 */ {total: 0, color: "#1b1b2f"}
+			];
+	}
+	else if (type == '+') {
+		if (theme == 'l')
+			results = [
+				/* 1 */ {total: 0, color: "#97a97c"},
+				/* 2 */ {total: 0, color: "#4a4e69"},
+				/* 3 */ {total: 0, color: "#9a8c98"},
+				/* 4 */ {total: 0, color: "#ece2d0"},
+				/* 5 */ {total: 0, color: "#c9ada7"},
+				/* 6 */ {total: 0, color: "#006494"},
+				/* 7 */ {total: 0, color: "#6d2e46"},
+				/* 8 */ {total: 0, color: "#a26769"},
+				/* 9 */ {total: 0, color: "#709775"}
+			];
+		else if (theme == 'b' || theme == 'd')
+			results = [
+				/* 1 */ {total: 0, color: "#798763"},
+				/* 2 */ {total: 0, color: "#3b3d52"},
+				/* 3 */ {total: 0, color: "#796e77"},
+				/* 4 */ {total: 0, color: "#bdb6a6"},
+				/* 5 */ {total: 0, color: "#a28a85"},
+				/* 6 */ {total: 0, color: "#075076"},
+				/* 7 */ {total: 0, color: "#572538"},
+				/* 8 */ {total: 0, color: "#825354"},
+				/* 9 */ {total: 0, color: "#59795e"}
+			];
+	}
 
 	return results;
 }
@@ -3737,7 +3767,8 @@ function updateHistoryForNewRecord (record_num, record_type, record_account) {
 			id('history').firstElementChild &&
 			getRecordDateFormat( id('history').firstElementChild.getAttribute('recordnum') ) > getRecordDateFormat(record_num)
 		) ||
-		(history_type != 'all' && record_type != history_type)
+		(history_type != 'all' && record_type != history_type) ||
+		id('accounts').getAttribute('accountnum') != record_account
 	) {
 		checkRecordsOrderByDate(Number(record_num));
 		reuploadRecordsToHistoryAnimated();

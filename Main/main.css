@@ -2325,10 +2325,6 @@ body.font2 .settings-categories {
 
 
 
-:is(.wallet-darkblue, .wallet-dark) .pie-chart {
-	filter: brightness(0.8);
-}
-
 .wallet-light .pie-chart-background {
 	box-shadow: inset 0px 0px 20px #222e3a;
 	/* box-shadow: 5px 5px 10px #b7c6d280,
