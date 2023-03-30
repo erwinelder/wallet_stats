@@ -26,6 +26,7 @@ input::-webkit-inner-spin-button {
 
 body {
 	overflow-x: hidden;
+	background: url('icons/wallet_icon.svg');
 }
 
 body.font1 {
@@ -854,6 +855,7 @@ body.font2 .window-floating-nav > div {
 	padding-bottom: 30px;
 	gap: 15px;
 	box-sizing: border-box;
+
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -2365,6 +2367,18 @@ body.font2 .settings-categories {
 
 
 
+/* .wallet-light .content {
+	background: rgba(236, 240, 243, 0.7);
+}
+.wallet-darkblue .content {
+	background: rgba(27, 37, 47, 0.7);
+}
+.wallet-dark .content {
+	background: rgba(18, 18, 18, 0.95);
+	backdrop-filter: saturate(120%) blur(15px);
+	-webkit-backdrop-filter: saturate(120%) blur(15px);
+} */
+
 .wallet-light .clickable-button,
 .wallet-light .popup-notification-cont > div,
 .wallet-light .window-block,
@@ -2421,12 +2435,15 @@ body.font2 .settings-categories {
 
 .wallet-light .category-svg {
 	stroke: #080808;
+	filter: drop-shadow(0 0 15px rgba(0, 0, 0, 1)) drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
 }
 .wallet-darkblue .category-svg {
 	stroke: #b8b8b8;
+	filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
 }
 .wallet-dark .category-svg {
 	stroke: #c3c3c3;
+	filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.9)) drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
 }
 
 .wallet-light .big-hr,
