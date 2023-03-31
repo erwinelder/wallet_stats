@@ -2051,6 +2051,7 @@ function uploadRecordsToHistory () {
 		
 	} else if (period == 'month -1') {
 		
+		compare_date.setDate(1);
 		compare_date.setMonth(compare_date.getMonth() - 1);
 		uploadRecordsByPrevMonth(getDateFormat(compare_date), type, account);
 
@@ -2396,6 +2397,7 @@ function getTotalAmountOfExactlyType (type) {
 		
 	} else if (period == 'month -1') {
 		
+		compare_date.setDate(1);
 		compare_date.setMonth(compare_date.getMonth() - 1);
 		amount = getTotalAmountOfExactlyTypeByPrevMonth(getDateFormat(compare_date), type, account, amount);
 
@@ -2533,6 +2535,7 @@ function getCategoriesStats () {
 		
 	} else if (period == 'month -1') {
 		
+		compare_date.setDate(1);
 		compare_date.setMonth(compare_date.getMonth() - 1);
 		results = getCategoriesStatsByPrevMonth(getDateFormat(compare_date), type, account, results);
 
@@ -2767,6 +2770,7 @@ function uploadSubcategoriesToDetailCatagoryPreview (category_num, container) {
 		
 	} else if (period == 'month -1') {
 		
+		compare_date.setDate(1);
 		compare_date.setMonth(compare_date.getMonth() - 1);
 		results = getSubcategoriesStatsByPrevMonth(getDateFormat(compare_date), type, account, results);
 
