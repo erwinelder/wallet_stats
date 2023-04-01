@@ -1281,6 +1281,27 @@ body.font2 .record {
     transition: background .39s, visibility 0s 0s;
 }
 
+.history-empty {
+	width: 100%;
+	height: 100%;
+    top: 0;
+
+    position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 43;
+
+	opacity: 0;
+	visibility: hidden;
+    transition: opacity .5s, visibility 0s .5s;
+}
+.history-empty.visible {
+	opacity: 1;
+	visibility: visible;
+    transition: opacity .39s, visibility 0s 0s;
+}
+
 
 
 .enable-widget-scroll-button-cont {
