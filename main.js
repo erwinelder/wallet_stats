@@ -3561,6 +3561,8 @@ function setUpChoosingAccount (clickEl, windowEl_cont, windowEl) {
 			clickEl.firstElementChild.firstElementChild.value = localStorage.getItem(`ACurrency${account_num}`);
 			clickEl.firstElementChild.lastElementChild.value = getReadableNumber(localStorage.getItem(`ABalance${account_num}`));
 
+			checkAccountColor(clickEl.firstElementChild);
+			
 			adaptInputLengthExplicitly(clickEl.firstElementChild.firstElementChild);
 			adaptInputLengthExplicitly(clickEl.firstElementChild.lastElementChild);
 
