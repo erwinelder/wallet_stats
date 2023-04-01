@@ -2063,7 +2063,7 @@ function uploadRecordsToHistory () {
 		for (let record of id('history').getElementsByClassName('record'))
 			setUpClickOnRecord(record);
 	} else {
-		showMessageInEmptyHistory(period);
+		id('history-empty').innerHTML = getShowMessageInEmptyHistoryByLang(period, localStorage.getItem('L'));
 		id('history-empty').classList.add('visible');
 	}
 		
@@ -2325,11 +2325,6 @@ function removeRecordFromStorage (n) {
 	localStorage.removeItem(`RYear${n}`);
 
 	localStorage.setItem('RCount', Number(localStorage.getItem('RCount')) - 1);
-}
-
-function showMessageInEmptyHistory (period) {
-
-	id('history-empty').innerHTML = getShowMessageInEmptyHistoryByLang(period, localStorage.getItem('L'));
 }
 
 function getShowMessageInEmptyHistoryByLang (period, lang) {
