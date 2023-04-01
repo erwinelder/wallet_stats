@@ -2040,6 +2040,7 @@ function uploadRecordsToHistory () {
 		compare_date = new Date();
 
 	id('history').innerHTML = null;
+	id('history-empty').innerHTML = null;
 	
 	if (period == 'month 0') {
 
@@ -2058,8 +2059,14 @@ function uploadRecordsToHistory () {
 	} else if (period == 'custom')
 		uploadRecordsByCustomPeriod();
 	
-	for (let record of id('history').getElementsByClassName('record'))
-		setUpClickOnRecord(record);
+	if (id('history').firstElementChild) {
+		for (let record of id('history').getElementsByClassName('record'))
+			setUpClickOnRecord(record);
+	} else {
+		showMessageInEmptyHistory(period);
+		id('history-empty').classList.add('visible');
+	}
+		
 }
 
 function uploadRecordsByThisMonth (compare_date, type, account) {
@@ -2160,6 +2167,8 @@ function uploadRecordsByCustomPeriod () {
 function uploadRecordsToHistoryAnimated () {
 
 	id('history-reloading-background').classList.add('history-reloading-background-show');
+	if (id('history-empty').classList.contains('visible'))
+		id('history-empty').classList.remove('visible');
 	
 	setTimeout(() => {
 		id('history').innerHTML = null;
@@ -2316,6 +2325,52 @@ function removeRecordFromStorage (n) {
 	localStorage.removeItem(`RYear${n}`);
 
 	localStorage.setItem('RCount', Number(localStorage.getItem('RCount')) - 1);
+}
+
+function showMessageInEmptyHistory (period) {
+
+	id('history-empty').innerHTML = getShowMessageInEmptyHistoryByLang(period, localStorage.getItem('L'));
+}
+
+function getShowMessageInEmptyHistoryByLang (period, lang) {
+	let message = '';
+
+	if (period == 'month 0') {
+
+		if (lang == 'en')
+			message = 'You have no records in this month';
+		else if (lang == 'cz')
+			message = 'V tomto měsíci nemáte žádné záznamy';
+		else if (lang == 'ru')
+			message = 'У вас нет записей за этот месяц';
+		else if (lang == 'ua')
+			message = 'У вас немає записів за цей місяць';
+			
+	} else if (period == 'month -1') {
+
+		if (lang == 'en')
+			message = 'You have no records in previous month';
+		else if (lang == 'cz')
+			message = 'V minulém měsíci nemáte žádné záznamy';
+		else if (lang == 'ru')
+			message = 'У вас нет записей за предыдущий месяц';
+		else if (lang == 'ua')
+			message = 'У вас немає записів за попередній місяць';
+			
+	} else if (period == 'custom') {
+
+		if (lang == 'en')
+			message = 'You have no records in this period';
+		else if (lang == 'cz')
+			message = 'V tomto období nemáte žádné záznamy';
+		else if (lang == 'ru')
+			message = 'У вас нет записей за этот период';
+		else if (lang == 'ua')
+			message = 'У вас немає записів за цей період';
+
+	}
+
+	return message;
 }
 
 
