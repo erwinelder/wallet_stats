@@ -798,15 +798,15 @@ function setUpClickOnHelloSubmitLanguageButton () {
 	id('hello-submit-language').style.opacity = '1';
 
 	id('hello-submit-language').onclick = () => {
-
-		id('hello-title').style.transition = '.5s opacity, .5s transform';
-		id('hello-title').style.transform = 'scale(0.8)';
-		id('hello-title').style.opacity = '0';
+		
+		id('hello-submit-language').style.transition = '1s opacity, 1s transform';
+		id('hello-submit-language').style.transform = 'scale(0.8)';
+		id('hello-submit-language').style.opacity = '0';
 
 		setTimeout(() => {
-			id('hello-language').style.transition = '.5s opacity, .5s transform';
-			id('hello-language').style.transform = 'scale(0.8)';
-			id('hello-language').style.opacity = '0';
+			id('hello-title').style.transition = '.5s opacity, .5s transform';
+			id('hello-title').style.transform = 'scale(0.8)';
+			id('hello-title').style.opacity = '0';
 		}, 500);
 
 		setTimeout(() => {
@@ -817,9 +817,9 @@ function setUpClickOnHelloSubmitLanguageButton () {
 		}, 700);
 
 		setTimeout(() => {
-			id('hello-submit-language').style.transition = '1s opacity, 1s transform';
-			id('hello-submit-language').style.transform = 'scale(0.8)';
-			id('hello-submit-language').style.opacity = '0';
+			id('hello-language').style.transition = '.5s opacity, .5s transform';
+			id('hello-language').style.transform = 'scale(0.8)';
+			id('hello-language').style.opacity = '0';
 
 			setTimeout(() => {
 				localStorage.setItem('L', getLanguageByNumber(id('hello-language').getAttribute('langnum')));

@@ -127,10 +127,9 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 	border: none;
 
 	display: block;
-	background: #080808;
+	background: #946b7a;
 	stroke: #fff;
-	box-shadow: 5px 5px 10px #b7c6d280,
-		-5px -5px 10px #FFF;
+	box-shadow: 0 5px 30px #946b7a;
 	opacity: 0;
 	cursor: pointer;
 	transition: 1s opacity, .2s transform;
