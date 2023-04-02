@@ -2534,9 +2534,9 @@ function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent
 		id('expenses-column-amount').innerText = `- ${getReadableNumber(expenses_amount)} ${currency}`;
 
 		if (total < 0)
-			id('incomes-expenses-total').innerText = `- ${getReadableNumber(Math.abs(total))} ${currency}`;
+			id('incomes-expenses-total').innerText = `- ${getReadableNumber( (Math.abs(total)).toFixed(2) )} ${currency}`;
 		else
-			id('incomes-expenses-total').innerText = `+ ${getReadableNumber(total)} ${currency}`;
+			id('incomes-expenses-total').innerText = `+ ${getReadableNumber(total.toFixed(2))} ${currency}`;
 		
 		titles[0].style.opacity = '1';
 		titles[1].style.opacity = '1';
