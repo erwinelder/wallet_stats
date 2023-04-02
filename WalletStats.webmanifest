@@ -4,19 +4,19 @@
     "description": "Accounting your incomes and expenses to view statistics.",
     "icons": [
       {
-        "src": "Main/Icons/wallet_icon_bg_144.png",
+        "src": "Main/Icons/wallet_icon_bg_dark_144.png",
         "sizes": "144x144",
         "type": "image/png",
         "purpose": "any"
       },
       {
-        "src": "Main/Icons/wallet_icon_bg_512.png",
+        "src": "Main/Icons/wallet_icon_bg_dark_512.png",
         "sizes": "512x512",
         "type": "image/png",
         "purpose": "any"
       },
       {
-        "src": "Main/Icons/wallet_icon_bg.png",
+        "src": "Main/Icons/wallet_icon_bg_dark.png",
         "sizes": "1080x1080",
         "type": "image/png",
         "purpose": "any"
@@ -24,7 +24,7 @@
     ],
     "start_url": "/walletstats/index.html",
     "display": "standalone",
-    "theme_color": "#ECF0F3",
-    "background_color": "#ECF0F3",
+    "theme_color": "#000",
+    "background_color": "#ededed",
     "orientation":"portrait"
   }
