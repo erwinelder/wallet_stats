@@ -25,6 +25,6 @@
     "start_url": "/walletstats/index.html",
     "display": "standalone",
     "theme_color": "#000",
-    "background_color": "#ededed",
+    "background_color": "#121212",
     "orientation":"portrait"
   }
