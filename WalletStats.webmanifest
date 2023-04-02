@@ -10,13 +10,13 @@
         "purpose": "any"
       },
       {
-        "src": "Main/Icons/wallet_icon_bg_dark_512.png",
+        "src": "Main/Icons/wallet_icon_bg_512.png",
         "sizes": "512x512",
         "type": "image/png",
         "purpose": "any"
       },
       {
-        "src": "Main/Icons/wallet_icon_bg_dark.png",
+        "src": "Main/Icons/wallet_icon_bg.png",
         "sizes": "1080x1080",
         "type": "image/png",
         "purpose": "any"
