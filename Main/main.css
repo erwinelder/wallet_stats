@@ -2237,7 +2237,7 @@ body.font2 .enable-widget-scroll-button-cont input {
 
 
 .preloader.light {
-	background: #ECF0F3;
+	background: #ededed;
 }
 .preloader.darkblue {
 	background: #1B252F;
@@ -2247,13 +2247,13 @@ body.font2 .enable-widget-scroll-button-cont input {
 }
 
 .preloader.light path {
-	stroke: #080808;
+	stroke: #946b7a;
 }
 .preloader.darkblue path {
-	stroke: #b8b8b8;
+	stroke: #2f4051;
 }
 .preloader.dark path {
-	stroke: #c3c3c3;
+	stroke: #6e505b;
 }
 
 
