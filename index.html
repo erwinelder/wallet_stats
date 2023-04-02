@@ -49,7 +49,7 @@
 
 	<div class="wallet" id="root">
 
-		<div class="content adaptive-background" id="content">
+		<div class="content" id="content">
 
 			<div class="sticky-topbar blur" id="sticky-topbar">
 
@@ -124,24 +124,41 @@
 			<div class="widget-cont">
 				<div class="expenses-incomes-columns-cont widget" id="stats-column">
 
-					<div class="incomes-column-cont">
+					<div class="incomes-column-cont column-cont">
 						<div class="stats-column-title">
-							<h3>Incomes</h3>
-							<h3 id="incomes-column-amount"></h3>
+
+							<div>
+								<h3>Incomes</h3>
+								<h3 id="incomes-column-percent"></h3>
+							</div>
+							<h3 class="amount" id="incomes-column-amount"></h3>
+
 						</div>
 						<div>
 							<div id="incomes-column" class="incomes-column column"></div>
 						</div>
 					</div>
 
-					<div class="expenses-column-cont">
+					<div class="expenses-column-cont column-cont">
 						<div class="stats-column-title">
-							<h3>Expenses</h3>
-							<h3 id="expenses-column-amount"></h3>
+
+							<div>
+								<h3>Expenses</h3>
+								<h3 id="expenses-column-percent"></h3>
+							</div>
+							<h3 class="amount" id="expenses-column-amount"></h3>
+
 						</div>
 						<div>
 							<div id="expenses-column" class="expenses-column column"></div>
 						</div>
+					</div>
+
+					<hr class="big-hr">
+
+					<div class="incomes-expenses-total-cont" id="incomes-expenses-total-cont">
+						<h3>Total:</h3>
+						<h3 id="incomes-expenses-total"></h3>
 					</div>
 
 				</div>
@@ -200,12 +217,12 @@
 
 			</div>
 
-			<div class="make-record-button-cont blur" id="make-record-button-cont">
-				<input type="button" value="New record" class="button-for-floating-window make-record-button clickable-button" id="make-record-button">
-			</div>
-
 			<div class="content-buttons">
 				<input type="button" value="Settings" class="button-for-floating-window settings-button clickable-button" id="settings-button">
+			</div>
+
+			<div class="make-record-button-cont blur" id="make-record-button-cont">
+				<input type="button" value="New record" class="button-for-floating-window make-record-button clickable-button" id="make-record-button">
 			</div>
 
 		</div> <!-- content -->
@@ -332,7 +349,7 @@
 
 
 		<div class="floating-fullview-window-cont settings-cont" id="settings-cont">
-			<div class="floating-fullview-window adaptive-background" id="settings">
+			<div class="floating-fullview-window" id="settings">
 
 				<div class="title-block">
 					<h1>Settings</h1>
@@ -340,17 +357,67 @@
 				</div>
 
 				<div class="settings-categories" id="settings-categories">
-					<input type="button" category-name="Reset data" class="settings-categories-button">
-					<hr class="small-hr">
-					<input type="button" category-name="Language" class="settings-categories-button">
-					<hr class="small-hr">
-					<input type="button" category-name="Blurring" class="settings-categories-button">
-					<hr class="small-hr">
-					<input type="button" category-name="Themes" class="settings-categories-button">
-					<hr class="small-hr">
-					<input type="button" category-name="Top margin" class="settings-categories-button">
-					<hr class="small-hr">
-					<input type="button" category-name="Accounts" class="settings-categories-button">
+					<div>
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+							<path d="M 379.29 396.79 C 341.733 434.348 289.848 457.576 232.538 457.576 C 175.228 457.576 123.343 434.348 85.786 396.79 C 48.23 359.233 25 307.348 25 250.038 C 25 192.728 48.23 140.843 85.786 103.286 C 123.343 65.73 175.228 42.5 232.538 42.5 C 289.848 42.5 341.733 65.73 379.29 103.286 C 416.848 140.843 440.076 192.728 440.076 250.038"></path>
+							<polyline points="366.285 168.406 442.382 252.344 475 150.104"></polyline>
+						  </svg>
+						<input type="button" category-name="Reset data" class="settings-categories-button">
+					</div>
+					<div>
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+							<ellipse cx="250" cy="250" rx="225" ry="225"></ellipse>
+							<line x1="25" y1="250" x2="475" y2="250"></line>
+							<line x1="250" y1="25" x2="250" y2="475"></line>
+							<path d="M 69 118 C 69 118 138 170 250 170 C 362 170 432 118 432 118"></path>
+							<path d="M 69 382 C 69 382 138 330 250 330 C 362 330 432 382 432 382"></path>
+							<path d="M 250 25 C 250 25 127 90 127 250 C 127 410 250 475 250 475"></path>
+							<path d="M 250 25 C 250 25 373 90 373 250 C 373 410 250 475 250 475"></path>
+						</svg>
+						<input type="button" category-name="Language" class="settings-categories-button">
+					</div>
+					<div>
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+							<ellipse cx="250" cy="250" rx="90" ry="90"></ellipse>
+							<ellipse cx="70" cy="250" rx="45" ry="45"></ellipse>
+							<ellipse cx="430" cy="250" rx="45" ry="45"></ellipse>
+							<ellipse cx="250" cy="430" rx="45" ry="45"></ellipse>
+							<ellipse cx="250" cy="70" rx="45" ry="45"></ellipse>
+							<ellipse cx="130.001" cy="130.001" rx="29.999" ry="29.999"></ellipse>
+							<ellipse cx="130.001" cy="369.999" rx="29.999" ry="29.999"></ellipse>
+							<ellipse cx="369.999" cy="130.001" rx="29.999" ry="29.999"></ellipse>
+							<ellipse cx="369.999" cy="369.999" rx="29.999" ry="29.999"></ellipse>
+						  </svg>
+						<input type="button" category-name="Blurring" class="settings-categories-button">
+					</div>
+					<div>
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+							<path d="M 88.283 408.423 C 88.283 408.423 142.40349429970922 456.5814850032518 176.47 465.902 C 214.6648344065022 476.35201591933395 297.52605704623085 477.6159729018327 308.669 460.147 C 316.3882481913236 448.0454090615718 282.6559914485967 419.9255812195042 284.427 401.454 C 286.1702903474402 383.2715190535344 301.467375306329 359.7337622614359 318.294 350.083 C 337.2416595612019 339.2157368878346 372.03093010650065 354.636885612145 396.202 345.908 C 421.9795808935503 336.5989559250362 455.38696059218273 318.28431869311396 467.399 292.946 C 481.3204032298374 263.5800497465069 474.09339081688574 209.4474892559454 461.936 173.884 C 450.1295640259311 139.3471437584762 425.3425515901969 105.75918735461154 397.272 81.941 C 368.3372604226768 57.38953915338593 327.2988643911892 37.19008000284888 289.698 30.056 C 252.4508909909046 22.989038645569416 207.96510204693476 26.740911204751214 172.826 38.767 C 138.890529903029 50.381154970425165 105.45466088536791 72.8901416606342 81.703 99.134 C 57.82352648785901 125.51908199893228 38.23982274947128 161.0560470114425 30.147 196.852 C 21.518651200090876 235.0166772173037 24.080161899163123 285.6992261431088 35.269 322.338 C 45.3077847825923 355.21082934408446 88.283 408.423 88.283 408.423 C 88.28300000000002 408.4230000000001 88.283 408.423 88.283 408.423" bx:d="M 88.283 408.423 R 176.47 465.902 R 308.669 460.147 R 284.427 401.454 R 318.294 350.083 R 396.202 345.908 R 467.399 292.946 R 461.936 173.884 R 397.272 81.941 R 289.698 30.056 R 172.826 38.767 R 81.703 99.134 R 30.147 196.852 R 35.269 322.338 R 88.283 408.423 Z 1@1963239d"></path>
+							<ellipse cx="131.166" cy="212.713" rx="29.137" ry="28.377"></ellipse>
+							<ellipse cx="201.361" cy="131.923" rx="29.137" ry="28.377"></ellipse>
+							<ellipse cx="298.044" cy="133.248" rx="29.137" ry="28.377"></ellipse>
+							<ellipse cx="368.239" cy="210.064" rx="29.137" ry="28.377"></ellipse>
+						</svg>
+						<input type="button" category-name="Themes" class="settings-categories-button">
+					</div>
+					<div>
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+							<polyline points="175 125 250 25 325 125"></polyline>
+							<line x1="250" y1="25" x2="250" y2="475"></line>
+							<polyline points="175 375 250 475 325 375"></polyline>
+						</svg>
+						<input type="button" category-name="Top margin" class="settings-categories-button">
+					</div>
+					<div>
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+							<path d="M 125.924 134.134 L 125.924 462.134" transform="matrix(0.984808, -0.173648, 0.173648, 0.984808, -49.857361, 26.395797)" bx:d="M 125.924 134.134 R 125.924 462.134 1@fa9a0077"></path>
+							<path d="M 199.396 192.315 C 199.396 192.315 180.51718870975748 180.91488179909405 170.303 176.942 C 159.9681326873713 172.92217939465212 148.76471368260695 169.22651605307428 137.712 168.419 C 126.5781655331104 167.6055572272597 114.53607474910234 168.79057101665538 103.735 172.169 C 92.67050856576773 175.62982213258326 79.96329741125498 181.1880275920867 72.193 189.252 C 64.68732721165507 197.04134641296613 59.05220576521044 208.32594649209105 57.356 219.253 C 55.52131816567745 231.0721241798687 57.1633917500757 247.20821786861237 63.257 257.963 C 69.51767726540616 269.01264697807926 83.92161504319517 277.09725011860064 95.107 284.308 C 105.69841214205435 291.13584044913057 117.10053637896056 295.48644368622627 128.411 300.566 C 139.8163462388417 305.68816832478166 152.75328724915457 308.2181289789429 163.265 314.896 C 173.92337250965397 321.66704089513155 185.44900897906516 331.0129454711618 191.828 341.073 C 197.66266801136192 350.27462423169027 202.1299206568254 361.5757205523521 201.446 372.027 C 200.70750403232094 383.31226774582433 193.62571363016238 397.7975904417562 185.624 406.349 C 177.9448770523995 414.55565777459327 166.04393869881955 419.43572361376164 155.05 422.986 C 143.76181020510097 426.6312989933907 130.8127736818871 428.12049520798655 118.647 427.611 C 106.24235378617796 427.091500955552 91.96795994989905 423.56848380854257 81.335 419.655 C 72.63365544932083 416.45245139903807 65.86391157641042 411.94898886219266 58.856 407.513 C 52.1735948716263 403.283055829199 40.132 393.763 40.132 393.763" transform="matrix(0.984808, -0.173648, 0.173648, 0.984808, -49.901191, 25.507182)" bx:d="M 199.396 192.315 R 170.303 176.942 R 137.712 168.419 R 103.735 172.169 R 72.193 189.252 R 57.356 219.253 R 63.257 257.963 R 95.107 284.308 R 128.411 300.566 R 163.265 314.896 R 191.828 341.073 R 201.446 372.027 R 185.624 406.349 R 155.05 422.986 R 118.647 427.611 R 81.335 419.655 R 58.856 407.513 R 40.132 393.763 1@ac5350f2"></path>
+							<path d="M 379.409 32.232 C 297.044 32.232 245.565 121.393 286.747 192.725 C 327.93 264.056 430.887 264.056 472.069 192.725 C 475.421 186.917 478.222 180.805 480.433 174.471" transform="matrix(0.629321, 0.777146, -0.777146, 0.629321, 247.702725, -240.864608)"></path>
+							<line x1="227.313" y1="94.022" x2="381.628" y2="94.022" transform="matrix(0.965926, 0.258819, -0.258819, 0.965926, 34.709249, -75.599012)"></line>
+							<line x1="213.371" y1="146.05" x2="367.687" y2="146.05" transform="matrix(0.965926, 0.258819, -0.258819, 0.965926, 47.700035, -70.217886)"></line>
+						</svg>
+						<input type="button" category-name="Accounts" class="settings-categories-button">
+					</div>
 				</div>
                 
 				<div class="button-window-block">

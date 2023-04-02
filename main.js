@@ -1505,17 +1505,17 @@ function uploadLanguageToWidgets (lang) {
 	let array = id('stats-column').getElementsByClassName('stats-column-title');
 
 	if (lang == 'en') {
-		array[0].firstElementChild.innerHTML = 'Incomes';
-		array[1].firstElementChild.innerHTML = 'Expenses';
+		array[0].firstElementChild.firstElementChild.innerHTML = 'Incomes';
+		array[1].firstElementChild.firstElementChild.innerHTML = 'Expenses';
 	} else if (lang == 'cz') {
-		array[0].firstElementChild.innerHTML = 'Příjmy';
-		array[1].firstElementChild.innerHTML = 'Výdaje';
+		array[0].firstElementChild.firstElementChild.innerHTML = 'Příjmy';
+		array[1].firstElementChild.firstElementChild.innerHTML = 'Výdaje';
 	} else if (lang == 'ru') {
-		array[0].firstElementChild.innerHTML = 'Доходы';
-		array[1].firstElementChild.innerHTML = 'Расходы';
+		array[0].firstElementChild.firstElementChild.innerHTML = 'Доходы';
+		array[1].firstElementChild.firstElementChild.innerHTML = 'Расходы';
 	} else if (lang == 'ua') {
-		array[0].firstElementChild.innerHTML = 'Доходи';
-		array[1].firstElementChild.innerHTML = 'Витрати';
+		array[0].firstElementChild.firstElementChild.innerHTML = 'Доходи';
+		array[1].firstElementChild.firstElementChild.innerHTML = 'Витрати';
 	}
 }
 
@@ -2407,27 +2407,19 @@ function animateClickOnHistory (el) {
 
 function uploadExpensesIncomesStats () {
 
-	let incomes_amount = getTotalAmountOfExactlyType('+');
-	let expenses_amount = getTotalAmountOfExactlyType('-');
-	let total_amount = incomes_amount + expenses_amount;
+	let incomes_amount = getTotalAmountOfExactlyType('+'),
+		expenses_amount = getTotalAmountOfExactlyType('-'),
+		total_amount = incomes_amount + expenses_amount,
+		incomes_percent = 0, expenses_percent = 0;
 	
 	if (total_amount == 0) total_amount = 1;
-	id('incomes-column').style.width = ((100 / total_amount) * incomes_amount) + '%';
-	id('expenses-column').style.width = ((100 / total_amount) * expenses_amount) + '%';
+	incomes_percent = (100 / total_amount) * incomes_amount;
+	expenses_percent = (100 / total_amount) * expenses_amount;
 	
-	let titles = id('stats-column').getElementsByClassName('stats-column-title');
-	
-	titles[0].style.opacity = '0';
-	titles[1].style.opacity = '0';
-	
-	let currency = localStorage.getItem('ACurrency' + id('accounts').getAttribute('accountnum'));
-	setTimeout(() => {
-		id('incomes-column-amount').innerHTML = `+ ${getReadableNumber(incomes_amount.toFixed(2))} ${currency}`;
-		id('expenses-column-amount').innerHTML = `- ${getReadableNumber(expenses_amount.toFixed(2))} ${currency}`;
-		
-		titles[0].style.opacity = '1';
-		titles[1].style.opacity = '1';
-	}, 300);
+	visualizeExpensesIncomesDataInWidget(
+		incomes_percent, expenses_percent,
+		incomes_amount.toFixed(2), expenses_amount.toFixed(2)
+	);	
 }
 
 function getTotalAmountOfExactlyType (type) {
@@ -2520,6 +2512,38 @@ function getTotalAmountOfExactlyTypeByCustomPeriod (type, account, amount) {
 	return amount;
 }
 
+function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent, incomes_amount, expenses_amount) {
+
+	id('incomes-column').style.width = incomes_percent + '%';
+	id('expenses-column').style.width = expenses_percent + '%';
+	
+	let titles = id('stats-column').getElementsByClassName('stats-column-title');
+	
+	titles[0].style.opacity = '0';
+	titles[1].style.opacity = '0';
+	id('incomes-expenses-total-cont').style.opacity = '0';
+	
+	let total = incomes_amount - expenses_amount;
+	let currency = localStorage.getItem('ACurrency' + id('accounts').getAttribute('accountnum'));
+	setTimeout(() => {
+
+		id('incomes-column-percent').innerText = incomes_percent.toFixed(2) + '%';
+		id('expenses-column-percent').innerText = expenses_percent.toFixed(2) + '%';
+		
+		id('incomes-column-amount').innerText = `+ ${getReadableNumber(incomes_amount)} ${currency}`;
+		id('expenses-column-amount').innerText = `- ${getReadableNumber(expenses_amount)} ${currency}`;
+
+		if (total < 0)
+			id('incomes-expenses-total').innerText = `- ${getReadableNumber(Math.abs(total))} ${currency}`;
+		else
+			id('incomes-expenses-total').innerText = `+ ${getReadableNumber(total)} ${currency}`;
+		
+		titles[0].style.opacity = '1';
+		titles[1].style.opacity = '1';
+		id('incomes-expenses-total-cont').style.opacity = '1';
+	}, 300);
+}
+
 
 
 
@@ -2609,8 +2633,9 @@ function getArrayForStatsResults (type) {
 				/* 5 */ {total: 0, color: "#6d2e46"},
 				/* 6 */ {total: 0, color: "#4a4e69"},
 				/* 7 */ {total: 0, color: "#006494"},
-				/* 8 */ {total: 0, color: "#709775"},
-				/* 9 */ {total: 0, color: "#c9ada7"},
+				/* 8 */ {total: 0, color: "#c9ada7"},
+				// /* 9 */ {total: 0, color: "#709775"},
+				/* 9 */ {total: 0, color: "#db924d"},
 				/* 10 */ {total: 0, color: "#22223b"}
 			];
 		else if (theme == 'b' || theme == 'd')
@@ -2622,8 +2647,9 @@ function getArrayForStatsResults (type) {
 				/* 5 */ {total: 0, color: "#572538"},
 				/* 6 */ {total: 0, color: "#3c3e54"},
 				/* 7 */ {total: 0, color: "#075076"},
-				/* 8 */ {total: 0, color: "#59795e"},
-				/* 9 */ {total: 0, color: "#a28a85"},
+				/* 8 */ {total: 0, color: "#a28a85"},
+				// /* 9 */ {total: 0, color: "#59795e"},
+				/* 9 */ {total: 0, color: "#db924d"},
 				/* 10 */ {total: 0, color: "#1b1b2f"}
 			];
 	}
@@ -2638,7 +2664,8 @@ function getArrayForStatsResults (type) {
 				/* 6 */ {total: 0, color: "#006494"},
 				/* 7 */ {total: 0, color: "#6d2e46"},
 				/* 8 */ {total: 0, color: "#a26769"},
-				/* 9 */ {total: 0, color: "#709775"}
+				// /* 9 */ {total: 0, color: "#709775"}
+				/* 9 */ {total: 0, color: "#db924d"}
 			];
 		else if (theme == 'b' || theme == 'd')
 			results = [
@@ -2650,7 +2677,8 @@ function getArrayForStatsResults (type) {
 				/* 6 */ {total: 0, color: "#075076"},
 				/* 7 */ {total: 0, color: "#572538"},
 				/* 8 */ {total: 0, color: "#825354"},
-				/* 9 */ {total: 0, color: "#59795e"}
+				// /* 9 */ {total: 0, color: "#59795e"}
+				/* 9 */ {total: 0, color: "#db924d"}
 			];
 	}
 
@@ -4028,7 +4056,7 @@ function reuploadRecordsToHistoryAnimated () {
 
 
 
-const settings_categories = id('settings-categories').getElementsByTagName('input');
+const settings_categories = id('settings-categories').getElementsByTagName('div');
 const settings_category_windows = id('root').getElementsByClassName('settings-category-window-cont');
 
 id('settings-button').onclick = () => {
@@ -4053,7 +4081,7 @@ for (let category of settings_categories) {
 		// open settings category window
 
 		let settings_transition = id('settings').style.transition;
-		prepareSettingsCategoryWindow(id('settings-category-window-cont'), this.getAttribute('category-name'), this);
+		prepareSettingsCategoryWindow(id('settings-category-window-cont'), this.lastElementChild.getAttribute('category-name'), this);
 		
 		openWindowBlock(id('settings-category-window-cont'), id('settings-category-window-cont').lastElementChild);
 
@@ -4074,7 +4102,7 @@ function prepareSettingsCategoryWindow (windowEl_cont, category, clickEl) {
 	let content_cont = id('settings-category-window-content');
 	let button_cont = id('settings-category-window-button');
 
-	windowEl_cont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.value;
+	windowEl_cont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.lastElementChild.value;
 
 	if (category == 'Reset data') uploadSettingsCategoryData_Reset(content_cont, button_cont);
 	else if (category == 'Language') uploadSettingsCategoryData_Language(content_cont, button_cont);
@@ -4306,13 +4334,13 @@ function getSwitchInput (blur_status) {
 function getDescription_Blurring (lang) {
 	
 	if (lang == 'en')
-		return ('You can turn blurring off for better performance.');
+		return ('You can turn blurring of some elements off for better performance.');
 	else if (lang == 'cz')
-		return ('Můžete pro lepší výkon vypnout rozmazání.');
+		return ('Můžete pro lepší výkon vypnout rozmazání některých elementů.');
 	else if (lang == 'ru')
-		return ('Вы можете отключить размытие для лучшей производительности.');
+		return ('Вы можете отключить размытие некоторых элементов для лучшей производительности.');
 	else if (lang == 'ua')
-		return ('Ви можете вимкнути розмиття для кращої продуктивності.');
+		return ('Ви можете вимкнути розмиття деяких елементів для кращої продуктивності.');
 }
 
 function getOffWordByLanguage (lang) {
@@ -4344,7 +4372,12 @@ function uploadSettingsCategoryData_Themes (content_cont, button_cont) {
 	
 	content_cont.insertAdjacentHTML('afterbegin',
 		`<div class="themes-cont">
-			<div theme="l" class="theme-cont" style="background: #ECF0F3;" id="theme-button-light">
+			<div theme="l" class="theme-cont" style="background: #ededed;" id="theme-button-light">
+				<div class="theme-account"></div>
+				<div class="theme-widget"></div>
+				<div class="theme-button"></div>
+			</div>
+			<div theme="d" class="theme-cont" style="background: #121212;" id="theme-button-dark">
 				<div class="theme-account"></div>
 				<div class="theme-widget"></div>
 				<div class="theme-button"></div>
@@ -4354,20 +4387,20 @@ function uploadSettingsCategoryData_Themes (content_cont, button_cont) {
 				<div class="theme-widget"></div>
 				<div class="theme-button"></div>
 			</div>
-			<div theme="d" class="theme-cont" style="background: #0b0b0b;" id="theme-button-dark">
-				<div class="theme-account"></div>
-				<div class="theme-widget"></div>
-				<div class="theme-button"></div>
-			</div>
 		</div>`
 	);
 	button_cont.classList.add('button-block-hide');
 
-	id('settings').style.transition = '.4s background';
-
 	for ( let el of content_cont.firstElementChild.getElementsByClassName('theme-cont') )
 		el.onclick = () => {
-			changeTheme(el.getAttribute('theme'));
+
+			id('settings-category-window-cont').classList.add('dark');
+			id('settings').style.transition = '0s background';
+
+			setTimeout(() => {
+				changeTheme(el.getAttribute('theme'));
+				id('settings-category-window-cont').classList.remove('dark');
+			}, 300);
 		}
 }
 
