@@ -4393,14 +4393,19 @@ function uploadSettingsCategoryData_Themes (content_cont, button_cont) {
 
 	for ( let el of content_cont.firstElementChild.getElementsByClassName('theme-cont') )
 		el.onclick = () => {
+			if (el.getAttribute('theme') != localStorage.getItem('T')) {
 
-			id('settings-category-window-cont').classList.add('dark');
-			id('settings').style.transition = '0s background';
-
-			setTimeout(() => {
-				changeTheme(el.getAttribute('theme'));
-				id('settings-category-window-cont').classList.remove('dark');
-			}, 300);
+				id('settings-category-window-cont').classList.add('dark');
+				id('settings').style.transition = '0s background';
+	
+				setTimeout(() => {
+					changeTheme(el.getAttribute('theme'));
+					setTimeout(() => {
+						id('settings-category-window-cont').classList.remove('dark');
+					}, 150);
+				}, 300);
+				
+			}
 		}
 }
 
