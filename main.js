@@ -5,8 +5,6 @@ const id = function (id) {
 // const root = ReactDOM.createRoot(id('root'));
 // const root_content = ReactDOM.createRoot(id('content'));
 
-// localStorage.clear();
-
 
 
 var categories_expense_titles = [];
