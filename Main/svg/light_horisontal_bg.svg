@@ -1,0 +1,11 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+  <defs></defs>
+  <filter id="blurMe" primitiveUnits="userSpaceOnUse" filterUnits="objectBoundingBox" x="-150%" y="-150%" width="400%" height="400%">
+    <feGaussianBlur stdDeviation="206" in="none" result="gaussian-blur-0"></feGaussianBlur>
+  </filter>
+  <circle cx="256.5" cy="585.647" r="260.929" filter="url(#blurMe)" style="fill: rgb(110, 116, 159); fill-opacity: 0.7;" transform="matrix(0, -1, 1, 0, 796.186157, 420.428986)"></circle>
+  <circle cx="-30.5" cy="424.103" r="287.464" filter="url(#blurMe)" style="fill: rgb(137, 109, 142); fill-opacity: 0.8;" transform="matrix(0, -1, 1, 0, 493.785675, 769.9328)"></circle>
+  <circle cx="292.253" cy="198.605" r="288.938" filter="url(#blurMe)" style="fill: rgb(203, 159, 174); fill-opacity: 0.8;" transform="matrix(0, -1, 1, 0, 14.217686, 602.164612)"></circle>
+  <rect width="597.088" height="1600" style="fill: rgb(230, 230, 230); fill-opacity: 0.05;" x="0.261" transform="matrix(0, -1, 1, 0, -0.016479, 727.736816)"></rect>
+  <rect width="900" height="1600.033" style="fill: rgb(230, 230, 230); fill-opacity: 0.05;" x="0.393" transform="matrix(0, -1, 1, 0, -0.016479, 900.393005)"></rect>
+</svg>
