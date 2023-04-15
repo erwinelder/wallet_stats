@@ -25,12 +25,6 @@ self.addEventListener('activate', async e => {
 
 
 self.addEventListener('fetch', e => {
-
-    // const {request} = e;
-    // const url = new URL(request.url);
-
-    // if (url.origin === location)
-
     e.respondWith(cacheFirst(e.request));
 });
 
@@ -38,7 +32,3 @@ async function cacheFirst (request) {
     const cached = await caches.match(request);
     return cached ?? await fetch(request);
 }
-
-// async function networkFirst (request) {
-
-// }
