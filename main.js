@@ -926,27 +926,26 @@ function uploadAppData () {
 
 
 function startPreloaderAnimation () {
+
+	disableScrolling();
 	
 	setTimeout(() => {
 		
-		disableScrolling();
-		
 		id('preloader').setAttribute('status', 'loading');
-		id('preloader-path').classList.add('draw');
+		id('preloader-svg').classList.add('show');
 	
 		setTimeout(() => {
-			id('preloader-svg').classList.add('draw-start');
-		}, 1);
-		
-		setTimeout(() => {
-			id('preloader-svg').classList.add('draw-before-end');
-			id('preloader-path-second').classList.add('show');
+			id('preloader-svg').classList.add('animate');
 			
 			setTimeout(() => {
-				id('preloader-svg').classList.add('draw-end');
-				id('preloader').setAttribute('status', 'done');
-			}, 200);
-		}, 940);
+				id('preloader-svg').classList.add('prefinish');
+
+				setTimeout(() => {
+					id('preloader-svg').classList.add('finish');
+					id('preloader').setAttribute('status', 'done');
+				}, 200);
+			}, 550);
+		}, 150);
 
 	}, 200);
 	

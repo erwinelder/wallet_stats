@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WalletStats</title>
     <link rel="stylesheet" href="Main/main.css">
-	<link rel="icon" type="svg" href="Main/Icons/wallet_icon.svg">
+	<link rel="icon" type="svg" href="Main/Icons/wallet_icon_new.svg">
 	<link rel="apple-touch-icon" sizes="144x144" href="Main/Icons/wallet_icon_bg_144.png"/>
 	<link rel="manifest" href="WalletStats.webmanifest"/>
 </head>
@@ -40,8 +40,31 @@
 	
     <div class="preloader" id="preloader">
 		<svg class="preloader-svg" id="preloader-svg" viewBox="0 0 1080 1080">
-			<path class="preloader-path" id="preloader-path" style="fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 38px;" d="M 265.994 486.996 L 265.8071666666667 527.0878333333334 C 265.62033333333335 567.1796666666667 265.24666666666667 647.3633333333333 267.87533333333334 690.8448333333334 C 270.50399999999996 734.3263333333334 276.135 741.1056666666667 282.00933333333336 747.3958333333334 C 287.88366666666667 753.686 294.0013333333334 759.4870000000001 375.8433333333334 773.1651666666667 C 457.68533333333335 786.8433333333332 615.2516666666667 808.3986666666666 697.4789999999999 814.6841666666666 C 779.7063333333332 820.9696666666665 786.5946666666665 811.9853333333334 793.044 803.3968333333332 C 799.4933333333333 794.8083333333334 805.5036666666666 786.6156666666666 809.2736666666666 736.2955000000001 C 813.0436666666666 685.9753333333333 814.5733333333333 593.5276666666667 812.4435 543.293 C 810.3136666666666 493.05833333333334 804.5243333333333 485.03666666666663 798.2448333333333 476.76866666666666 C 791.9653333333334 468.50066666666663 785.1956666666666 459.9863333333333 699.2208333333334 449.8566666666666 C 613.246 439.72700000000003 448.06600000000003 427.98199999999997 362.84400000000005 416.4825 C 277.622 404.983 272.358 393.72900000000004 272.2165 382.20250000000004 C 272.075 370.676 277.056 358.87699999999995 347.32616666666667 337.4921666666666 C 417.59633333333335 316.1073333333333 553.1556666666667 285.13666666666666 625.1551666666667 272.04716666666667 C 697.1546666666667 258.9576666666667 705.5943333333333 263.74933333333337 712.8023333333334 269.385 C 720.0103333333333 275.02066666666667 725.9866666666667 281.50033333333334 729 299.33616666666666 C 732.0133333333333 317.172 732.0636666666666 346.36400000000003 732.0888333333332 360.96 L 732.114 375.556" bx:d="M 265.994 486.996 U 264.873 727.547 U 281.766 747.885 U 300.119 765.288 U 772.818 829.954 U 793.483 803.001 U 811.514 778.423 U 816.103 501.08 U 798.735 477.015 U 778.426 451.472 U 282.886 416.237 U 267.094 382.475 U 282.037 347.078 U 688.715 254.166 U 714.034 268.541 U 731.963 287.98 U 732.114 375.556 1@277a4fc5"></path>
-			<path class="preloader-path-second" id="preloader-path-second" style="fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 38px;" d="M 811.689 618.344 C 813.26 629.734 813.26 648.061 811.689 659.844 C 810.118 671.626 806.975 676.862 790.887 679.019 C 774.798 681.175 745.764 680.25 729.414 673.635 C 713.064 667.02 709.398 654.714 709.005 642.015 C 708.612 629.316 711.492 616.225 727.843 608.833 C 744.193 601.44 774.013 599.745 790.494 601.124 C 806.975 602.503 810.118 606.954 811.689 618.344" transform="matrix(0.999391, 0.034899, -0.034899, 0.999391, 22.814618, -26.054016)" bx:d="M 813.26 611.406 U 813.26 666.389 U 803.833 682.099 U 716.729 679.326 U 705.732 642.407 U 714.372 603.134 U 803.833 598.051 Z 1@226d447a"></path>
+			<defs>
+				<filter id="drop-shadow-filter-0" color-interpolation-filters="sRGB" x="-500%" y="-500%" width="1000%" height="1000%" bx:preset="drop-shadow 1 0 -10 10 0.4 rgba(0,0,0,0.31)">
+					<feGaussianBlur in="SourceAlpha" stdDeviation="10"></feGaussianBlur>
+					<feOffset dx="0" dy="-10"></feOffset>
+					<feComponentTransfer result="offsetblur">
+						<feFuncA id="spread-ctrl" type="linear" slope="0.8"></feFuncA>
+					</feComponentTransfer>
+					<feFlood flood-color="rgba(0,0,0,0.3)"></feFlood>
+					<feComposite in2="offsetblur" operator="in"></feComposite>
+					<feMerge>
+						<feMergeNode></feMergeNode>
+						<feMergeNode in="SourceGraphic"></feMergeNode>
+					</feMerge>
+				</filter>
+				<radialGradient gradientUnits="userSpaceOnUse" cx="123.319" cy="884.955" r="393" id="gradient-0" gradientTransform="matrix(0.657606, 1.729281, -2.895, 1.1009, 2757.028809, -433.412048)" spreadMethod="pad">
+				<stop offset="0" style="stop-color: rgb(167, 120, 137);"></stop>
+				<stop offset="1" style="stop-color: rgb(110, 80, 91);"></stop>
+				</radialGradient>
+			</defs>
+			<rect class="preloader-svg-card2" id="preloader-svg-card2" x="192" y="207.332" width="696" height="479.275" style="fill: rgb(62, 62, 62); filter: url(#drop-shadow-filter-0);" rx="50.877" ry="50.877"></rect>
+			<rect class="preloader-svg-card1" id="preloader-svg-card1" x="192" y="301.332" width="696" height="479.275" style="fill: rgb(113, 93, 126); filter: url(#drop-shadow-filter-0);" rx="50.877" ry="50.877"></rect>
+			<g class="preloader-svg-wallet" id="preloader-svg-wallet">
+				<rect x="147" y="388.206" width="786" height="541.251" style="fill: url(#gradient-0); filter: url(#drop-shadow-filter-0);" rx="60.772" ry="60.772"></rect>
+				<text style="fill: rgb(103, 77, 86); font-family: Poppins; font-size: 57px; font-weight: 300; text-anchor: middle; white-space: pre;" x="181.548" y="1003.75" dx="668.016 -6.502" dy="-136.696 20.232">WS</text>
+			</g>
 		</svg>
 	</div>
 

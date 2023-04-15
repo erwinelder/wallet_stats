@@ -158,7 +158,7 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 	overflow: hidden;
 	
 	opacity: 1;
-	background: #ECF0F3;
+	background: #f9f9f9;
 	z-index: 120;
 	transition: background .5s, opacity .3s;
 }
@@ -168,43 +168,44 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 
 .preloader-svg {
 	width: 100%;
-	transition: transform linear 1s;
-}
-.preloader-svg.draw-start {
-	transform: translate(2.5px, -10px) rotate(-1.5deg);
-}
-.preloader-svg.draw-before-end {
-	transform: translate(-5px, 20px) rotate(3deg);
-	transition: transform .2s;
-}
-.preloader-svg.draw-end {
-	transform: translate(0px, 0px) rotate(0deg);
-}
-
-.preloader path {
-	stroke: #946b7a;
-	transition: stroke .5s;
-}
-
-.preloader-path-second {
+	transform: scale(0.3) translateY(0px);
 	opacity: 0;
-	transition: opacity .2s .1s;
+	transition: .5s transform, .5s opacity;
 }
-.preloader-path-second.show {
+.preloader-svg.show {
+	transform: scale(1) translateY(-40px);
 	opacity: 1;
 }
+.preloader-svg.prefinish {
+	transform: translateY(0px);
+	transition: .2s transform;
+}
+.preloader-svg.finish {
+	transform: translateY(-20px);
+}
 
-.preloader-path {
-	stroke-dasharray: 2245;
-	stroke-dashoffset: 2245;
+.preloader-svg-card1 {
+	transform: translateY(110px);
+	transition: .5s transform;
 }
-.preloader-path.draw {
-	animation: draw_preloader_path ease-in 1s forwards;
+.preloader-svg-card2 {
+	transform: translateY(210px);
+	transition: .5s transform;
 }
-@keyframes draw_preloader_path {
-	100% {
-		stroke-dashoffset: 0;
-	}
+.preloader-svg.animate .preloader-svg-card1 {
+	transform: rotate(-10deg) translate(-100px, 85px);
+}
+.preloader-svg.animate .preloader-svg-card2 {
+	transform: rotate(10deg) translate(72px, -103px);
+}
+
+.preloader-svg.prefinish .preloader-svg-card1 {
+	transform: rotate(0deg) translateY(110px);
+	transition: .2s transform;
+}
+.preloader-svg.prefinish .preloader-svg-card2 {
+	transform: rotate(0deg) translateY(210px);
+	transition: .2s transform;
 }
 
 
@@ -2237,7 +2238,7 @@ body.font2 .enable-widget-scroll-button-cont input {
 
 
 .preloader.light {
-	background: #ededed;
+	background: #f9f9f9;
 }
 .preloader.darkblue {
 	background: #1B252F;
@@ -2246,14 +2247,11 @@ body.font2 .enable-widget-scroll-button-cont input {
 	background: #121212;
 }
 
-.preloader.light path {
-	stroke: #946b7a;
+.preloader.darkblue .preloader-svg {
+	filter: brightness(85%);
 }
-.preloader.darkblue path {
-	stroke: #2f4051;
-}
-.preloader.dark path {
-	stroke: #6e505b;
+.preloader.dark .preloader-svg {
+	filter: brightness(80%);
 }
 
 
