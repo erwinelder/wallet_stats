@@ -918,7 +918,7 @@ function uploadAppData () {
 	setTimeout(uploadDataToCustomDateFilterMenu, 100);
 	setTimeout(positionateDateFilterMenu, 101);
 
-	// hidePreloader();
+	hidePreloader();
 }
 
 
