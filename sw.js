@@ -15,16 +15,22 @@ self.addEventListener('install', async e => {
 
 self.addEventListener('activate', async e => {
     const cache_names = await caches.keys();
+    console.log(cache_names);
     await Promise.all(
         cache_names
-            .filter(name => name != cache_version)
+            .filter(name => name !== cache_version)
             .map(name => caches.delete(name))
     );
 });
 
 
 self.addEventListener('fetch', e => {
-    console.log('Fetch', e.request.url);
+
+    // const {request} = e;
+    // const url = new URL(request.url);
+
+    // if (url.origin === location)
+
     e.respondWith(cacheFirst(e.request));
 });
 
@@ -32,3 +38,7 @@ async function cacheFirst (request) {
     const cached = await caches.match(request);
     return cached ?? await fetch(request);
 }
+
+// async function networkFirst (request) {
+
+// }
