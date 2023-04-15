@@ -653,10 +653,26 @@ const category_list_hr = `<hr class="categories-hr">`;
 // const accounts_root = ReactDOM.createRoot(id('accounts'));
 // const settings_accounts_root = ReactDOM.createRoot(id('settings-accounts'));
 
+window.addEventListener('load', async () => {
+
+	if (navigator.serviceWorker) {
+		try {
+			await navigator.serviceWorker.register('sw.js');
+			console.log('Service worker registration success.')
+		} catch {
+			console.log('Service worker registration failed.')
+		}
+	}
+	
+	await startApp();
+});
+
 // upload app data
 
-if (localStorage.getItem('L')) uploadAppData();
-else openHelloScreen();
+async function startApp () {
+	if (localStorage.getItem('L')) uploadAppData();
+	else openHelloScreen();
+}
 
 function openHelloScreen () {
 
