@@ -195,8 +195,8 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 }
 
 .preloader-path {
-	stroke-dasharray: 2241;
-	stroke-dashoffset: 2241;
+	stroke-dasharray: 2245;
+	stroke-dashoffset: 2245;
 }
 .preloader-path.draw {
 	animation: draw_preloader_path ease-in 1s forwards;
@@ -2247,7 +2247,8 @@ body.font2 .enable-widget-scroll-button-cont input {
 }
 
 .preloader.light path {
-	stroke: #946b7a;
+	/* stroke: #946b7a; */
+	stroke: #000;
 }
 .preloader.darkblue path {
 	stroke: #2f4051;
