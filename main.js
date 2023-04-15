@@ -918,7 +918,7 @@ function uploadAppData () {
 	setTimeout(uploadDataToCustomDateFilterMenu, 100);
 	setTimeout(positionateDateFilterMenu, 101);
 
-	hidePreloader();
+	// hidePreloader();
 }
 
 
@@ -946,7 +946,7 @@ function startPreloaderAnimation () {
 				id('preloader-svg').classList.add('draw-end');
 				id('preloader').setAttribute('status', 'done');
 			}, 200);
-		}, 980);
+		}, 940);
 
 	}, 200);
 	

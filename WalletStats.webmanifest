@@ -10,6 +10,12 @@
         "purpose": "any"
       },
       {
+        "src": "Main/Icons/wallet_icon_bg_196.png",
+        "sizes": "196x196",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
         "src": "Main/Icons/wallet_icon_bg_512.png",
         "sizes": "512x512",
         "type": "image/png",

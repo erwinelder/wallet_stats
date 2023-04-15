@@ -146,7 +146,7 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 .preloader {
 	width: 100vw;
 	height: 100vh;
-	padding-inline: 30vw;
+	padding-inline: 15vw;
 	box-sizing: border-box;
 	top: 0;
 	left: 0;
@@ -182,7 +182,7 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 }
 
 .preloader path {
-	stroke: #080808;
+	stroke: #946b7a;
 	transition: stroke .5s;
 }
 
@@ -195,8 +195,8 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 }
 
 .preloader-path {
-	stroke-dasharray: 1697;
-	stroke-dashoffset: 1697;
+	stroke-dasharray: 2241;
+	stroke-dashoffset: 2241;
 }
 .preloader-path.draw {
 	animation: draw_preloader_path ease-in 1s forwards;
