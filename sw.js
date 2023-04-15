@@ -3,7 +3,9 @@ const asset_files = [
     'index.html',
     'Main/main.css',
     'main.js',
-    'Main/svg/background-l.svg'
+    'Main/svg/background-l.svg',
+    'Main/svg/background-d.svg',
+    'Main/svg/background-b.svg'
 ];
 
 
