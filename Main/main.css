@@ -2247,8 +2247,7 @@ body.font2 .enable-widget-scroll-button-cont input {
 }
 
 .preloader.light path {
-	/* stroke: #946b7a; */
-	stroke: #000;
+	stroke: #946b7a;
 }
 .preloader.darkblue path {
 	stroke: #2f4051;
