@@ -170,12 +170,12 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 	width: 100%;
 	transform: scale(0.3) translateY(0px);
 	opacity: 0;
-	transition: .5s transform, .5s opacity;
 	will-change: transform, opacity;
 }
 .preloader-svg.show {
 	transform: scale(1) translateY(-40px);
 	opacity: 1;
+	transition: .5s transform, .5s opacity;
 }
 .preloader-svg.prefinish {
 	transform: translateY(0px);
