@@ -856,6 +856,7 @@ function getLanguageByNumber (lang_num) {
 function closeHelloScreen () {
 	id('hello-screen').classList.add('hide');
 	uploadAppData();
+	startPreloaderAnimation();
 }
 
 
@@ -944,6 +945,8 @@ function startPreloaderAnimation () {
 		}, 150);
 
 	}, 200);
+
+	hidePreloader();
 	
 }
 
@@ -5065,5 +5068,8 @@ function adaptInputLengthExplicitly (el) {
 		el.style.width = el.value.length * bigger_length + 'ch';
 }
 
-startPreloaderAnimation();
-hidePreloader();
+
+
+if (id('hello-screen').classList.contains('hide')) {
+	startPreloaderAnimation();
+}
