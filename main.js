@@ -862,8 +862,6 @@ function closeHelloScreen () {
 
 function uploadAppData () {
 
-	startPreloaderAnimation();
-
 	// upload language
 	if (!(localStorage.getItem('L'))) localStorage.setItem('L', 'en');
 	uploadLanguage(localStorage.getItem('L'));
@@ -917,8 +915,6 @@ function uploadAppData () {
 	// upload date filter menu
 	setTimeout(uploadDataToCustomDateFilterMenu, 100);
 	setTimeout(positionateDateFilterMenu, 101);
-
-	hidePreloader();
 }
 
 
@@ -5068,3 +5064,6 @@ function adaptInputLengthExplicitly (el) {
 	else
 		el.style.width = el.value.length * bigger_length + 'ch';
 }
+
+startPreloaderAnimation();
+hidePreloader();
