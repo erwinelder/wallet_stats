@@ -1514,21 +1514,32 @@ function uploadLanguageToHistoryNavbars (lang) {
 
 function uploadLanguageToWidgets (lang) {
 
-	let array = id('stats-column').getElementsByClassName('stats-column-title');
+	let el = id('stats-column').getElementsByClassName('stats-column-title');
 
 	if (lang == 'en') {
-		array[0].firstElementChild.firstElementChild.innerHTML = 'Incomes';
-		array[1].firstElementChild.firstElementChild.innerHTML = 'Expenses';
+		el[0].firstElementChild.firstElementChild.innerHTML = 'Incomes';
+		el[1].firstElementChild.firstElementChild.innerHTML = 'Expenses';
 	} else if (lang == 'cz') {
-		array[0].firstElementChild.firstElementChild.innerHTML = 'Příjmy';
-		array[1].firstElementChild.firstElementChild.innerHTML = 'Výdaje';
+		el[0].firstElementChild.firstElementChild.innerHTML = 'Příjmy';
+		el[1].firstElementChild.firstElementChild.innerHTML = 'Výdaje';
 	} else if (lang == 'ru') {
-		array[0].firstElementChild.firstElementChild.innerHTML = 'Доходы';
-		array[1].firstElementChild.firstElementChild.innerHTML = 'Расходы';
+		el[0].firstElementChild.firstElementChild.innerHTML = 'Доходы';
+		el[1].firstElementChild.firstElementChild.innerHTML = 'Расходы';
 	} else if (lang == 'ua') {
-		array[0].firstElementChild.firstElementChild.innerHTML = 'Доходи';
-		array[1].firstElementChild.firstElementChild.innerHTML = 'Витрати';
+		el[0].firstElementChild.firstElementChild.innerHTML = 'Доходи';
+		el[1].firstElementChild.firstElementChild.innerHTML = 'Витрати';
 	}
+
+	el = id('incomes-expenses-total-title');
+	
+	if (lang == 'en')
+		el.innerText = 'Total:';
+	else if (lang == 'cz')
+		el.innerText = 'Celkem:';
+	else if (lang == 'ru')
+		el.innerText = 'Всего:';
+	else if (lang == 'ua')
+		el.innerText = 'Всього:';
 }
 
 
