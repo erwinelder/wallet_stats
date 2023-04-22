@@ -3872,6 +3872,11 @@ function updateHistoryForNewRecord (record_num, record_type, record_account) {
 		reuploadRecordsToHistoryAnimated();
 	} else {
 		record_num = checkRecordsOrderByDate(Number(record_num));
+
+		// hide history empty message
+		if (id('history-empty').classList.contains('visible'))
+			id('history-empty').classList.remove('visible');
+
 		// add record to history
 		addRecordToHistory(record_num, record_account, 'afterbegin');
 		animateAddingRecord(id('history').firstElementChild);
