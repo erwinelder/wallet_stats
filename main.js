@@ -3648,7 +3648,7 @@ function openCategoryWindow (clickEl, windowEl_cont, windowEl) {
 	let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
 	windowEl.setAttribute('top-position', top_position);
 	
-	windowEl_cont.firstElementChild.onclick = function() {
+	windowEl_cont.firstElementChild.onclick = () => {
 		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
 
 		if (id('subcategories-cont').classList.contains('subcategories-cont-visible'))
@@ -3663,29 +3663,29 @@ function resetCategoryWindowData (subcategories_els_arr) {
 	id('categories-expense').classList.remove('categories-overflow');
 	id('subcategories-title').innerHTML = null;
 	id('subcategories-cont').classList.remove('subcategories-cont-visible');
-	subcategories_els_arr[id('make-record-category').getAttribute('categorynum')].classList.remove('subcategory-cont-visible');
+	subcategories_els_arr[id('subcategories').getAttribute('categorynum')].classList.remove('subcategory-cont-visible');
 }
 
 function setUpOpeningSubcategoryList (categories_block, categories_els_arr, subcategories_els_arr) {
 	
-  for (let category of categories_els_arr) {
-    category.onclick = function() {
+	for (let category of categories_els_arr) {
+		category.onclick = function() {
 
 			let category_num = this.getAttribute('categorynum');
-			id('make-record-category').setAttribute('categorynum', category_num);
+			id('subcategories').setAttribute('categorynum', category_num);
 
 			categories_block.classList.add('categories-overflow');
 			id('subcategories-title').innerHTML = this.lastElementChild.innerHTML;
 			subcategories_els_arr[category_num].classList.add('subcategory-cont-visible');
 				
-      id('subcategories-cont').classList.add('subcategories-cont-visible');
+			id('subcategories-cont').classList.add('subcategories-cont-visible');
 
 			id('subcategories-back-button').onclick = function() {
 				closeSubcategoriesWindow(categories_block, subcategories_els_arr, category_num);
 			}
 
-    }
-  }
+		}
+	}
 }
 
 function closeSubcategoriesWindow (categories_block, subcategories_els_arr, category_num) {
@@ -3704,15 +3704,17 @@ function setUpClickOnSubcategory (clickEl, windowEl_cont, windowEl, categories_e
   for (let category of categories_els_arr) {
     category.onclick = function() {
       
-			clickEl.firstElementChild.innerHTML = this.firstElementChild.innerHTML;
-			clickEl.lastElementChild.value = this.lastElementChild.innerHTML;
+		clickEl.firstElementChild.innerHTML = this.firstElementChild.innerHTML;
+		clickEl.lastElementChild.value = this.lastElementChild.innerHTML;
 
-			if (windowEl.id == 'categories-expense')
-				clickEl.setAttribute('subcategorynum', this.getAttribute('subcategorynum'));
-			else
-				clickEl.setAttribute('categorynum', this.getAttribute('categorynum'));
+		if (windowEl.id == 'categories-expense') {
+			clickEl.setAttribute('categorynum', id('subcategories').getAttribute('categorynum'));
+			clickEl.setAttribute('subcategorynum', this.getAttribute('subcategorynum'));
+		}
+		else
+			clickEl.setAttribute('categorynum', this.getAttribute('categorynum'));
 
-			closeCategoriesWindow(clickEl, windowEl_cont, windowEl);
+		closeCategoriesWindow(clickEl, windowEl_cont, windowEl);
 
     }
   }
