@@ -168,14 +168,16 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 
 .preloader-svg {
 	width: 100%;
-	transform: scale(0.3) translateY(0px);
-	opacity: 0;
+	transform: scale(0) translateY(20px);
 	will-change: transform, opacity;
+	transition: 0s transform, 0s opacity;
 }
 .preloader-svg.show {
-	transform: scale(1) translateY(-40px);
-	opacity: 1;
+	transform: scale(1) translateY(0px);
 	transition: .5s transform, .5s opacity;
+}
+.preloader-svg.animate {
+	transform: scale(1) translateY(-60px);
 }
 .preloader-svg.prefinish {
 	transform: translateY(0px);
@@ -197,10 +199,10 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 	transform: translateY(210px);
 }
 .preloader-svg.animate .preloader-svg-card1 {
-	transform: rotate(-10deg) translate(-100px, 85px);
+	transform: rotate(-10deg) translate(-100px, 45px);
 }
 .preloader-svg.animate .preloader-svg-card2 {
-	transform: rotate(10deg) translate(72px, -103px);
+	transform: rotate(10deg) translate(72px, -183px);
 }
 
 .preloader-svg.prefinish .preloader-svg-card1 {

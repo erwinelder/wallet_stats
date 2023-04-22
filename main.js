@@ -928,7 +928,6 @@ function startPreloaderAnimation () {
 	
 	setTimeout(() => {
 		
-		id('preloader').setAttribute('status', 'loading');
 		id('preloader-svg').classList.add('show');
 	
 		setTimeout(() => {
@@ -939,29 +938,19 @@ function startPreloaderAnimation () {
 
 				setTimeout(() => {
 					id('preloader-svg').classList.add('finish');
-					id('preloader').setAttribute('status', 'done');
-				}, 200);
-			}, 550);
-		}, 150);
 
-	}, 200);
-
-	hidePreloader();
-	
-}
-
-function hidePreloader () {
-
-	if (id('preloader').getAttribute('status') == 'done') {
-
-		id('preloader').classList.add('hide');
-		
-		setTimeout(() => {
-			id('preloader').style.display = 'none';
-			enableScrolling();
-		}, 300);
-		
-	} else setTimeout(hidePreloader, 100);
+					setTimeout(() => {
+						id('preloader').classList.add('hide');
+			
+						setTimeout(() => {
+							id('preloader').style.display = 'none';
+							enableScrolling();
+						}, 300);
+					}, 50); // hide
+				}, 200); // finish
+			}, 600); // prefinish
+		}, 550); // animate
+	}, 500); // show
 }
 
 
