@@ -172,6 +172,9 @@ body.font2 :is(h1, h2, h3, h4, h5, h6) {
 	will-change: transform, opacity;
 	transition: 0s transform, 0s opacity;
 }
+/* .preloader-svg rect {
+	filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.3));
+} */
 .preloader-svg.show {
 	transform: scale(1) translateY(0px);
 	transition: .5s transform, .5s opacity;

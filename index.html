@@ -41,28 +41,15 @@
     <div class="preloader" id="preloader">
 		<svg class="preloader-svg" id="preloader-svg" viewBox="0 0 1080 1080" rel="preload" as="image">
 			<defs>
-				<filter id="drop-shadow-filter-0" color-interpolation-filters="sRGB" x="-500%" y="-500%" width="1000%" height="1000%" bx:preset="drop-shadow 1 0 -10 10 0.4 rgba(0,0,0,0.31)">
-					<feGaussianBlur in="SourceAlpha" stdDeviation="10"></feGaussianBlur>
-					<feOffset dx="0" dy="-10"></feOffset>
-					<feComponentTransfer result="offsetblur">
-						<feFuncA id="spread-ctrl" type="linear" slope="0.8"></feFuncA>
-					</feComponentTransfer>
-					<feFlood flood-color="rgba(0,0,0,0.3)"></feFlood>
-					<feComposite in2="offsetblur" operator="in"></feComposite>
-					<feMerge>
-						<feMergeNode></feMergeNode>
-						<feMergeNode in="SourceGraphic"></feMergeNode>
-					</feMerge>
-				</filter>
 				<radialGradient gradientUnits="userSpaceOnUse" cx="123.319" cy="884.955" r="393" id="gradient-0" gradientTransform="matrix(0.657606, 1.729281, -2.895, 1.1009, 2757.028809, -433.412048)" spreadMethod="pad">
 					<stop offset="0" style="stop-color: rgb(167, 120, 137);"></stop>
 					<stop offset="1" style="stop-color: rgb(110, 80, 91);"></stop>
 				</radialGradient>
 			</defs>
-			<rect class="preloader-svg-card2" id="preloader-svg-card2" x="192" y="207.332" width="696" height="479.275" style="fill: rgb(62, 62, 62); filter: url(#drop-shadow-filter-0);" rx="50.877" ry="50.877"></rect>
-			<rect class="preloader-svg-card1" id="preloader-svg-card1" x="192" y="301.332" width="696" height="479.275" style="fill: rgb(113, 93, 126); filter: url(#drop-shadow-filter-0);" rx="50.877" ry="50.877"></rect>
+			<rect class="preloader-svg-card2" id="preloader-svg-card2" x="192" y="207.332" width="696" height="479.275" style="fill: rgb(62, 62, 62);" rx="50.877" ry="50.877"></rect>
+			<rect class="preloader-svg-card1" id="preloader-svg-card1" x="192" y="301.332" width="696" height="479.275" style="fill: rgb(113, 93, 126);" rx="50.877" ry="50.877"></rect>
 			<g class="preloader-svg-wallet" id="preloader-svg-wallet">
-				<rect x="147" y="388.206" width="786" height="541.251" style="fill: url(#gradient-0); filter: url(#drop-shadow-filter-0);" rx="60.772" ry="60.772"></rect>
+				<rect x="147" y="388.206" width="786" height="541.251" style="fill: url(#gradient-0);" rx="60.772" ry="60.772"></rect>
 				<text style="fill: rgb(103, 77, 86); font-family: Poppins; font-size: 57px; font-weight: 300; text-anchor: middle; white-space: pre;" x="181.548" y="1003.75" dx="668.016 -6.502" dy="-136.696 20.232">WS</text>
 			</g>
 		</svg>
