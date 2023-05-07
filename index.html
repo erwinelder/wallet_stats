@@ -130,7 +130,26 @@
 			</div>
 
 			<div class="widget-cont">
+				<div class="today-stats widget">
+
+					<h2 id="today-stats-title"></h2>
+					
+					<p id="today-stats-despription"></p>
+
+				</div>
+			</div>
+			
+			<div class="widget-cont">
 				<div class="expenses-incomes-columns-cont widget" id="stats-column">
+
+					<h2 id="incomes-expenses-month-title"></h2>
+					
+					<div class="incomes-expenses-total-cont" id="incomes-expenses-total-cont">
+						<h3 id="incomes-expenses-total-title"></h3>
+						<h3 id="incomes-expenses-total"></h3>
+					</div>
+
+					<hr class="big-hr">
 
 					<div class="incomes-column-cont column-cont">
 						<div class="stats-column-title">
@@ -160,13 +179,6 @@
 						<div>
 							<div id="expenses-column" class="expenses-column column"></div>
 						</div>
-					</div>
-
-					<hr class="big-hr">
-
-					<div class="incomes-expenses-total-cont" id="incomes-expenses-total-cont">
-						<h3 id="incomes-expenses-total-title"></h3>
-						<h3 id="incomes-expenses-total"></h3>
 					</div>
 
 				</div>
@@ -249,6 +261,11 @@
 		</div>
 
 
+		<div id="test-cont">
+			<p id="test-p"></p>
+		</div>
+
+
         
 		<div class="floating-window-cont make-record-window-cont" id="make-record-window-cont">
 
@@ -268,10 +285,9 @@
 					</div>
 				</div>
 
-				<div class="button-block-top" id="remove-record-button-block">
-                    <input type="button" value="Remove record" class="clickable-button" id="remove-record">
+				<!-- <div class="button-block-top" id="remove-record-button-block">
 					<hr class="big-hr">
-				</div>
+				</div> -->
 
                 <div class="field">
                     <input class="field-date interective-field" type="datetime-local" id="make-record-date">
@@ -279,13 +295,18 @@
 
                 
 				<div class="field">
-					<h6 class="field-title">Amount</h6>
-					<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-record-amount">
+					<h6 class="field-title">Note</h6>
+					<input type="text" class="active-input interective-field make-record-note" id="make-record-note">
 				</div>
 
 				<div class="field">
 					<h6 class="field-title">Account</h6>
 					<div id="make-record-account" accountnum=""></div>
+				</div>
+
+				<div class="field">
+					<h6 class="field-title">Amount</h6>
+					<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-record-amount">
 				</div>
 
 				<!-- <div class="field make-record-transfer-account-cont make-record-transfer-account-cont-hide" id="make-record-transfer-account-cont">
@@ -303,7 +324,11 @@
 
 				<div class="button-block-bottom">
 					<hr class="big-hr">
-					<input type="button" value="Save record" class="clickable-button" id="make-record-save-button">
+					<div class="button-block-inline" id="make-record-button-block">
+						<input type="button" value="Save" class="clickable-button" id="make-record-save-button">
+						<input type="button" value="Repeat" class="clickable-button" id="repeat-record">
+						<input type="button" value="Remove" class="clickable-button" id="remove-record">
+					</div>
 				</div>
 
 			</div>
@@ -471,7 +496,7 @@
 		<div class="floating-window-cont edit-account-cont" id="edit-account-cont">
 			<div></div>
 
-			<div class="popup-connected-notification-cont">
+			<div class="popup-connected-notification-cont" id="popup-connected-notification-cont">
 				<div class="popup-connected-notification adaptive-background">
 					<div class="timer-line-cont"><hr></div>
 					<div class="notification-content"><h3></h3></div>
@@ -535,6 +560,32 @@
 				</div>
 			</div>
 		</div> <!-- edit-account-color-cont -->
+
+		<div class="notification-cont" id="notification-cont">
+			<div class="notification solid-blur" id="notification">
+
+				<div class="timer-line-cont"><hr id="notification-timer-line"></div>
+
+				<h3 id="notification-title"></h3>
+
+				<p id="notification-details"></p>
+
+				<div class="notification-button-block" id="notification-button-block">
+					<hr class="small-hr">
+					<input type="button" value="" id="notification-show-details-button">
+				</div>
+
+			</div>
+		</div>
+
+		<div class="floating-window-cont update-details-cont" id="update-details-cont">
+			<div></div>
+			<div class="floating-window" id="update-details">
+				<h2 id="update-details-title"></h2>
+				<hr class="big-hr">
+				<div id="update-details-paragraphs"></div>
+			</div>
+		</div>
 
 	</div>
     

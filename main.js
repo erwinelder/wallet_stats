@@ -582,8 +582,8 @@ var expense_subcategories_results = [];
 const account_el = (accountnum, color, currency, balance) => {
 	return (`
 		<div accountnum="${accountnum}" style="color: #ddd; background: #${color};" class="account">
-			<input type="text" value="${currency}" class="account-currency active-input" readonly>
-			<input type="text" value="${getReadableNumber(balance)}" amount="${balance}" class="account-balance active-input" style="background: rgba(255, 255, 255, 0.1);" readonly>
+			<p class="account-currency">${currency}</p>
+			<p class="account-balance" style="background: rgba(255, 255, 255, 0.1);">${getReadableNumber(balance)}</p>
 		</div>
 	`);
 }
@@ -666,8 +666,6 @@ window.addEventListener('load', async () => {
 	
 	await startApp();
 });
-
-// upload app data
 
 async function startApp () {
 	if (localStorage.getItem('L')) uploadAppData();
@@ -836,7 +834,7 @@ function setUpClickOnHelloSubmitLanguageButton () {
 			id('hello-language').style.opacity = '0';
 
 			setTimeout(() => {
-				localStorage.setItem('L', getLanguageByNumber(id('hello-language').getAttribute('langnum')));
+				localStorage.setItem( 'L', getLanguageByNumber(id('hello-language').getAttribute('langnum')) );
 				closeHelloScreen();
 			}, 1000);
 		}, 1200);
@@ -863,9 +861,12 @@ function closeHelloScreen () {
 
 function uploadAppData () {
 
+	// upload version update
+	uploadVersionUpdate();
+
 	// upload language
-	if (!(localStorage.getItem('L'))) localStorage.setItem('L', 'en');
-	uploadLanguage(localStorage.getItem('L'));
+	let lang = localStorage.getItem('L');
+	uploadLanguage(lang);
 
 	// upload blur
 	if (!(localStorage.getItem('B')))
@@ -907,8 +908,11 @@ function uploadAppData () {
 	// upload records to history
 	if (localStorage.getItem('RCount')) uploadRecordsToHistory();
 	else localStorage.setItem('RCount', 0);
+
+	// upload today statistic
+	uploadTodayStats(lang, id('accounts').getAttribute('accountnum'));
 	
-	// upload statistic
+	// upload incomes and categories statistic
 	uploadExpensesIncomesStats();
 	fitPieChartSize();
 	uploadDataToPieChart();
@@ -916,6 +920,238 @@ function uploadAppData () {
 	// upload date filter menu
 	setTimeout(uploadDataToCustomDateFilterMenu, 100);
 	setTimeout(positionateDateFilterMenu, 101);
+
+	// give fix width to elements
+	setTimeout(fixCurrentWidthOfElements, 1);
+}
+
+function uploadVersionUpdate () {
+	let version = '2.4';
+
+	if (!localStorage.getItem('V')) {
+
+		localStorage.setItem('V', version);
+		setTimeout(() => {
+			showNotification('update', 6500);
+		}, 3000);
+
+	} else if (localStorage.getItem('V') != version) {
+		
+		localStorage.setItem('V', version);
+		setTimeout(() => {
+			showNotification('update', 6500);
+		}, 3000);
+	}
+}
+
+
+
+
+
+function showNotification (type, timer) {
+
+	let notification_contEl = id('notification-cont'),
+		notificationEl = id('notification')
+		timer_line = id('notification-timer-line');
+	var hide_notification;
+
+	// upload message
+	uploadNotificationMessage(type, id('notification-title'), id('notification-details'));
+	// show or hide buttons block
+	uploadNotificationButtons(type, notificationEl);
+	
+	// start show notification animation
+	notification_contEl.style.visibility = 'visible';
+	notification_contEl.classList.add('show');
+	// show timer line
+	if (timer > 0) timer_line.style.transition = `${timer / 1000}s width linear`;
+	else timer_line.style.width = '0%';
+	
+	setTimeout(() => {
+		// end show notification animation
+		notification_contEl.classList.add('animate-end');
+		notification_contEl.classList.remove('show');
+		// start timer to hide notification
+		if (timer > 0) {
+			timer_line.style.width = '0%';
+			hide_notification = setTimeout(() => {
+				hideNotification(notification_contEl);
+			}, timer);
+		}
+	}, 400);
+	
+	// hide notification by click on it
+	notificationEl.onclick = e => {
+		if (e.target.id != 'notification-show-details-button') {
+			clearTimeout(hide_notification);
+			hideNotification(notification_contEl);
+		}
+	}
+}
+
+function uploadNotificationMessage (type, titleEl, detailsEl) {
+	let lang = localStorage.getItem('L');
+
+	if (type == 'update') {
+		if (lang == 'en')
+			detailsEl.innerText = `WalletStats got new update version ${localStorage.getItem('V')}!`;
+		else if (lang == 'cz')
+			detailsEl.innerText = `WalletStats dostal novou aktualizaci verze ${localStorage.getItem('V')}!`;
+		else if (lang == 'ru')
+			detailsEl.innerText = `WalletStats получил новое обновление версии ${localStorage.getItem('V')}!`;
+		else if (lang == 'ua')
+			detailsEl.innerText = `WalletStats отримав нове оновлення версії ${localStorage.getItem('V')}!`;
+	}
+}
+
+function uploadNotificationButtons (type, notificationEl) {
+
+	if (type == 'update') {
+
+		let windowEl_cont = id('update-details-cont'),
+			windowEl = id('update-details-cont').lastElementChild;
+
+		// show button block
+		id('notification-button-block').style.display = 'flex';
+
+		id('notification-show-details-button').onclick = function() {
+			// upload update details content to window
+			uploadUpdateDetailsToItsWindow();
+			// open update detail's window
+			disableScrolling();
+			openFloatingWindow(notificationEl, windowEl_cont, windowEl, calculateScaleX(notificationEl, windowEl_cont));
+			// set up click to close update's details window
+			windowEl_cont.firstElementChild.onclick = function() {
+				closeFloatingWindowByDisappearMethod(notificationEl, windowEl_cont, windowEl);
+				enableScrolling();
+			}
+		}
+	}
+}
+
+function hideNotification (notification_contEl) {
+
+	notification_contEl.classList.remove('animate-end');
+	
+	setTimeout(() => {
+		notification_contEl.style.visibility = 'hidden';
+	}, 400);
+}
+
+
+
+function uploadUpdateDetailsToItsWindow () {
+	let container = id('update-details-paragraphs');
+	
+	let paragraphs = getUpdateDetailsArrayByLang();
+
+	for (let a = 0; a < paragraphs.length; a++)
+		container.insertAdjacentHTML('beforeend', paragraphs[a]);
+}
+
+function getUpdateDetailsArrayByLang () {
+	let lang = localStorage.getItem('L');
+
+	if (lang == 'en')
+		return [
+			`<h3>Repeating records</h3>
+			<p>
+				Now you can duplicate records if you need to record the new one with the same data. Just click on a record in the history and click the button "repeat". For more, if you need to duplicate record but with some other data, for example for other category, you can change it and click "repeat" button, after that almost the same record will be saved already as the new one.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Records notes</h3>
+			<p>
+				Now you can to add notes for you records. It also will be shown in the history in each record.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>"Today" widget</h3>
+			<p>
+				Now you can view, how much have you spend for just today.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Other</h3>
+			<p>
+				Other features, bug fixing and visual improvements.
+			</p>`
+		];
+	else if (lang == 'cz')
+		return [
+			`<h3>Opakování záznamů</h3>
+			<p>
+				Nyní můžete duplikovat záznamy, pokud potřebujete zaznamenat nový se stejnými daty. Stačí kliknout na záznam v historii a kliknout na tlačítko "opakovat". Navíc, pokud potřebujete duplikovat záznam, ale s nějakými jinými údaji, například pro jinou kategorii, můžete to změnit a kliknout na tlačítko "opakovat", poté bude téměř stejný záznam uložen již jako nový.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Poznámky záznamů</h3>
+			<p>
+				Nyní můžete přidávat poznámky k vašim záznamům. Také se zobrazí v historii v každém záznamu.
+			</p>`,
+			`<hr class="small-hr">`,
+			
+			`<h3>Widget "Dnes"</h3>
+			<p>
+				Nyní se můžete podívat, kolik jste utratili jen za dnešní den.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Ostatní</h3>
+			<p>
+				Další funkce, opravy chyb a vizuální vylepšení.
+			</p>`
+		];
+	else if (lang == 'ru')
+		return [
+			`<h3>Повторение записей</h3>
+			<p>
+				Теперь вы можете дублировать записи, если вам нужно записать новую с теми же данными. Просто нажмите на запись в истории и нажмите кнопку "повторить". Более того, если вам нужно продублировать запись, но с какими-то другими данными, например для другой категории, вы можете изменить ее и нажать кнопку "повторить", после чего почти такая же запись будет сохранена уже как новая.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Примечание</h3>
+			<p>
+				Теперь вы можете добавлять примечания к своим записям. Они также будут отображаться в истории у каждой записи.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Виджет "Сегодня"</h3>
+			<p>
+				Теперь вы можете посмотреть, сколько вы потратили только сегодня.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Другое</h3>
+			<p>
+				Другие функции, исправление ошибок и визуальные улучшения.
+			</p>`
+		];
+	else if (lang == 'ua')
+		return [
+			`<h3>Повторення записів</h3>
+			<p>
+				Тепер ви можете дублювати записи, якщо вам потрібно записати новий з тими ж даними. Просто натисніть на запис в історії та натисніть кнопку "повторити". Більш того, якщо вам потрібно дублювати запис, але з деякими іншими даними, наприклад, для іншої категорії, ви можете змінити це та натиснути кнопку "повторити", після чого майже той самий запис буде збережено вже як новий.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Примітки записів</h3>
+			<p>
+				Тепер ви можете додавати примітки до своїх записів. Вони також будуть показани в історії у кожного запису.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Віджет "Сьогодні"</h3>
+			<p>
+				 Тепер ви можете переглянути, скільки ви витратили лише за сьогодні.
+			</p>`,
+			`<hr class="small-hr">`,
+
+			`<h3>Інше</h3>
+			<p>
+				Інші функції, виправлення помилок і візуальні покращення.
+			</p>`
+		];
 }
 
 
@@ -1519,6 +1755,17 @@ function uploadLanguageToWidgets (lang) {
 		el[1].firstElementChild.firstElementChild.innerHTML = 'Витрати';
 	}
 
+	el = id('today-stats-title');
+	
+	if (lang == 'en')
+		el.innerText = 'Today';
+	else if (lang == 'cz')
+		el.innerText = 'Dnes';
+	else if (lang == 'ru')
+		el.innerText = 'Сегодня';
+	else if (lang == 'ua')
+		el.innerText = 'Сьогодні';
+
 	el = id('incomes-expenses-total-title');
 	
 	if (lang == 'en')
@@ -1534,25 +1781,53 @@ function uploadLanguageToWidgets (lang) {
 
 function uploadLanguageToTitles(lang) {
 
-	let el = id('make-record-window').getElementsByClassName('field-title');
+	let el = id('update-details-title');
+
+	if (lang == 'en')
+		el.innerText = `What's new in V${localStorage.getItem('V')}`;
+	else if (lang == 'cz')
+		el.innerText = `Co je nové ve V${localStorage.getItem('V')}`;
+	else if (lang == 'ru')
+		el.innerText = `Что нового в В${localStorage.getItem('V')}`;
+	else if (lang == 'ua')
+		el.innerText = `Що нового у В${localStorage.getItem('V')}`;
+
+	el = id('make-record-window').getElementsByClassName('field-title');
 
 	if (lang == 'en') {
-		el[0].innerHTML = 'Amount';
+		el[0].innerHTML = 'Note';
 		el[1].innerHTML = 'Account';
-		el[2].innerHTML = 'Category';
+		el[2].innerHTML = 'Amount';
+		el[3].innerHTML = 'Category';
 	} else if (lang == 'cz') {
-		el[0].innerHTML = 'Částka';
+		el[0].innerHTML = 'Poznámka';
 		el[1].innerHTML = 'Účet';
-		el[2].innerHTML = 'Kategorie';
+		el[2].innerHTML = 'Částka';
+		el[3].innerHTML = 'Kategorie';
 	} else if (lang == 'ru') {
-		el[0].innerHTML = 'Сумма';
+		el[0].innerHTML = 'Примечание';
 		el[1].innerHTML = 'Счёт';
-		el[2].innerHTML = 'Категория';
+		el[2].innerHTML = 'Сумма';
+		el[3].innerHTML = 'Категория';
 	} else if (lang == 'ua') {
-		el[0].innerHTML = 'Сума';
+		el[0].innerHTML = 'Примітка';
 		el[1].innerHTML = 'Рахунок';
-		el[2].innerHTML = 'Категорія';
+		el[2].innerHTML = 'Сума';
+		el[3].innerHTML = 'Категорія';
 	}
+
+	el = id('make-record-note');
+
+	if (lang == 'en')
+		el.setAttribute('placeholder', 'Note for more specific');
+	else if (lang == 'cz')
+		el.setAttribute('placeholder', 'Poznámka pro upřesnění');
+	else if (lang == 'ru')
+		el.setAttribute('placeholder', 'Примечание для большей конкретики');
+	else if (lang == 'ua')
+		el.setAttribute('placeholder', 'Примітка для більшої конкретики');
+
+	adaptInputLengthExplicitly(el);
 
 	el = id('edit-account').getElementsByClassName('field-title');
 
@@ -1605,7 +1880,18 @@ function uploadLanguageToTitles(lang) {
 
 function uploadLanguageToButtons (lang) {
 
-	let el = id('make-record-button');
+	let el = id('notification-show-details-button');
+
+	if (lang == 'en')
+		el.value = 'Show details';
+	else if (lang == 'cz')
+		el.value = 'Ukázat podrobnosti';
+	else if (lang == 'ru')
+		el.value = 'Показать детали';
+	else if (lang == 'ua')
+		el.value = 'Показати деталі';
+
+	el = id('make-record-button');
 
 	if (lang == 'en')
 		el.value = 'Make record';
@@ -1627,17 +1913,6 @@ function uploadLanguageToButtons (lang) {
 	else if (lang == 'ua')
 		el.value = 'Налаштування';
 
-	el = id('remove-record');
-
-	if (lang == 'en')
-		el.value = 'Remove record';
-	else if (lang == 'cz')
-		el.value = 'Smazat záznam';
-	else if (lang == 'ru')
-		el.value = 'Удалить запись';
-	else if (lang == 'ua')
-		el.value = 'Видалити запис';
-
 	el = id('record-types').getElementsByTagName('input');
 
 	if (lang == 'en') {
@@ -1658,16 +1933,27 @@ function uploadLanguageToButtons (lang) {
 		el[2].value = 'Дохід';
 	}
 
-	el = id('make-record-save-button');
+	el = id('repeat-record');
 
 	if (lang == 'en')
-		el.value = 'Save record';
+		el.value = 'Repeat';
 	else if (lang == 'cz')
-		el.value = 'Uložit záznam';
+		el.value = 'Zopakovat';
 	else if (lang == 'ru')
-		el.value = 'Сохранить запись';
+		el.value = 'Повторить';
 	else if (lang == 'ua')
-		el.value = 'Зберегти запис';
+		el.value = 'Повторити';
+
+	el = id('remove-record');
+
+	if (lang == 'en')
+		el.value = 'Remove';
+	else if (lang == 'cz')
+		el.value = 'Smazat';
+	else if (lang == 'ru')
+		el.value = 'Удалить';
+	else if (lang == 'ua')
+		el.value = 'Видалити';
 
 	el = id('root').getElementsByClassName('back-button');
 
@@ -1738,16 +2024,16 @@ function uploadLanguageToButtons (lang) {
 	else if (lang == 'cz')
 		el.value = 'Smazat účet';
 	else if (lang == 'ru')
-		el.value = 'Удалить счёт';
+		el.value = 'Удалить';
 	else if (lang == 'ua')
-		el.value = 'Видалити рахунок';
+		el.value = 'Видалити';
 
 	el = id('save-account');
 
 	if (lang == 'en')
-		el.value = 'Save';
+		el.value = 'Save account';
 	else if (lang == 'cz')
-		el.value = 'Uložit';
+		el.value = 'Uložit účet';
 	else if (lang == 'ru')
 		el.value = 'Сохранить';
 	else if (lang == 'ua')
@@ -1849,25 +2135,11 @@ function uploadLanguageToButtons (lang) {
 
 	el = id('enable-history-scroll-button');
 
-	if (lang == 'en')
-		el.value = 'Enable scrolling';
-	else if (lang == 'cz')
-		el.value = 'Povolit rolování';
-	else if (lang == 'ru')
-		el.value = 'Включить прокрутку';
-	else if (lang == 'ua')
-		el.value = 'Увімкнути прокручування';
-
+	changeChangeScrollButtonTitle(el, 'off', lang);
+	
 	el = id('enable-categories-details-scroll-button');
-
-	if (lang == 'en')
-		el.value = 'Enable scrolling';
-	else if (lang == 'cz')
-		el.value = 'Povolit rolování';
-	else if (lang == 'ru')
-		el.value = 'Включить прокрутку';
-	else if (lang == 'ua')
-		el.value = 'Увімкнути прокручування';
+	
+	changeChangeScrollButtonTitle(el, 'off', lang);
 }
 
 
@@ -1876,20 +2148,45 @@ function uploadLanguageToButtons (lang) {
 
 function reapplyBlur (blur_status) {
 
-	if (blur_status)
+	if (blur_status) {
+
 		for (let el of document.getElementsByClassName('solid-background')) {
-			el.classList.add('blur');
-			setTimeout(() => {
-				el.classList.remove('solid-background');
-			}, 1);
+
+			if (el.id == 'notification') {
+				el.classList.add('solid-blur');
+				setTimeout(() => {
+					el.classList.remove('solid-background');
+				}, 1);
+			} else {
+				el.classList.add('blur');
+				setTimeout(() => {
+					el.classList.remove('solid-background');
+				}, 1);
+			}	
 		}
-	else
-		for (let el of document.getElementsByClassName('blur')) {
-			el.classList.add('solid-background');
-			setTimeout(() => {
-				el.classList.remove('blur');
-			}, 1);
-		}
+
+	} else {
+
+		operateElementsArrayClass(
+			document.getElementsByClassName('blur'),
+			'blur', 'solid-background'
+		);
+
+		operateElementsArrayClass(
+			document.getElementsByClassName('solid-blur'),
+			'solid-blur', 'solid-background'
+		);
+	}
+}
+
+function operateElementsArrayClass (array, class_to_remove, class_to_add) {
+
+	for (let el of array) {
+		el.classList.add(class_to_add);
+		setTimeout(() => {
+			el.classList.remove(class_to_remove);
+		}, 1);
+	}
 }
 
 
@@ -1946,7 +2243,7 @@ function checkAccountColor (account) {
 function applyTopmargin () {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
-//   id('popup-notification-cont').style.paddingTop = 'calc(4vh + ' + localStorage.getItem('topmargin') + 'px';
+  id('notification-cont').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px`;
 }
 
 
@@ -1962,17 +2259,15 @@ function addAccount () {
 
 function uploadAccount (account_num, container) {
 
-	let color = localStorage.getItem('AColor' + account_num);
-	let currency = localStorage.getItem('ACurrency' + account_num);
-	let balance = Number(localStorage.getItem('ABalance' + account_num));
+	let color = localStorage.getItem('AColor' + account_num),
+		currency = localStorage.getItem('ACurrency' + account_num),
+		balance = Number(localStorage.getItem('ABalance' + account_num)).toFixed(2);
 	
 	// accounts_root.render(<Account color={color} currency={currency} balance={balance} />);
 	// settings_accounts_root.render(<Account color={color} currency={currency} balance={balance} />);
 	// make_record_accounts_root.render(<Account color={color} currency={currency} balance={balance} />);
 
-	container.insertAdjacentHTML('beforeend', account_el(account_num, color, currency, Number(balance).toFixed(2)));
-	adaptInputLengthExplicitly(container.lastElementChild.firstElementChild);
-	adaptInputLengthExplicitly(container.lastElementChild.lastElementChild);
+	container.insertAdjacentHTML('beforeend', account_el(account_num, color, currency, balance));
 }
 
 
@@ -2219,21 +2514,12 @@ function setUpClickOnRecord (record) {
 		windowEl.setAttribute('top-position', top_position);
 
 		// set up click on remove record button
+		setUpClickOnRepeatRecordButton(clickEl, windowEl_cont, windowEl);
+
+		// set up click on remove record button
 		id('remove-record').onclick = () => {
-
 			removeRecord(record_num);
-
-			reconnectFloatingWindow(clickEl, id('history'), windowEl_cont, windowEl);
-			closeReconnectedFloatingWindow(windowEl_cont, windowEl);
-			reuploadRecordsToHistoryAnimated();
-
-			setTimeout(() => {
-				resetMakeRecordWindowData();
-				uploadExpensesIncomesStats();
-				updatePieChart();
-				enableScrolling();
-			}, 390);
-
+			closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl);
 		}
 
 		// set up click on close area
@@ -2248,55 +2534,90 @@ function setUpClickOnRecord (record) {
 
 function prepareEditRecordWindow (record_num) {
 
-	id('record-types').classList.add('element-hide');
-	id('record-types').setAttribute('record-type', localStorage.getItem(`RType${record_num}`));
-
+	// add top padding to window, set 'old' attribute, set record number as attrinute
+	id('make-record-window').classList.add('window-top-padding');
 	id('make-record-window').setAttribute('status', 'old');
 	id('make-record-window').setAttribute('recordnum', record_num);
-	
+	// hide bar for changing record type
+	id('record-types').classList.add('element-hide');
+	id('record-types').setAttribute('record-type', localStorage.getItem(`RType${record_num}`));
+	// upload record date
 	id('make-record-date').value = getRecordDateFormat(record_num);
-
+	// upload record note
+	if (localStorage.getItem(`RNote${record_num}`)) {
+		id('make-record-note').value = localStorage.getItem(`RNote${record_num}`);
+		adaptInputLengthExplicitly(id('make-record-note'));
+	}
+	// upload record account
+	let account_num = localStorage.getItem(`RAccount${record_num}`);
+	id('make-record-account').innerHTML = account_el(
+		account_num,
+		localStorage.getItem(`AColor${account_num}`),
+		localStorage.getItem(`ACurrency${account_num}`),
+		Number( localStorage.getItem(`ABalance${account_num}`) ).toFixed(2)
+	);
+	id('make-record-account').setAttribute('accountnum', account_num);
+	// adapt account color for dark themes
+	checkAccountColor(id('make-record-account').firstElementChild);
+	// upload record amount
 	id('make-record-amount').value = localStorage.getItem(`RAmount${record_num}`);
 	adaptInputLengthExplicitly(id('make-record-amount'));
+	// upload category to edit record window
+	uploadCategoryToEditRecordWindow(record_num);
+	// upload save record button title
+	uploadSaveRecordButtonTitle('short');
+}
 
-	let account_num = localStorage.getItem(`RAccount${record_num}`);
-	
-	id('make-record-account').innerHTML = account_el( account_num, localStorage.getItem(`AColor${account_num}`), localStorage.getItem(`ACurrency${account_num}`), Number(localStorage.getItem(`ABalance${account_num}`)).toFixed(2) );
-	id('make-record-account').setAttribute( 'accountnum', account_num );
-	
-	checkAccountColor(id('make-record-account').firstElementChild);
-	let account_inputs = id('make-record-account').getElementsByTagName('input');
-	adaptInputLengthExplicitly(account_inputs[0]);
-	adaptInputLengthExplicitly(account_inputs[1]);
-		
-	// if (localStorage.getItem('ACount') > 1) {
-	// 	id('record-type-transfer').classList.remove('window-nav-el-hide');
-	// 	// upload_transfer_account_in_makerecord();
-	// }
-	// else id('record-type-transfer').classList.add('window-nav-el-hide');
-	
+function uploadCategoryToEditRecordWindow (record_num) {
+	let category_button = id('make-record-category');
+
 	if (localStorage.getItem(`RType${record_num}`) == '-') {
 		
 		id('record-type-expense').classList.add('active-input-cont');
 		id('record-type-income').classList.remove('active-input-cont');
 		
-		id('make-record-category').firstElementChild.innerHTML = subcategories_icons[localStorage.getItem(`RCategory${record_num}`)][localStorage.getItem(`RSubcategory${record_num}`)];
-		id('make-record-category').lastElementChild.value = subcategories_titles[localStorage.getItem(`RCategory${record_num}`)][localStorage.getItem(`RSubcategory${record_num}`)];
+		category_button.firstElementChild.innerHTML = subcategories_icons[localStorage.getItem(`RCategory${record_num}`)][localStorage.getItem(`RSubcategory${record_num}`)];
+		category_button.lastElementChild.value = subcategories_titles[localStorage.getItem(`RCategory${record_num}`)][localStorage.getItem(`RSubcategory${record_num}`)];
 		
 	} else if (localStorage.getItem(`RType${record_num}`) == '+') {
 		
 		id('record-type-expense').classList.remove('active-input-cont');
 		id('record-type-income').classList.add('active-input-cont');
 		
-		id('make-record-category').firstElementChild.innerHTML = categories_income_icons[localStorage.getItem(`RCategory${record_num}`)];
-		id('make-record-category').lastElementChild.value = categories_income_titles[localStorage.getItem(`RCategory${record_num}`)];
+		category_button.firstElementChild.innerHTML = categories_income_icons[localStorage.getItem(`RCategory${record_num}`)];
+		category_button.lastElementChild.value = categories_income_titles[localStorage.getItem(`RCategory${record_num}`)];
 		
 	}
 	
-	id('make-record-category').setAttribute('categorynum', localStorage.getItem(`RCategory${record_num}`));
-	id('make-record-category').setAttribute('subcategorynum', localStorage.getItem(`RSubcategory${record_num}`));
-	
+	category_button.setAttribute('categorynum', localStorage.getItem(`RCategory${record_num}`));
+	category_button.setAttribute('subcategorynum', localStorage.getItem(`RSubcategory${record_num}`));
 }
+
+
+function setUpClickOnRepeatRecordButton (clickEl, windowEl_cont, windowEl) {
+	id('repeat-record').onclick = () => {
+
+		// set attribute 'new' for make record window
+		id('make-record-window').setAttribute('status', 'new');
+		// upload current date
+		id('make-record-date').value = getDateFormat(new Date());
+		// get array of new record data
+		let record = getMakeRecordDataArray();
+		// change record number to next new one
+		record.num = Number(localStorage.getItem('RCount')) + 1;
+		// set record number as attribute for make record window
+		id('make-record-window').setAttribute('recordnum', record.num);
+		// update account balance
+		updateStorageAccountBalance(record.num, record.type, record.account, record.amount);
+		updateAccountInfo( record.account, 'Balance', id('accounts').getElementsByClassName('account') );
+		// save record to storage
+		saveRecordToStorage(record.num, record.type, record.note, record.account, record.amount, record.category, record.subcategory);
+		localStorage.setItem('RCount', record.num);
+		// close edit record window
+		closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl);
+	}	
+}
+
 
 function removeRecord (record_num) {
 	
@@ -2329,6 +2650,7 @@ function removeRecordFromStorage (n) {
 	localStorage.removeItem(`RAccount${n}`);
 	localStorage.removeItem(`RCategory${n}`);
 	localStorage.removeItem(`RSubcategory${n}`);
+	if (localStorage.getItem(`RNote${n}`)) localStorage.removeItem(`RNote${n}`);
 
 	localStorage.removeItem(`RMinute${n}`);
 	localStorage.removeItem(`RHour${n}`);
@@ -2381,22 +2703,82 @@ function getShowMessageInEmptyHistoryByLang (period, lang) {
 }
 
 
+function closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl) {
+
+	reconnectFloatingWindow(clickEl, id('history'), windowEl_cont, windowEl);
+	closeReconnectedFloatingWindow(windowEl_cont, windowEl);
+	reuploadRecordsToHistoryAnimated();
+
+	setTimeout(() => {
+		resetMakeRecordWindowData();
+		uploadTodayStats();
+		uploadExpensesIncomesStats();
+		updatePieChart();
+		enableScrolling();
+	}, 390);
+}
+
+
+
+
 
 id('enable-history-scroll-button').onclick = function() {
 
-	if (this.classList.contains('active'))
-		this.classList.remove('active');
-	else this.classList.add('active');
-	
+	changeChangeScrollButtonStatus(this);
 	changeWidgetScroll(id('history'));
 }
 id('enable-categories-details-scroll-button').onclick = function() {
 
-	if (this.classList.contains('active'))
-		this.classList.remove('active');
-	else this.classList.add('active');
-	
+	changeChangeScrollButtonStatus(this);
 	changeWidgetScroll(id('pie-chart-categories-details'));
+}
+
+function changeChangeScrollButtonStatus (el) {
+
+	let holding_el = freezeWidthOfEl(el);
+
+	setTimeout(() => {
+		
+		if (el.classList.contains('active')) {
+
+			el.classList.remove('active');
+			changeChangeScrollButtonTitle(el, 'off', localStorage.getItem('L'));
+
+		} else {		
+
+			el.classList.add('active');
+			changeChangeScrollButtonTitle(el, 'on', localStorage.getItem('L'));
+		}
+
+		updateWidthOfEl(el, holding_el);
+	}, 200);
+}
+
+function changeChangeScrollButtonTitle (el, status, lang) {
+
+	if (status == 'on') {
+
+		if (lang == 'en')
+			el.value = 'Disable scrolling';
+		else if (lang == 'cz')
+			el.value = 'Vypnout rolování';
+		else if (lang == 'ru')
+			el.value = 'Выключить прокрутку';
+		else if (lang == 'ua')
+			el.value = 'Вимкнути прокручування';
+
+	} else {
+
+		if (lang == 'en')
+			el.value = 'Enable scrolling';
+		else if (lang == 'cz')
+			el.value = 'Zapnout rolování';
+		else if (lang == 'ru')
+			el.value = 'Включить прокрутку';
+		else if (lang == 'ua')
+			el.value = 'Увімкнути прокручування';
+
+	}
 }
 
 function changeWidgetScroll (el) {
@@ -2417,8 +2799,142 @@ function animateClickOnHistory (el) {
 
 
 
+
+
+function freezeWidthOfEl (el) {
+	let	holding_el = id('test-p');
+
+	el.style.width = el.clientWidth + 'px';
+	el.style.paddingLeft = '0';
+	el.style.paddingRight = '0';
+	el.style.color = 'rgba(0, 0, 0, 0)';
+
+	holding_el.style.display = 'flex';
+	holding_el.style.fontSize = window.getComputedStyle(el, null).getPropertyValue('font-size');
+
+	return holding_el;
+}
+
+function updateWidthOfEl (el, holding_el) {
+
+	if (el.value)
+		holding_el.innerText = el.value;
+	else holding_el.innerText = el.innerText;	
+		
+	el.style.width = holding_el.clientWidth + 'px';
+	el.style.color = null;
+	el.style.paddingLeft = null;
+	el.style.paddingRight = null;
+
+	holding_el.style.display = 'none';
+}
+
+
+
+
+
+function uploadTodayStats () {
+	
+	let el = id('today-stats-despription'),
+		lang = localStorage.getItem('L'),
+		account_num = id('accounts').getAttribute('accountnum'),
+		today_amount = getTodayStatsAmount(account_num),
+		account_currency = localStorage.getItem('ACurrency' + account_num);
+
+	el.style.opacity = '0';
+	
+	setTimeout(() => {
+
+		if (today_amount == 0)
+			showTodayStatsMessageNoExpences(el, lang);
+		else {
+			let default_account_balance = today_amount + Number(localStorage.getItem(`ABalance${account_num}`));
+			if (default_account_balance == 0) default_account_balance = 1;
+
+			let today_percent_amount = ( (100 / default_account_balance) * today_amount ).toFixed(2);
+
+			if (today_percent_amount < 30)
+				showTodayStatsMessageSomeExpences(el, lang, today_amount, account_currency, today_percent_amount, account_num);
+			else showTodayStatsMessageManyExpences(el, lang, today_amount, account_currency, today_percent_amount, account_num);
+		}
+			
+		el.style.opacity = '1';
+
+	}, 300);
+}
+
+function getTodayStatsAmount (account) {
+
+	let amount = 0,
+		compare_date = new Date();
+
+	compare_date.setHours(0);
+	compare_date.setMinutes(0);
+	compare_date.setSeconds(0);
+	
+	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
+		if ( (getRecordDateFormat(record_num)) >= getDateFormat(compare_date) ) {
+			if (
+				(localStorage.getItem(`RType${record_num}`) == '-') &&
+				localStorage.getItem(`RAccount${record_num}`) == account
+			)
+				amount += Number(localStorage.getItem(`RAmount${record_num}`));
+		} else break;
+
+	return amount;
+}
+
+function showTodayStatsMessageNoExpences (el, lang) {
+
+	if (lang == 'en')
+		el.innerHTML = 'there have been no expenses yet. I hope you are here not for the first one for today';
+	else if (lang == 'cz')
+		el.innerHTML = `ještě nebyly žádné výdaje. Doufám, že jste tady ne pro záznam prvního za dnes`;
+	else if (lang == 'ru')
+		el.innerHTML = 'еще не было никаких расходов. Надеюсь, вы здесь не для записи первого за сегодня';
+	else if (lang == 'ua')
+		el.innerHTML = 'ще не було жодних витрат. Сподіваюся, ви тут не для запису першої за сьогодні';
+}
+
+function showTodayStatsMessageSomeExpences (el, lang, today_amount, account_currency, today_percent_amount, account_num) {
+
+	if (lang == 'en')
+		el.innerHTML = `you spent <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, or <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+	else if (lang == 'cz')
+		el.innerHTML = `jste utratil(-a) <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, neboli <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+	else if (lang == 'ru')
+		el.innerHTML = `вы потратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, или же <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+	else if (lang == 'ua')
+		el.innerHTML = `ви витратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, або ж <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+}
+
+function showTodayStatsMessageManyExpences (el, lang, today_amount, account_currency, today_percent_amount, account_num) {
+
+	if (lang == 'en')
+		el.innerHTML = `you have been already spent <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, what is <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). I hope you now when to stop`;
+	else if (lang == 'cz')
+		el.innerHTML = `jste už utratil(-a) <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, co je <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). Doufám víte, kdy se zastavit`;
+	else if (lang == 'ru')
+		el.innerHTML = `вы уже потратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, это <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). Надеюсь, вы знаете, когда остановиться`;
+	else if (lang == 'ua')
+		el.innerHTML = `ви вже витратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, це <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). Сподіваюся, ви знаєте, коли зупинитися`;
+}
+
+
+
+
+
 function uploadExpensesIncomesStats () {
 
+	// upload title
+	
+	let el = id('incomes-expenses-month-title'),
+		period = id('history-period-nav').getAttribute('period');
+	
+	uploadExpensesIncomesStatsTitle(el, period, localStorage.getItem('L'));
+
+	// upload incomes and expenses statistic
+	
 	let incomes_amount = getTotalAmountOfExactlyType('+'),
 		expenses_amount = getTotalAmountOfExactlyType('-'),
 		total_amount = incomes_amount + expenses_amount,
@@ -2431,15 +2947,72 @@ function uploadExpensesIncomesStats () {
 	visualizeExpensesIncomesDataInWidget(
 		incomes_percent, expenses_percent,
 		incomes_amount.toFixed(2), expenses_amount.toFixed(2)
-	);	
+	);
+}
+
+function uploadExpensesIncomesStatsTitle (el, period, lang) {
+
+	el.style.opacity = '0';
+	
+	setTimeout(() => {
+		if (period == 'month 0') {
+
+			if (lang == 'en')
+				el.innerText = 'This month';
+			else if (lang == 'cz')
+				el.innerText = 'Tento měsíc';
+			else if (lang == 'ru')
+				el.innerText = 'Этот месяц';
+			else if (lang == 'ua')
+				el.innerText = 'Цей місяць';
+				
+		} else if (period == 'month -1') {
+			
+			if (lang == 'en')
+				el.innerText = 'Previous month';
+			else if (lang == 'cz')
+				el.innerText = 'Předchozí měsíc';
+			else if (lang == 'ru')
+				el.innerText = 'Предыдущий месяц';
+			else if (lang == 'ua')
+				el.innerText = 'Попередній місяць';
+				
+		} else if (period == 'custom') {
+			
+			let inputs = id('date-filter-menu').getElementsByClassName('field-date'),
+				from = getDateFormatByDayMonthYear(inputs[0].value),
+				to = getDateFormatByDayMonthYear(inputs[1].value);
+	
+			if (lang == 'en')
+				el.innerText = `From ${from}
+					to ${to}`;
+			else if (lang == 'cz')
+				el.innerText = `Od ${from}
+					do ${to}`;
+			else if (lang == 'ru')
+				el.innerText = `От ${from}
+					до ${to}`;
+			else if (lang == 'ua')
+				el.innerText = `Від ${from}
+					до ${to}`;
+	
+		}
+		
+		el.style.opacity = '1';
+	}, 300);
+}
+
+function getDateFormatByDayMonthYear (date) {
+	date = new Date(date);
+	return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
 }
 
 function getTotalAmountOfExactlyType (type) {
 
-	let account = id('accounts').getAttribute('accountnum');
-	let period = id('history-period-nav').getAttribute('period');
-	let compare_date = new Date();
-	let amount = 0;
+	let account = id('accounts').getAttribute('accountnum'),
+		period = id('history-period-nav').getAttribute('period'),
+		compare_date = new Date(),
+		amount = 0;
 
 	if (period == 'month 0') {
 
@@ -3039,6 +3612,19 @@ function setDateFilterMenuTopPosition () {
 
 
 
+function fixCurrentWidthOfElements () {
+	setTimeout(() => {
+		let holding_el = freezeWidthOfEl(id('enable-history-scroll-button'));
+		updateWidthOfEl(id('enable-history-scroll-button'), holding_el);
+
+		holding_el = freezeWidthOfEl(id('enable-categories-details-scroll-button'));
+		updateWidthOfEl(id('enable-categories-details-scroll-button'), holding_el);
+	}, 1);
+}
+
+
+
+
 
 function calculateScaleX (clickEl, windowEl_cont) {
 	return ( clickEl.offsetWidth / (window.innerWidth - ((parseInt(window.getComputedStyle(windowEl_cont).paddingTop)) * 2)) );
@@ -3071,22 +3657,22 @@ function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
 
 function closeFloatingWindow (clickEl, windowEl_cont, windowEl) {
 	
-  clickEl.style.transition = `opacity .5s, transform .4s`;
-  clickEl.style.opacity = '1';
-  clickEl.style.transform = 'scale(1) translateY(0px)';
+	clickEl.style.transition = `opacity .5s, transform .4s`;
+	clickEl.style.opacity = '1';
+	clickEl.style.transform = 'scale(1) translateY(0px)';
 
-  windowEl.style.transition = `opacity .35s .15s, transform .4s`;
-  windowEl_cont.classList.remove('floating-window-cont-darker');
-  
-  setTimeout(() => {
-    windowEl_cont.classList.remove('floating-window-cont-visible');
-    windowEl.style.transform = 'translateY(0px) scale(1)';
-    windowEl.style.transition = 'all 0s';
+	windowEl.style.transition = `opacity .35s .15s, transform .4s`;
+	windowEl_cont.classList.remove('floating-window-cont-darker');
+	
+	setTimeout(() => {
+		windowEl_cont.classList.remove('floating-window-cont-visible');
+		windowEl.style.transform = 'translateY(0px) scale(1)';
+		windowEl.style.transition = 'all 0s';
 
-	clickEl.style.transition = null;
-	clickEl.style.transform = null;
-	clickEl.style.opacity = null;
-}, 390);
+		clickEl.style.transition = null;
+		clickEl.style.transform = null;
+		clickEl.style.opacity = null;
+	}, 390);
 }
 
 function changeFloatingWindowTransformation (clickEl, windowEl_cont, windowEl) {
@@ -3130,15 +3716,35 @@ function closeReconnectedFloatingWindow (windowEl_cont, windowEl) {
   }, 390);
 }
 
+function closeFloatingWindowByDisappearMethod (clickEl, windowEl_cont, windowEl) {
+
+	clickEl.style.display = `none`;
+
+	windowEl.style.transition = `opacity .4s, transform .4s`;
+	windowEl.style.transform = `translateY(0px) scale(0.5)`;
+	windowEl.style.opacity = `0`;
+	windowEl_cont.classList.remove('floating-window-cont-darker');
+	
+	setTimeout(() => {
+		windowEl_cont.classList.remove('floating-window-cont-visible');
+		windowEl.style.transition = 'all 0s';
+
+		clickEl.style.transition = null;
+		clickEl.style.transform = null;
+		clickEl.style.opacity = null;
+	}, 390);
+}
+
 
 
 
 
 function showPopUpConnectedNotification (notification_command, notification_contEl, connected_window) {
-	let notificationEl = notification_contEl.firstElementChild;
+
+	let notificationEl = notification_contEl.firstElementChild,
+		hide_popup_notification;
 	
-	if (notification_command == 'remove account')
-		notificationEl.lastElementChild.firstElementChild.innerHTML = 'It will also delete all records connected with this account. It is irreversible action.';
+	uploadPopUpNotificationMessage(notification_command, notificationEl.lastElementChild.firstElementChild);
 
 	notification_contEl.style.top = (connected_window.getBoundingClientRect().top + 20) + 'px';
 	notification_contEl.classList.add('show');
@@ -3149,11 +3755,30 @@ function showPopUpConnectedNotification (notification_command, notification_cont
 		notificationEl.style.transform = `scale(1) translateY(calc(${-(notificationEl.clientHeight)}px - 40px))`;
 	}, 400);
 	
-	hide_notification = setTimeout(() => { hidePopUpConnectedNotificationAfterTimer (notification_contEl); }, 5000);
+	hide_popup_notification = setTimeout(() => {
+		hidePopUpConnectedNotificationAfterTimer (notification_contEl);
+	}, 5000);
 
 	notificationEl.onclick = () => {
-		clearTimeout(hide_notification);
+		clearTimeout(hide_popup_notification);
 		hidePopUpConnectedNotificationAfterTimer(notification_contEl);
+	}
+
+	return hide_popup_notification;
+}
+
+function uploadPopUpNotificationMessage (notification_command, notificationEl) {
+	let lang = localStorage.getItem('L');
+
+	if (notification_command == 'remove account') {
+		if (lang == 'en')
+			notificationEl.innerHTML = 'It will also delete all records connected with this account. It is irreversible action.';
+		else if (lang == 'cz')
+			notificationEl.innerHTML = 'To také smaže všechny záznamy spojené s tímto účtem. Je to nevratná akce.';
+		else if (lang == 'ru')
+			notificationEl.innerHTML = 'Это также удалит все записи, связанные с этим счётом. Это необратимое действие.';
+		else if (lang == 'ua')
+			notificationEl.innerHTML = `Це також видалить всі записи, пов'язані з цим рахунком. Це незворотня дія.`;
 	}
 }
 
@@ -3168,10 +3793,10 @@ function hidePopUpConnectedNotificationAfterTimer (notification_contEl) {
 	}, 400);
 }
 
-function hidePopUpConnectedNotification (notification_contEl) {
+function hidePopUpConnectedNotification (notification_contEl, hide_popup_notification) {
 	let notificationEl = notification_contEl.firstElementChild;
 
-	clearTimeout(hide_notification);
+	clearTimeout(hide_popup_notification);
 	
 	notificationEl.style.opacity = 0;
 	
@@ -3233,6 +3858,9 @@ function setUpClickOnAccounts () {
 	
 				// upload records to history
 				uploadRecordsToHistoryAnimated();
+				// upload today stats
+				uploadTodayStats();
+				// upload expenses and incomes stats
 				uploadExpensesIncomesStats();
 				updatePieChart();
 			}
@@ -3262,6 +3890,7 @@ for (let button of history_period_nav_buttons) {
 	
 			// upload records to history
 			uploadRecordsToHistoryAnimated();
+			// upload expenses and incomes stats
 			uploadExpensesIncomesStats();
 			updatePieChart();
 		}
@@ -3421,44 +4050,123 @@ id('make-record-button').onclick = () => {
 }
 
 function prepareMakeRecordWindow () {
+	let account_num = id('accounts').getAttribute('accountnum');
 
-	// record_window_account_root.render(<Account color={localStorage.getItem('account_color1')} currency={localStorage.getItem('account_currency1')} balance={localStorage.getItem('account_balance1')} />);
-	// record_window_category_svg.render(<Category/>);
-
+	// add attribute 'new' and record number attribute to make record window
 	id('make-record-window').setAttribute('status', 'new');
 	id('make-record-window').setAttribute('recordnum', Number(localStorage.getItem('RCount')) + 1);
-
-	id('remove-record-button-block').classList.add('element-hide');
-	
+	// hide some buttons: repeat and remove record
+	id('make-record-button-block').classList.add('hide-some-elements');
+	// upload current date
 	id('make-record-date').value = getDateFormat(new Date());
-
+	// automatic adjust length of input record amount while typing
 	adaptInputLengthExplicitly(id('make-record-amount'));
-	
-	id('make-record-account').innerHTML = account_el( 1, localStorage.getItem('AColor1'), localStorage.getItem('ACurrency1'), Number(localStorage.getItem('ABalance1')).toFixed(2) );
-	id('make-record-account').setAttribute('accountnum', 1);
+	// upload account to change account button
+	id('make-record-account').innerHTML = account_el(
+		1, localStorage.getItem(`AColor${account_num}`),
+		localStorage.getItem(`ACurrency${account_num}`),
+		Number(localStorage.getItem(`ABalance${account_num}`)).toFixed(2)
+	);
+	id('make-record-account').setAttribute('accountnum', account_num);
+	// adapt account color for dark themes
 	checkAccountColor(id('make-record-account').firstElementChild);
 
-	let account_inputs = id('make-record-account').getElementsByTagName('input');
-	adaptInputLengthExplicitly(account_inputs[0]);
-	adaptInputLengthExplicitly(account_inputs[1]);
-		
-	/* if (localStorage.getItem('ACount') > 1) {
-		id('record-type-transfer').classList.remove('window-nav-el-hide');
-		// upload_transfer_account_in_makerecord();
-	}
-	else  */id('record-type-transfer').classList.add('window-nav-el-hide');
+	id('record-type-transfer').classList.add('window-nav-el-hide');
 	
-	id('make-record-category').firstElementChild.innerHTML = subcategories_icons[subcategories_icons.length - 1][subcategories_icons[subcategories_icons.length - 1].length - 1];
-	id('make-record-category').lastElementChild.value = subcategories_titles[subcategories_titles.length - 1][subcategories_icons[subcategories_icons.length - 1].length - 1];
-	id('make-record-category').setAttribute('categorynum', subcategories_titles.length - 1);
-	id('make-record-category').setAttribute('subcategorynum', subcategories_titles[subcategories_titles.length - 1].length - 1);
+	// upload category to change category button
+	uploadCategoryToMakeRecordCategoryField(
+		'-', id('make-record-category'),
+		id('make-record-category').firstElementChild,
+		id('make-record-category').lastElementChild
+	);
+	// upload save button title
+	uploadSaveRecordButtonTitle('long');
+}
+
+function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field_name) {
+
+	let category_num, subcategory_num,
+		record_num = Number(localStorage.getItem('RCount'));
+
+	for (let num = record_num; num > 0; num--) {
+
+		if (localStorage.getItem(`RType${num}`) == type && type == '-') {
+			
+			category_num = localStorage.getItem(`RCategory${num}`);
+			subcategory_num = localStorage.getItem(`RSubcategory${num}`);
+			field.setAttribute('categorynum', category_num);
+			field.setAttribute('subcategorynum', subcategory_num);
+
+			field_icon.innerHTML = subcategories_icons[category_num][subcategory_num];
+			field_name.value = subcategories_titles[category_num][subcategory_num];
+
+			return;
+
+		} else if (localStorage.getItem(`RType${num}`) == type && type == '+') {
+
+			category_num = localStorage.getItem(`RCategory${num}`);
+			field.setAttribute('categorynum', category_num);
+
+			field_icon.innerHTML = categories_income_icons[category_num];
+			field_name.value = categories_income_titles[category_num];
+
+			return;
+		}
+	}
+		
+	if (localStorage.getItem(`RType${record_num}`) == '+') {
+		
+		category_num = categories_income_icons.length - 1;
+		field.setAttribute('categorynum', category_num);
+
+		field_icon.innerHTML = categories_income_icons[category_num];
+		field_name.value = categories_income_titles[category_num];
+
+	} else {
+
+		category_num = subcategories_icons.length - 1;
+		subcategory_num = subcategories_icons[subcategories_icons.length - 1].length - 1;
+		field.setAttribute('categorynum', category_num);
+		field.setAttribute('subcategorynum', subcategory_num);
+
+		field_icon.innerHTML = subcategories_icons[category_num][subcategory_num];
+		field_name.value = subcategories_titles[category_num][subcategory_num];
+	}
+}
+
+function uploadSaveRecordButtonTitle (long) {
+
+	let lang = localStorage.getItem('L'),
+		el = id('make-record-save-button');
+
+	if (lang == 'en') {
+		if (long == 'long')
+			el.value = 'Save record';
+		else
+			el.value = 'Save';
+	} else if (lang == 'cz') {
+		if (long == 'long')
+			el.value = 'Uložit záznam';
+		else
+			el.value = 'Uložit';
+	} else if (lang == 'ru') {
+		if (long == 'long')
+			el.value = 'Сохранить запись';
+		else
+			el.value = 'Сохранить';
+	} else if (lang == 'ua') {
+		if (long == 'long')
+			el.value = 'Зберегти запис';
+		else
+			el.value = 'Зберегти';
+	}
 }
 
 function resetMakeRecordWindowData () {
 
-	// reset remove record button block hiding
-	if (id('remove-record-button-block').classList.contains('element-hide'))
-		id('remove-record-button-block').classList.remove('element-hide');
+	// reset padding top of floating window
+	if (id('make-record-window').classList.contains('window-top-padding'))
+		id('make-record-window').classList.remove('window-top-padding');
 	
 	// reset type of record
 	
@@ -3466,21 +4174,28 @@ function resetMakeRecordWindowData () {
 		id('record-types').classList.remove('element-hide');
 
 	id('record-types').setAttribute('record-type', id('record-type-expense').getAttribute('record-type'));
-  for (let button of make_record_types)
-    if (button.id == 'record-type-expense')
+  	for (let button of make_record_types)
+		if (button.id == 'record-type-expense')
 			button.classList.add('active-input-cont');
-    else
-			button.classList.remove('active-input-cont');
+		else button.classList.remove('active-input-cont');
+
+	// reset note
+	id('make-record-note').value = null;
+	setTypingListenerForInput(id('make-record-note'));
 
 	// reset amount
-  id('make-record-amount').value = null;
+  	id('make-record-amount').value = null;
 	setTypingListenerForInput(id('make-record-amount'));
 	
 	// reset category
-  id('make-record-category-cont').classList.remove('make-record-category-cont-hide');
+  	id('make-record-category-cont').classList.remove('make-record-category-cont-hide');
+	
+	// reset hiding of buttons (repeat and remove buttons)
+	if (id('make-record-button-block').classList.contains('hide-some-elements'))
+		id('make-record-button-block').classList.remove('hide-some-elements');
 
-  // id('make-record-transfer-account-cont').classList.add('make-record-transfer-account-cont-hide');
-  // id('make-record-transfer-account').innerHTML = null;
+	// id('make-record-transfer-account-cont').classList.add('make-record-transfer-account-cont-hide');
+	// id('make-record-transfer-account').innerHTML = null;
 }
 
 
@@ -3524,38 +4239,29 @@ for (let button of make_record_types) {
 }
 
 function changeMakeRecordCategoryType (record_type) {
+	let el = id('make-record-category');
 
-	id('make-record-category').style = null;
-	id('make-record-category').classList.add('category-button-changing-hide');
+	el.style = null;
+	el.classList.add('category-button-changing-hide');
 	
 	setTimeout(() => {
 		
-		changeMakeRecordCatogory(record_type);
+		if (record_type == 'record-type-expense')
+			record_type = '-';
+		else record_type = '+';
+
+		uploadCategoryToMakeRecordCategoryField(record_type, el, el.firstElementChild, el.lastElementChild);
 		
-		id('make-record-category').style.transition = 'transform 0s';
-		id('make-record-category').classList.remove('category-button-changing-hide');
-		id('make-record-category').classList.add('category-type-changed-hide');
+		el.style.transition = 'transform 0s';
+		el.classList.remove('category-button-changing-hide');
+		el.classList.add('category-type-changed-hide');
 		
 		setTimeout(() => {
-			id('make-record-category').style = null;
-			id('make-record-category').classList.remove('category-type-changed-hide');
+			el.style = null;
+			el.classList.remove('category-type-changed-hide');
 		}, 50);
 
 	}, 300);
-}
-
-function changeMakeRecordCatogory (record_type) {
-
-	if (record_type == 'record-type-expense') {
-		id('make-record-category').firstElementChild.innerHTML = subcategories_icons[subcategories_icons.length - 1][subcategories_icons[subcategories_icons.length - 1].length - 1];
-		id('make-record-category').lastElementChild.value = subcategories_titles[subcategories_titles.length - 1][subcategories_icons[subcategories_icons.length - 1].length - 1];
-		id('make-record-category').setAttribute('categorynum', subcategories_titles.length - 1);
-		id('make-record-category').setAttribute('subcategorynum', subcategories_titles[subcategories_titles.length - 1].length);
-	} else {
-		id('make-record-category').firstElementChild.innerHTML = categories_income_icons[categories_income_icons.length - 1];
-		id('make-record-category').lastElementChild.value = categories_income_titles[categories_income_titles.length - 1];
-		id('make-record-category').setAttribute('categorynum', categories_income_titles.length - 1);
-	}
 }
 
 
@@ -3564,14 +4270,14 @@ function changeMakeRecordCatogory (record_type) {
 
 id('make-record-account').onclick = function() {
 
-	if (Number(localStorage.getItem('ACount')) > 1) {
+	if ( Number(localStorage.getItem('ACount')) > 1 ) {
 		let clickEl = id('make-record-account'),
 			windowEl_cont = id('accounts-window-cont'),
 			windowEl = id('accounts-window');
 	
-		// upload account to window
+		// upload account to change account button
 		windowEl.innerHTML = null;
-		for (let a = 1; a <= localStorage.getItem('ACount'); a++) uploadAccount(a, windowEl);
+		for (let acc_num = 1; acc_num <= localStorage.getItem('ACount'); acc_num++) uploadAccount(acc_num, windowEl);
 		checkAccountsColorInExactlyCont(windowEl);
 	
 		let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
@@ -3592,22 +4298,20 @@ function setUpChoosingAccount (clickEl, windowEl_cont, windowEl) {
 	for (let account of windowEl.getElementsByClassName('account')) {
 		account.onclick = function() {
 
-			let account_num = account.getAttribute('accountnum');
+			let account_num = account.getAttribute('accountnum'),
+				account_clickEl = clickEl.firstElementChild;
 			clickEl.setAttribute('accountnum', account_num);
 
-			// upload choosen accounts data
-			clickEl.firstElementChild.classList.add('account-block-animation');
-			clickEl.firstElementChild.style.background = '#' + localStorage.getItem(`AColor${account_num}`);
-			clickEl.firstElementChild.firstElementChild.value = localStorage.getItem(`ACurrency${account_num}`);
-			clickEl.firstElementChild.lastElementChild.value = getReadableNumber(localStorage.getItem(`ABalance${account_num}`));
-
+			// upload choosen accounts data to change account button
+			account_clickEl.classList.add('account-block-animation');
+			account_clickEl.style.background = '#' + localStorage.getItem(`AColor${account_num}`);
+			account_clickEl.firstElementChild.innerText = localStorage.getItem(`ACurrency${account_num}`);
+			account_clickEl.lastElementChild.innerText = getReadableNumber(localStorage.getItem(`ABalance${account_num}`));
+			// adapt account color for dark themes
 			checkAccountColor(clickEl.firstElementChild);
-			
-			adaptInputLengthExplicitly(clickEl.firstElementChild.firstElementChild);
-			adaptInputLengthExplicitly(clickEl.firstElementChild.lastElementChild);
 
+			// animate closing choosing account window
 			let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);
-			
 			setTimeout(() => {
 				clickEl.classList.remove('account-block-animation');
 				clickEl.style.transition = clickEL_transition;
@@ -3740,34 +4444,33 @@ function closeCategoriesWindow (clickEl, windowEl_cont, windowEl) {
 
 
 id('make-record-save-button').onclick = () => {
-
 	if (id('make-record-amount').value != 0) {
 
-		let record_num = id('make-record-window').getAttribute('recordnum'),
-			record_type = id('record-types').getAttribute('record-type'),
-			record_amount = Math.abs(id('make-record-amount').value),
-			record_account = id('make-record-account').getAttribute('accountnum'),
-			record_category = id('make-record-category').getAttribute('categorynum'),
-			record_subcategory = id('make-record-category').getAttribute('subcategorynum');
+		let record = getMakeRecordDataArray();
 
-		updateStorageAccountBalance(record_num, record_type, record_account, record_amount);
-		updateAccountInfo( record_account, 'Balance', id('accounts').getElementsByClassName('account') );
+		updateStorageAccountBalance(record.num, record.type, record.account, record.amount);
+		updateAccountInfo( record.account, 'Balance', id('accounts').getElementsByClassName('account') );
 
-		saveRecordToStorage(record_num, record_type, record_amount, record_account, record_category, record_subcategory);
+		saveRecordToStorage(record.num, record.type, record.note, record.account, record.amount, record.category, record.subcategory);
 	
 		if (id('make-record-window').getAttribute('status') == 'new') {
-			updateHistoryForNewRecord(record_num, record_type, record_account);
+			updateHistoryForNewRecord(record.num, record.type, record.account);
 			closeFloatingWindow(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
 		} else
-			for (let record of id('history').getElementsByClassName('record'))
-				if (record.getAttribute('recordnum') == record_num) {
-					updateHistoryForEditedRecord(record_num, record);					
+			for (let recordEl of id('history').getElementsByClassName('record'))
+				if (recordEl.getAttribute('recordnum') == record.num) {
+					updateHistoryForEditedRecord(record.num, recordEl);					
 					break;
 				}
 
+		// upload today stats
+		uploadTodayStats();
+		// upload expenses and incomes stats
 		uploadExpensesIncomesStats();
+		// update pie chart data
 		updatePieChart();
 
+		// reset make record window data
 		setTimeout(() => {
 			resetMakeRecordWindowData();
 			enableScrolling();
@@ -3776,7 +4479,19 @@ id('make-record-save-button').onclick = () => {
 	} else animateEmptyFieldError(id('make-record-amount'));
 }
 
-function saveRecordToStorage (record_num, record_type, record_amount, record_account, record_category, record_subcategory) {
+function getMakeRecordDataArray () {
+	return {
+		num: id('make-record-window').getAttribute('recordnum'),
+		type: id('record-types').getAttribute('record-type'),
+		note: id('make-record-note').value,
+		account: id('make-record-account').getAttribute('accountnum'),
+		amount: Math.abs(id('make-record-amount').value),
+		category: id('make-record-category').getAttribute('categorynum'),
+		subcategory: id('make-record-category').getAttribute('subcategorynum')
+	};
+}
+
+function saveRecordToStorage (record_num, record_type, record_note, record_account, record_amount, record_category, record_subcategory) {
 
 	// save record data to storage
 	localStorage.setItem(`RType${record_num}`, record_type);
@@ -3784,6 +4499,12 @@ function saveRecordToStorage (record_num, record_type, record_amount, record_acc
 	localStorage.setItem(`RAccount${record_num}`, record_account);
 	localStorage.setItem(`RCategory${record_num}`, record_category);
 	localStorage.setItem(`RSubcategory${record_num}`, record_subcategory);
+
+	// save or delete record note
+	if (record_note.length != 0)
+		localStorage.setItem(`RNote${record_num}`, record_note);
+	else if (record_note.length == 0 && localStorage.getItem(`RNote${record_num}`))
+		localStorage.removeItem(`RNote${record_num}`);
 
 	// save record date to storage
 	saveRecordDateToStorage(record_num);
@@ -3801,18 +4522,18 @@ function saveRecordDateToStorage (record_num) {
 
 function updateStorageAccountBalance (record_num, record_type, record_account, record_amount) {
 	
-	let type_sign = Number(record_type + '1');
-	let record_account_balance = Number(localStorage.getItem(`ABalance${record_account}`));
+	let type_sign = Number(record_type + '1'),
+		record_account_balance = Number(localStorage.getItem(`ABalance${record_account}`));
 
 	if (id('make-record-window').getAttribute('status') == 'new') {
 		localStorage.setItem(`ABalance${record_account}`, (record_account_balance + (record_amount * type_sign)).toFixed(2));
 	} else {
 		
-		let account_num = localStorage.getItem(`RAccount${record_num}`);
-		let account_balance = Number(localStorage.getItem(`ABalance${account_num}`));
-		let storage_amount = Number(localStorage.getItem(`RAmount${record_num}`));
+		let account_num = localStorage.getItem(`RAccount${record_num}`),
+			account_balance = Number(localStorage.getItem(`ABalance${account_num}`)),
+			record_storage_amount = Number(localStorage.getItem(`RAmount${record_num}`));
 		
-		localStorage.setItem(`ABalance${account_num}`, (account_balance - (storage_amount * type_sign)).toFixed(2));
+		localStorage.setItem(`ABalance${account_num}`, (account_balance - (record_storage_amount * type_sign)).toFixed(2));
 
 		record_account_balance = Number(localStorage.getItem(`ABalance${record_account}`));
 		localStorage.setItem(`ABalance${record_account}`, (record_account_balance + (record_amount * type_sign)).toFixed(2));
@@ -3835,15 +4556,14 @@ function updateAccountInfo (account_num, info, accounts) {
 	for (let account of accounts) {
 		if (account.getAttribute('accountnum') == account_num) {
 
-			if (info == 'Currency') {
+			if (info == 'Currency')
+				account.firstElementChild.innerText = localStorage.getItem(`A${info}${account_num}`);
+			else if (info == 'Balance') {
 
-				account.firstElementChild.value = localStorage.getItem(`A${info}${account_num}`);
-				adaptInputLengthExplicitly(account.firstElementChild);
-
-			} else if (info == 'Balance') {
-
-				account.lastElementChild.value = getReadableNumber(Number( localStorage.getItem(`A${info}${account_num}`) ).toFixed(2));
-				adaptInputLengthExplicitly(account.lastElementChild);
+				let holding_el = freezeWidthOfEl(account.lastElementChild);
+				account.lastElementChild.innerText = getReadableNumber( Number(localStorage.getItem(`A${info}${account_num}`)).toFixed(2) );
+				updateWidthOfEl(account.lastElementChild, holding_el);
+					
 
 			} else if (info == 'Color')
 				account.style.background = '#' + localStorage.getItem(`A${info}${account_num}`);
@@ -3901,7 +4621,11 @@ function constructRecordEl (record_num, record_account) {
 	let record_date = localStorage.getItem(`RDay${record_num}`) + '.' + ( Number(localStorage.getItem(`RMonth${record_num}`)) ),
 		category_num = localStorage.getItem(`RCategory${record_num}`),
 		subcategory_num = localStorage.getItem(`RSubcategory${record_num}`),
-		icon, title;
+		icon, title,
+		record_note = '';
+
+	if (localStorage.getItem(`RNote${record_num}`))
+		record_note = `<h4 class="record-note">${localStorage.getItem('RNote' + record_num)}</h4>`;
 
 	if (localStorage.getItem(`RType${record_num}`) == '-') {
 		icon = subcategories_icons[category_num][subcategory_num];
@@ -3913,6 +4637,7 @@ function constructRecordEl (record_num, record_account) {
 	
 	let record = `<div class="record" recordnum="${record_num}">
                     <h4 class="date">${record_date}</h4>
+					${record_note}
                     <div class="record-category" categorynum="${category_num}" subcategorynum="${subcategory_num}">
                       <div>${icon}</div>
                       <h3>${title}</h3>
@@ -3951,6 +4676,8 @@ function updateHistoryForEditedRecord (record_num, record) {
 
 	let period = id('history-period-nav').getAttribute('period');
 	let compare_date = new Date();
+	let make_record_note_len = id('make-record-note').value.length,
+		record_note_classname = record.firstElementChild.nextElementSibling.className;
 
 	if (period == 'week') compare_date.setDate(compare_date.getDate() - 7);
 	else if (period == 'month') compare_date.setMonth(compare_date.getMonth() - 1);
@@ -3959,7 +4686,9 @@ function updateHistoryForEditedRecord (record_num, record) {
 	if (
 		checkRecordsOrderByDate(Number(record_num)) != record_num ||
 		getRecordDateFormat(record_num) < getDateFormat(compare_date) ||
-		id('make-record-account').getAttribute('accountnum') != id('make-record-account').firstElementChild.getAttribute('accountnum')
+		id('make-record-account').getAttribute('accountnum') != id('make-record-account').firstElementChild.getAttribute('accountnum') ||
+		( make_record_note_len != 0 && record_note_classname != 'record-note' ||
+			make_record_note_len == 0 && record_note_classname == 'record-note' )
 	) {
 		reconnectFloatingWindow(record, id('history'), id('make-record-window-cont'), id('make-record-window'));
 		closeReconnectedFloatingWindow(id('make-record-window-cont'), id('make-record-window'));
@@ -3970,7 +4699,7 @@ function updateHistoryForEditedRecord (record_num, record) {
 	}
 }
 
-function updateRecordInHistory (record_num, record) {
+function updateRecordInHistory (record_num, recordEl) {
 
 	let record_date = localStorage.getItem(`RDay${record_num}`) + '.' + ( Number(localStorage.getItem(`RMonth${record_num}`)) ),
 		category_num = localStorage.getItem(`RCategory${record_num}`),
@@ -3986,20 +4715,40 @@ function updateRecordInHistory (record_num, record) {
 	}
 
 	// update date
-	record.firstElementChild.innerHTML = record_date;
-
+	recordEl.firstElementChild.innerHTML = record_date;
+	// update note
+	let record_noteEl = updateRecordNoteInHistory(record_num, recordEl);
 	// update category
-	let categoryEl = record.firstElementChild.nextElementSibling;
+	updateRecordCategoryInHistory(record_num, recordEl, record_noteEl, icon, title);
+	// update amount
+	recordEl.lastElementChild.firstElementChild.nextElementSibling.innerHTML = getReadableNumber( Number(localStorage.getItem(`RAmount${record_num}`)).toFixed(2) );
+	// update currency
+	recordEl.lastElementChild.lastElementChild.innerHTML = localStorage.getItem(`ACurrency${ localStorage.getItem('RAccount' + record_num) }`);
+}
+
+function updateRecordNoteInHistory (record_num, recordEl) {
+	let record_noteEl = null;
+		
+	if (recordEl.firstElementChild.nextElementSibling.className == 'record-note')
+		record_noteEl = recordEl.firstElementChild.nextElementSibling;
+		
+	if (record_noteEl != null) {
+		record_noteEl.innerText = localStorage.getItem(`RNote${record_num}`);
+	}
+
+	return record_noteEl;
+}
+
+function updateRecordCategoryInHistory (record_num, recordEl, record_noteEl, icon, title) {
+	
+	let categoryEl;
+	if (record_noteEl != null) categoryEl = record_noteEl.nextElementSibling;
+	else categoryEl = recordEl.lastElementChild.previousElementSibling;
+
 	categoryEl.setAttribute('categorynum', localStorage.getItem(`RCategory${record_num}`));
 	categoryEl.setAttribute('subcategorynum', localStorage.getItem(`RSubcategory${record_num}`));
 	categoryEl.firstElementChild.innerHTML = icon;
 	categoryEl.lastElementChild.innerHTML = title;
-
-	// update amount
-	record.lastElementChild.firstElementChild.nextElementSibling.innerHTML = localStorage.getItem(`RAmount${record_num}`);
-
-	// update currency
-	record.lastElementChild.lastElementChild.innerHTML = localStorage.getItem(`ACurrency${ localStorage.getItem('RAccount' + record_num) }`);
 }
 
 function checkRecordsOrderByDate (record_num) {
@@ -4556,7 +5305,7 @@ function uploadAccountsToSettingsWindow (windowEl_cont) {
 
 	for (let account_num = 1; account_num <= localStorage.getItem('ACount'); account_num++) {
 
-  	windowEl_cont.insertAdjacentHTML('beforeend',
+  		windowEl_cont.insertAdjacentHTML('beforeend',
 			account_el(
 				account_num,
 				localStorage.getItem('AColor' + account_num),
@@ -4565,51 +5314,43 @@ function uploadAccountsToSettingsWindow (windowEl_cont) {
 			)
 		);
 		checkAccountColor(windowEl_cont.lastElementChild);
-
-		adaptInputLengthExplicitly(windowEl_cont.lastElementChild.firstElementChild);
-		adaptInputLengthExplicitly(windowEl_cont.lastElementChild.lastElementChild);
 	}
 }
 
 function setUpClickOnAccount (account) {
 	account.onclick = function() {
-		enableScrolling();
 
 		let clickEl = this,
 			windowEl_cont = id('edit-account-cont'),
 			windowEl = id('edit-account');
-						
-		// open edit account window
+		var hide_popup_notification;
+		
+		enableScrolling();
+
+		// upload account's data to edit account window
 		prepareEditAccountWindow(clickEl.getAttribute('accountnum'));
+		// open edit account window
 		let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
 		windowEl.setAttribute('top-position', top_position);
 
 		// set up closing edit account window
 		id('edit-account-cont').firstElementChild.onclick = () => {
+			let notification_cont = id('popup-connected-notification-cont');
+			
+			// hide remove notification if needed
+			if (notification_cont.classList.contains('show'))
+				hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
+
 			disableScrolling();
 			closeFloatingWindow(clickEl, windowEl_cont, windowEl);
 			resetEditAccountWindow();
 		}
-		
+
 		// set up click on remove account button
-		id('remove-account').onclick = () => {
-			let notification_cont = id('edit-account-cont').getElementsByClassName('popup-connected-notification-cont')[0];
+		hide_popup_notification = setUpClickOnRemoveAccountButton(hide_popup_notification, clickEl, windowEl_cont, windowEl);
 
-			if (notification_cont.classList.contains('show')) {
-				hidePopUpConnectedNotification(notification_cont);
-				removeAccount(clickEl.getAttribute('accountnum'), clickEl, windowEl_cont, windowEl);
-				resetEditAccountWindow();
-			} else
-				showPopUpConnectedNotification('remove account', notification_cont, windowEl);
-
-		}
-		
 		// set up click on save account button
-		id('save-account').onclick = () => {
-			saveEditedAccount(clickEl.getAttribute('accountnum'), clickEl, windowEl_cont, windowEl);
-			resetEditAccountWindow();
-		}
-
+		setUpClickOnSaveAccountButton(hide_popup_notification, clickEl, windowEl_cont, windowEl);
 	}
 }
 
@@ -4647,6 +5388,40 @@ function checkColorOfEditAccountColorButton () {
 		id('edit-account-color-button').classList.remove('invert-color');
 }
 
+function setUpClickOnRemoveAccountButton (hide_popup_notification, clickEl, windowEl_cont, windowEl) {
+	id('remove-account').onclick = () => {
+		let notification_cont = id('popup-connected-notification-cont');
+
+		if (notification_cont.classList.contains('show')) {
+			// hide remove account notification
+			hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
+			// remove account
+			removeAccount(clickEl.getAttribute('accountnum'), clickEl, windowEl_cont, windowEl);
+			// reset edit account window data
+			resetEditAccountWindow();
+		} else
+			// show remove account notification
+			hide_popup_notification = showPopUpConnectedNotification('remove account', notification_cont, windowEl);
+
+	}
+
+	return hide_popup_notification;
+}
+
+function setUpClickOnSaveAccountButton (hide_popup_notification, clickEl, windowEl_cont, windowEl) {
+	id('save-account').onclick = () => {
+		let notification_cont = id('popup-connected-notification-cont');
+
+		// hide remove notification if needed
+		if (notification_cont.classList.contains('show'))
+			hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
+		// save account data
+		saveEditedAccount(clickEl.getAttribute('accountnum'), clickEl, windowEl_cont, windowEl);
+		// reset edit account window data
+		resetEditAccountWindow();
+	}
+}
+
 function resetEditAccountWindow () {
 
 	if (id('edit-account').classList.contains('top-padding')) {
@@ -4673,13 +5448,10 @@ function setUpClickOnAddAccountButton (content_cont) {
 				account_count,
 				localStorage.getItem(`AColor${account_count}`),
 				localStorage.getItem(`ACurrency${account_count}`),
-				Number(localStorage.getItem(`ABalance${account_count}`)).toFixed(2)
+				Number( localStorage.getItem(`ABalance${account_count}`) ).toFixed(2)
 			)
 		);
 		checkAccountColor(content_cont.lastElementChild);
-
-		adaptInputLengthExplicitly(content_cont.lastElementChild.firstElementChild);
-		adaptInputLengthExplicitly(content_cont.lastElementChild.lastElementChild);
 
 		setUpClickOnAccount(content_cont.lastElementChild);
 
@@ -4757,6 +5529,10 @@ function removeAccount (account_num, clickEl, windowEl_cont, windowEl) {
 			setUpClickOnAccounts();
 			checkAccountsColorInExactlyCont(id('accounts'));
 
+			
+			// upload today stats
+			uploadTodayStats();
+			// upload expenses and incomes stats
 			uploadExpensesIncomesStats();
 			uploadDataToPieChart();
 		}, 390);
@@ -4939,7 +5715,7 @@ function saveEditedAccount (account_num, clickEl, windowEl_cont, windowEl) {
 	
 	localStorage.setItem(`AColor${account_num}`, id('edit-account-color-button').getAttribute('color'));
 	localStorage.setItem(`ACurrency${account_num}`, id('edit-account-currency').value);
-	localStorage.setItem(`ABalance${account_num}`, id('edit-account-balance').value);
+	localStorage.setItem(`ABalance${account_num}`, Number(id('edit-account-balance').value).toFixed(2));
 
 	// update account currency and balance everywhere
 	clickEl.classList.add('account-block-animation');	
@@ -4954,6 +5730,9 @@ function saveEditedAccount (account_num, clickEl, windowEl_cont, windowEl) {
 		previous_currency != id('edit-account-currency').value &&
 		id('accounts').getAttribute('accountnum') == account_num
 	) {
+		// upload today stats
+		uploadTodayStats();
+		// upload expenses and incomes stats
 		uploadExpensesIncomesStats();
 		uploadRecordsToHistory();
 		uploadDataToPieChart();
@@ -5050,9 +5829,13 @@ function adaptInputLength () {
 		bigger_length = 1.1;
 	}
 	
-	if (this.value.length < 4)
+	if (this.value.length == 0 && this.placeholder.length < 4)
 		this.style.width = less_length + 'ch';
-	else
+	else if (this.value.length == 0 && this.placeholder.length >= 4)
+		this.style.width = this.placeholder.length * bigger_length + 'ch';
+	else if (this.value.length < 4)
+		this.style.width = less_length + 'ch';
+	else if (this.value.length >= 4)
 		this.style.width = this.value.length * bigger_length + 'ch';
 }
 
@@ -5069,14 +5852,18 @@ function adaptInputLengthExplicitly (el) {
 		bigger_length = 1.25;
 	}
 	
-	if (el.value.length < 4)
+	if (el.value.length == 0 && el.placeholder.length < 4)
 		el.style.width = less_length + 'ch';
-	else
+	else if (el.value.length == 0 && el.placeholder.length >= 4)
+		el.style.width = el.placeholder.length * bigger_length + 'ch';
+	else if (el.value.length < 4)
+		el.style.width = less_length + 'ch';
+	else if (el.value.length >= 4)
 		el.style.width = el.value.length * bigger_length + 'ch';
 }
 
 
 
-if (id('hello-screen').classList.contains('hide')) {
+if (localStorage.getItem('L')) {
 	startPreloaderAnimation();
 }
