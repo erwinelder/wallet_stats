@@ -41,10 +41,11 @@ body.font2 {
 }
 body.font2 input {
 	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
 }
-body.font2 :is(h1, h2, h3, h4, h5, h6) {
+/* body.font2 :is(h1, h2, h3, h4, h5, h6) {
 	font-weight: lighter;
-}
+} */
 
 .body-preload {
   height: 100vh;
