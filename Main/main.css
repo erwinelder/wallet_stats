@@ -989,6 +989,7 @@ body.font2 .window-floating-nav > div {
 
 .account :first-child {
 	font-size: 1.25rem;
+	font-weight: 700;
 }
 .accounts .account :first-child {
 	font-size: 1.15rem;
@@ -1004,6 +1005,7 @@ body.font2 .account :first-child {
 	border-radius: 1rem;
     transition: .4s width;
 	white-space: nowrap;
+	font-weight: 700;
 }
 .accounts .account :last-child {
 	border-radius: 0.9rem;
