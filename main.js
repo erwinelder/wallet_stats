@@ -926,7 +926,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '2.4.4';
+	let version = '2.4.5';
 
 	if (!localStorage.getItem('V')) {
 
@@ -5221,12 +5221,9 @@ function prepareTopmarginSettingsCategory () {
 			1,
 			localStorage.getItem('AColor1'),
 			localStorage.getItem('ACurrency1'),
-			Number( Number(localStorage.getItem('ABalance1')) ).toFixed(2)
+			Number(localStorage.getItem('ABalance1')).toFixed(2)
 		);
 	checkAccountColor(id('topmargin-preview-window').firstElementChild);
-		
-	adaptInputLengthExplicitly(id('topmargin-preview-window').firstElementChild.firstElementChild);
-	adaptInputLengthExplicitly(id('topmargin-preview-window').firstElementChild.lastElementChild);
 
 	setUpListenerOnTopmarginRange();
 	
