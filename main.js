@@ -926,20 +926,20 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '2.4.5';
+	let version = '2.4.6';
 
 	if (!localStorage.getItem('V')) {
 
 		localStorage.setItem('V', version);
 		setTimeout(() => {
-			showNotification('update', 6500);
+			showNotification('update 2.4', 6500);
 		}, 3000);
 
 	} else if (localStorage.getItem('V') != version) {
 		
 		localStorage.setItem('V', version);
 		setTimeout(() => {
-			showNotification('update', 6500);
+			showNotification('update 2.4.6', 6500);
 		}, 3000);
 	}
 }
@@ -992,7 +992,7 @@ function showNotification (type, timer) {
 function uploadNotificationMessage (type, titleEl, detailsEl) {
 	let lang = localStorage.getItem('L');
 
-	if (type == 'update') {
+	if (type == 'update 2.4.6' || type == 'update 2.4') {
 		if (lang == 'en')
 			detailsEl.innerText = `WalletStats got new update version ${localStorage.getItem('V')}!`;
 		else if (lang == 'cz')
@@ -1006,7 +1006,7 @@ function uploadNotificationMessage (type, titleEl, detailsEl) {
 
 function uploadNotificationButtons (type, notificationEl) {
 
-	if (type == 'update') {
+	if (type == 'update 2.4.6' || type == 'update 2.4') {
 
 		let windowEl_cont = id('update-details-cont'),
 			windowEl = id('update-details-cont').lastElementChild;
@@ -1016,7 +1016,7 @@ function uploadNotificationButtons (type, notificationEl) {
 
 		id('notification-show-details-button').onclick = function() {
 			// upload update details content to window
-			uploadUpdateDetailsToItsWindow();
+			uploadUpdateDetailsToItsWindow(type);
 			// open update detail's window
 			disableScrolling();
 			openFloatingWindow(notificationEl, windowEl_cont, windowEl, calculateScaleX(notificationEl, windowEl_cont));
@@ -1040,118 +1040,152 @@ function hideNotification (notification_contEl) {
 
 
 
-function uploadUpdateDetailsToItsWindow () {
+function uploadUpdateDetailsToItsWindow (type) {
 	let container = id('update-details-paragraphs');
-	
-	let paragraphs = getUpdateDetailsArrayByLang();
 
+	let paragraphs = getUpdateDetailsArrayByLang(type);
+	
 	for (let a = 0; a < paragraphs.length; a++)
 		container.insertAdjacentHTML('beforeend', paragraphs[a]);
 }
 
-function getUpdateDetailsArrayByLang () {
+function getUpdateDetailsArrayByLang (type) {
 	let lang = localStorage.getItem('L');
 
-	if (lang == 'en')
-		return [
-			`<h3>Repeating records</h3>
-			<p>
-				Now you can duplicate records if you need to record the new one with the same data. Just click on a record in the history and click the button "repeat". For more, if you need to duplicate record but with some other data, for example for other category, you can change it and click "repeat" button, after that almost the same record will be saved already as the new one.
-			</p>`,
-			`<hr class="small-hr">`,
+	if (type == 'update 2.4.6') {
+		
+		if (lang == 'en')
+			return [
+				`<h3>Other</h3>
+				<p>
+					Bug fixing.
+				</p>`
+			];
+		else if (lang == 'cz')
+			return [
+				`<h3>Ostatní</h3>
+				<p>
+					Opravy chyb.
+				</p>`
+			];
+		else if (lang == 'ru')
+			return [
+				`<h3>Другое</h3>
+				<p>
+					Исправление ошибок.
+				</p>`
+			];
+		else if (lang == 'ua')
+			return [
+				`<h3>Інше</h3>
+				<p>
+					Виправлення помилок.
+				</p>`
+			];
+		
+	} else if (type == 'update 2.4') {
 
-			`<h3>Records notes</h3>
-			<p>
-				Now you can to add notes for you records. It also will be shown in the history in each record.
-			</p>`,
-			`<hr class="small-hr">`,
+		if (lang == 'en')
+			return [
+				`<h3>Repeating records</h3>
+				<p>
+					Now you can duplicate records if you need to record the new one with the same data. Just click on a record in the history and click the button "repeat". For more, if you need to duplicate record but with some other data, for example for other category, you can change it and click "repeat" button, after that almost the same record will be saved already as the new one.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>"Today" widget</h3>
-			<p>
-				Now you can view, how much have you spend for just today.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Records notes</h3>
+				<p>
+					Now you can to add notes for you records. It also will be shown in the history in each record.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Other</h3>
-			<p>
-				Other features, bug fixing and visual improvements.
-			</p>`
-		];
-	else if (lang == 'cz')
-		return [
-			`<h3>Opakování záznamů</h3>
-			<p>
-				Nyní můžete duplikovat záznamy, pokud potřebujete zaznamenat nový se stejnými daty. Stačí kliknout na záznam v historii a kliknout na tlačítko "opakovat". Navíc, pokud potřebujete duplikovat záznam, ale s nějakými jinými údaji, například pro jinou kategorii, můžete to změnit a kliknout na tlačítko "opakovat", poté bude téměř stejný záznam uložen již jako nový.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>"Today" widget</h3>
+				<p>
+					Now you can view, how much have you spend for just today.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Poznámky záznamů</h3>
-			<p>
-				Nyní můžete přidávat poznámky k vašim záznamům. Také se zobrazí v historii v každém záznamu.
-			</p>`,
-			`<hr class="small-hr">`,
-			
-			`<h3>Widget "Dnes"</h3>
-			<p>
-				Nyní se můžete podívat, kolik jste utratili jen za dnešní den.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Other</h3>
+				<p>
+					Other features, bug fixing and visual improvements.
+				</p>`
+			];
+		else if (lang == 'cz')
+			return [
+				`<h3>Opakování záznamů</h3>
+				<p>
+					Nyní můžete duplikovat záznamy, pokud potřebujete zaznamenat nový se stejnými daty. Stačí kliknout na záznam v historii a kliknout na tlačítko "opakovat". Navíc, pokud potřebujete duplikovat záznam, ale s nějakými jinými údaji, například pro jinou kategorii, můžete to změnit a kliknout na tlačítko "opakovat", poté bude téměř stejný záznam uložen již jako nový.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Ostatní</h3>
-			<p>
-				Další funkce, opravy chyb a vizuální vylepšení.
-			</p>`
-		];
-	else if (lang == 'ru')
-		return [
-			`<h3>Повторение записей</h3>
-			<p>
-				Теперь вы можете дублировать записи, если вам нужно записать новую с теми же данными. Просто нажмите на запись в истории и нажмите кнопку "повторить". Более того, если вам нужно продублировать запись, но с какими-то другими данными, например для другой категории, вы можете изменить ее и нажать кнопку "повторить", после чего почти такая же запись будет сохранена уже как новая.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Poznámky záznamů</h3>
+				<p>
+					Nyní můžete přidávat poznámky k vašim záznamům. Také se zobrazí v historii v každém záznamu.
+				</p>`,
+				`<hr class="small-hr">`,
+				
+				`<h3>Widget "Dnes"</h3>
+				<p>
+					Nyní se můžete podívat, kolik jste utratili jen za dnešní den.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Примечание</h3>
-			<p>
-				Теперь вы можете добавлять примечания к своим записям. Они также будут отображаться в истории у каждой записи.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Ostatní</h3>
+				<p>
+					Další funkce, opravy chyb a vizuální vylepšení.
+				</p>`
+			];
+		else if (lang == 'ru')
+			return [
+				`<h3>Повторение записей</h3>
+				<p>
+					Теперь вы можете дублировать записи, если вам нужно записать новую с теми же данными. Просто нажмите на запись в истории и нажмите кнопку "повторить". Более того, если вам нужно продублировать запись, но с какими-то другими данными, например для другой категории, вы можете изменить ее и нажать кнопку "повторить", после чего почти такая же запись будет сохранена уже как новая.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Виджет "Сегодня"</h3>
-			<p>
-				Теперь вы можете посмотреть, сколько вы потратили только сегодня.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Примечание</h3>
+				<p>
+					Теперь вы можете добавлять примечания к своим записям. Они также будут отображаться в истории у каждой записи.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Другое</h3>
-			<p>
-				Другие функции, исправление ошибок и визуальные улучшения.
-			</p>`
-		];
-	else if (lang == 'ua')
-		return [
-			`<h3>Повторення записів</h3>
-			<p>
-				Тепер ви можете дублювати записи, якщо вам потрібно записати новий з тими ж даними. Просто натисніть на запис в історії та натисніть кнопку "повторити". Більш того, якщо вам потрібно дублювати запис, але з деякими іншими даними, наприклад, для іншої категорії, ви можете змінити це та натиснути кнопку "повторити", після чого майже той самий запис буде збережено вже як новий.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Виджет "Сегодня"</h3>
+				<p>
+					Теперь вы можете посмотреть, сколько вы потратили только сегодня.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Примітки записів</h3>
-			<p>
-				Тепер ви можете додавати примітки до своїх записів. Вони також будуть показани в історії у кожного запису.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Другое</h3>
+				<p>
+					Другие функции, исправление ошибок и визуальные улучшения.
+				</p>`
+			];
+		else if (lang == 'ua')
+			return [
+				`<h3>Повторення записів</h3>
+				<p>
+					Тепер ви можете дублювати записи, якщо вам потрібно записати новий з тими ж даними. Просто натисніть на запис в історії та натисніть кнопку "повторити". Більш того, якщо вам потрібно дублювати запис, але з деякими іншими даними, наприклад, для іншої категорії, ви можете змінити це та натиснути кнопку "повторити", після чого майже той самий запис буде збережено вже як новий.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Віджет "Сьогодні"</h3>
-			<p>
-				 Тепер ви можете переглянути, скільки ви витратили лише за сьогодні.
-			</p>`,
-			`<hr class="small-hr">`,
+				`<h3>Примітки записів</h3>
+				<p>
+					Тепер ви можете додавати примітки до своїх записів. Вони також будуть показани в історії у кожного запису.
+				</p>`,
+				`<hr class="small-hr">`,
 
-			`<h3>Інше</h3>
-			<p>
-				Інші функції, виправлення помилок і візуальні покращення.
-			</p>`
-		];
+				`<h3>Віджет "Сьогодні"</h3>
+				<p>
+					Тепер ви можете переглянути, скільки ви витратили лише за сьогодні.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Інше</h3>
+				<p>
+					Інші функції, виправлення помилок і візуальні покращення.
+				</p>`
+			];	
+	}
 }
 
 
@@ -4113,16 +4147,8 @@ function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field
 			return;
 		}
 	}
-		
-	if (localStorage.getItem(`RType${record_num}`) == '+') {
-		
-		category_num = categories_income_icons.length - 1;
-		field.setAttribute('categorynum', category_num);
 
-		field_icon.innerHTML = categories_income_icons[category_num];
-		field_name.value = categories_income_titles[category_num];
-
-	} else {
+	if (type == '-') {
 
 		category_num = subcategories_icons.length - 1;
 		subcategory_num = subcategories_icons[subcategories_icons.length - 1].length - 1;
@@ -4131,6 +4157,14 @@ function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field
 
 		field_icon.innerHTML = subcategories_icons[category_num][subcategory_num];
 		field_name.value = subcategories_titles[category_num][subcategory_num];
+
+	} else {
+		
+		category_num = categories_income_icons.length - 1;
+		field.setAttribute('categorynum', category_num);
+
+		field_icon.innerHTML = categories_income_icons[category_num];
+		field_name.value = categories_income_titles[category_num];
 	}
 }
 
