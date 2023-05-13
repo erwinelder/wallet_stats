@@ -1052,7 +1052,7 @@ function uploadUpdateDetailsToItsWindow (type) {
 function getUpdateDetailsArrayByLang (type) {
 	let lang = localStorage.getItem('L');
 
-	if (type == 'update 2.4.6') {
+	if (type == 'update 2.4.7') {
 		
 		if (lang == 'en')
 			return [
