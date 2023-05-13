@@ -939,7 +939,7 @@ function uploadVersionUpdate () {
 		
 		localStorage.setItem('V', version);
 		setTimeout(() => {
-			showNotification('update 2.4.6', 6500);
+			showNotification('update 2.4.7', 6500);
 		}, 3000);
 	}
 }
@@ -1006,7 +1006,7 @@ function uploadNotificationMessage (type, titleEl, detailsEl) {
 
 function uploadNotificationButtons (type, notificationEl) {
 
-	if (type == 'update 2.4.6' || type == 'update 2.4') {
+	if (type == 'update 2.4.7' || type == 'update 2.4') {
 
 		let windowEl_cont = id('update-details-cont'),
 			windowEl = id('update-details-cont').lastElementChild;
