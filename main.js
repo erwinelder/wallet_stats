@@ -926,7 +926,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '2.4.7';
+	let version = '2.4.8';
 
 	if (!localStorage.getItem('V')) {
 
@@ -939,7 +939,7 @@ function uploadVersionUpdate () {
 		
 		localStorage.setItem('V', version);
 		setTimeout(() => {
-			showNotification('update 2.4.7', 6500);
+			showNotification('update 2.4.8', 6500);
 		}, 3000);
 	}
 }
@@ -1006,7 +1006,7 @@ function uploadNotificationMessage (type, titleEl, detailsEl) {
 
 function uploadNotificationButtons (type, notificationEl) {
 
-	if (type == 'update 2.4.7' || type == 'update 2.4') {
+	if (type == 'update 2.4.8' || type == 'update 2.4') {
 
 		let windowEl_cont = id('update-details-cont'),
 			windowEl = id('update-details-cont').lastElementChild;
@@ -1052,7 +1052,7 @@ function uploadUpdateDetailsToItsWindow (type) {
 function getUpdateDetailsArrayByLang (type) {
 	let lang = localStorage.getItem('L');
 
-	if (type == 'update 2.4.7') {
+	if (type == 'update 2.4.8') {
 		
 		if (lang == 'en')
 			return [
@@ -2932,26 +2932,32 @@ function showTodayStatsMessageNoExpences (el, lang) {
 
 function showTodayStatsMessageSomeExpences (el, lang, today_amount, account_currency, today_percent_amount, account_num) {
 
+	let default_balance = getReadableNumber( (today_amount + Number(localStorage.getItem('ABalance' + account_num))).toFixed(2) );
+	today_amount = getReadableNumber(today_amount.toFixed(2));
+
 	if (lang == 'en')
-		el.innerHTML = `you spent <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, or <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+		el.innerHTML = `you spent <span class="underlined-text">${today_amount} ${account_currency}</span>, or <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${default_balance} ${account_currency})`;
 	else if (lang == 'cz')
-		el.innerHTML = `jste utratil(-a) <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, neboli <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+		el.innerHTML = `jste utratil(-a) <span class="underlined-text">${today_amount} ${account_currency}</span>, neboli <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${default_balance} ${account_currency})`;
 	else if (lang == 'ru')
-		el.innerHTML = `вы потратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, или же <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+		el.innerHTML = `вы потратили <span class="underlined-text">${today_amount} ${account_currency}</span>, или же <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${default_balance} ${account_currency})`;
 	else if (lang == 'ua')
-		el.innerHTML = `ви витратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, або ж <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency})`;
+		el.innerHTML = `ви витратили <span class="underlined-text">${today_amount} ${account_currency}</span>, або ж <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${default_balance} ${account_currency})`;
 }
 
 function showTodayStatsMessageManyExpences (el, lang, today_amount, account_currency, today_percent_amount, account_num) {
 
+	let default_balance = getReadableNumber( (today_amount + Number(localStorage.getItem('ABalance' + account_num))).toFixed(2) );
+	today_amount = getReadableNumber(today_amount.toFixed(2));
+
 	if (lang == 'en')
-		el.innerHTML = `you have been already spent <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, what is <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). I hope you now when to stop`;
+		el.innerHTML = `you have been already spent <span class="underlined-text">${today_amount} ${account_currency}</span>, what is <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${default_balance} ${account_currency}). I hope you now when to stop`;
 	else if (lang == 'cz')
-		el.innerHTML = `jste už utratil(-a) <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, co je <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). Doufám víte, kdy se zastavit`;
+		el.innerHTML = `jste už utratil(-a) <span class="underlined-text">${today_amount} ${account_currency}</span>, co je <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${default_balance} ${account_currency}). Doufám, že víte, kdy se zastavit`;
 	else if (lang == 'ru')
-		el.innerHTML = `вы уже потратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, это <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). Надеюсь, вы знаете, когда остановиться`;
+		el.innerHTML = `вы уже потратили <span class="underlined-text">${today_amount} ${account_currency}</span>, это <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${default_balance} ${account_currency}). Надеюсь, вы знаете, когда остановиться`;
 	else if (lang == 'ua')
-		el.innerHTML = `ви вже витратили <span class="underlined-text">${getReadableNumber(today_amount)} ${account_currency}</span>, це <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${getReadableNumber( today_amount + Number(localStorage.getItem('ABalance' + account_num)) )} ${account_currency}). Сподіваюся, ви знаєте, коли зупинитися`;
+		el.innerHTML = `ви вже витратили <span class="underlined-text">${today_amount} ${account_currency}</span>, це <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${default_balance} ${account_currency}). Сподіваюся, ви знаєте, коли зупинитися`;
 }
 
 
