@@ -992,7 +992,7 @@ function showNotification (type, timer) {
 function uploadNotificationMessage (type, titleEl, detailsEl) {
 	let lang = localStorage.getItem('L');
 
-	if (type == 'update 2.4.6' || type == 'update 2.4') {
+	if (type == 'update 2.4.8' || type == 'update 2.4') {
 		if (lang == 'en')
 			detailsEl.innerText = `WalletStats got new update version ${localStorage.getItem('V')}!`;
 		else if (lang == 'cz')
