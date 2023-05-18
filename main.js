@@ -926,7 +926,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '2.4.8';
+	let version = '2.4.9';
 
 	if (!localStorage.getItem('V')) {
 
@@ -939,7 +939,7 @@ function uploadVersionUpdate () {
 		
 		localStorage.setItem('V', version);
 		setTimeout(() => {
-			showNotification('update 2.4.8', 6500);
+			showNotification(`update ${version}`, 6500);
 		}, 3000);
 	}
 }
@@ -992,7 +992,7 @@ function showNotification (type, timer) {
 function uploadNotificationMessage (type, titleEl, detailsEl) {
 	let lang = localStorage.getItem('L');
 
-	if (type == 'update 2.4.8' || type == 'update 2.4') {
+	if (type == `update ${localStorage.getItem('V')}` || type == 'update 2.4') {
 		if (lang == 'en')
 			detailsEl.innerText = `WalletStats got new update version ${localStorage.getItem('V')}!`;
 		else if (lang == 'cz')
@@ -1006,7 +1006,7 @@ function uploadNotificationMessage (type, titleEl, detailsEl) {
 
 function uploadNotificationButtons (type, notificationEl) {
 
-	if (type == 'update 2.4.8' || type == 'update 2.4') {
+	if (type == `update ${localStorage.getItem('V')}` || type == 'update 2.4') {
 
 		let windowEl_cont = id('update-details-cont'),
 			windowEl = id('update-details-cont').lastElementChild;
@@ -1052,35 +1052,51 @@ function uploadUpdateDetailsToItsWindow (type) {
 function getUpdateDetailsArrayByLang (type) {
 	let lang = localStorage.getItem('L');
 
-	if (type == 'update 2.4.8') {
+	if (type == `update ${localStorage.getItem('V')}`) {
 		
 		if (lang == 'en')
 			return [
 				`<h3>Other</h3>
 				<p>
-					Bug fixing.
+					Visual improvements.
 				</p>`
+				/* `<h3>Other</h3>
+				<p>
+					Bug fixing.
+				</p>` */
 			];
 		else if (lang == 'cz')
 			return [
 				`<h3>Ostatní</h3>
 				<p>
-					Opravy chyb.
+					Vizuální vylepšení.
 				</p>`
+				/* `<h3>Ostatní</h3>
+				<p>
+					Opravy chyb.
+				</p>` */
 			];
 		else if (lang == 'ru')
 			return [
 				`<h3>Другое</h3>
 				<p>
-					Исправление ошибок.
+					Визуальные улучшения.
 				</p>`
+				/* `<h3>Другое</h3>
+				<p>
+					Исправление ошибок.
+				</p>` */
 			];
 		else if (lang == 'ua')
 			return [
 				`<h3>Інше</h3>
 				<p>
-					Виправлення помилок.
+					Візуальні покращення.
 				</p>`
+				/* `<h3>Інше</h3>
+				<p>
+					Виправлення помилок.
+				</p>` */
 			];
 		
 	} else if (type == 'update 2.4') {
