@@ -129,7 +129,7 @@
 				</div> <!-- date-filter-menu -->
 			</div>
 
-			<div class="widget-cont">
+			<div class="widget-cont today-widget">
 				<div class="today-stats widget">
 
 					<h2 id="today-stats-title"></h2>
@@ -139,7 +139,7 @@
 				</div>
 			</div>
 			
-			<div class="widget-cont">
+			<div class="widget-cont expenses-incomes-widget">
 				<div class="expenses-incomes-columns-cont widget" id="stats-column">
 
 					<h2 id="incomes-expenses-month-title"></h2>
@@ -184,32 +184,35 @@
 				</div>
 			</div> <!-- expenses and incomes columns -->
 
-			<div class="history-nav">
-				<div history-type="all" class="window-floating-nav" id="history-type-nav">
-					<div history-type="-">
-						<input type="button" value="Expenses">
-					</div>
-					<div history-type="+">
-						<input type="button" value="Incomes">
-					</div>
-					<div history-type="all" class="active-input-cont">
-						<input type="button" value="View all">
-					</div>
-				</div>
-			</div> <!-- history-nav type (incomes or expenses) -->
+			<div class="widget-block history-widget">
 
-			<div class="widget-block">
+				<div class="history-nav">
+					<div history-type="all" class="window-floating-nav" id="history-type-nav">
+						<div history-type="-">
+							<input type="button" value="Expenses">
+						</div>
+						<div history-type="+">
+							<input type="button" value="Incomes">
+						</div>
+						<div history-type="all" class="active-input-cont">
+							<input type="button" value="View all">
+						</div>
+					</div>
+				</div> <!-- history-nav type (incomes or expenses) -->
+
 				<div class="history-cont widget-cont" id="history-cont">
-					<div class="history widget" id="history"></div>
+					<div class="widget history" id="history"></div>
 					<div class="history-reloading-background" id="history-reloading-background"></div>
 					<div class="history-empty" id="history-empty"></div>
 				</div>
+
 				<div class="enable-widget-scroll-button-cont">
 					<input type="button" value="" id="enable-history-scroll-button">
 				</div>
+
 			</div> <!-- history-block -->
 
-			<div class="widget-block">
+			<div class="widget-block pie-chart-widget">
 
 				<div class="widget-cont">
 					<div class="widget pie-chart-preview">
@@ -237,11 +240,21 @@
 
 			</div>
 
-			<div class="content-buttons">
-				<input type="button" value="Settings" class="button-for-floating-window settings-button clickable-button" id="settings-button">
+			<div class="settings-button-cont-mobile" id="settings-button-cont-mobile">
+				<div>
+					<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+						<path d="M 418.961 230.018 C 423.932 267.662 471.234 302.655 456.396 337.608 C 441.557 372.563 383.527 362.843 352.995 385.42 C 322.364 408.069 314.592 466.217 276.743 470.546 C 239.219 474.839 218.802 420.16 184.036 405.403 C 149.27 390.646 95.755 413.94 72.777 383.967 C 49.601 353.734 86.024 307.748 81.039 269.98 C 76.068 232.336 28.766 197.344 43.604 162.391 C 58.442 127.435 116.47 137.158 147.003 114.579 C 177.634 91.929 185.408 33.782 223.258 29.454 C 260.781 25.162 281.198 79.84 315.967 94.597 C 350.732 109.353 404.248 86.058 427.226 116.033 C 450.401 146.266 413.976 192.251 418.961 230.018 Z" transform="matrix(0.390731, 0.920505, -0.920505, 0.390731, 382.44353, -77.808985)"></path>
+						<ellipse cx="250" cy="249.999" rx="71.222" ry="71.222"></ellipse>
+					  </svg>
+					<input type="button" value="Settings" class="settings-categories-button">
+				</div>
 			</div>
 
-			<div class="make-record-button-cont blur" id="make-record-button-cont">
+			<!-- <div class="content-buttons">
+			</div> -->
+			
+			<div class="sticky-bottombar blur">
+				<input type="button" value="Settings" class="button-for-floating-window settings-button-desktop clickable-button" id="settings-button-desktop">
 				<input type="button" value="New record" class="button-for-floating-window make-record-button clickable-button" id="make-record-button">
 			</div>
 
@@ -289,7 +302,8 @@
 					<hr class="big-hr">
 				</div> -->
 
-                <div class="field">
+                <div class="field make-rec-date">
+					<h6 class="field-title">Date</h6>
                     <input class="field-date interective-field" type="datetime-local" id="make-record-date">
                 </div>
 

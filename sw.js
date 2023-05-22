@@ -1,4 +1,4 @@
-const cache_version = 'v2.4.9';
+const cache_version = 'v3.0.0';
 const asset_files = [
     'index.html',
     'Main/main.css',

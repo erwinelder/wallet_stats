@@ -704,9 +704,10 @@ function uploadHelloTitle (lang) {
 	
 	setTimeout(() => {
 		if (lang == 0) el.innerHTML = 'Hello!';
-		else if (lang == 1) el.innerHTML = 'Ahoj!';
-		else if (lang == 2) el.innerHTML = 'Привет!';
-		else if (lang == 3) el.innerHTML = 'Привіт!';
+		else if (lang == 1) el.innerHTML = 'Hallo!';
+		else if (lang == 2) el.innerHTML = 'Ahoj!';
+		else if (lang == 3) el.innerHTML = 'Привет!';
+		else if (lang == 4) el.innerHTML = 'Привіт!';
 		
 		el.style.opacity = '1';
 	}, 500);
@@ -720,9 +721,10 @@ function uploadHelloLanguageName (lang_num) {
 	let el = id('hello-language');
 	
 	if (lang_num == 0) el.innerHTML = 'English';
-	else if (lang_num == 1) el.innerHTML = 'Čeština';
-	else if (lang_num == 2) el.innerHTML = 'Русский';
-	else if (lang_num == 3) el.innerHTML = 'Українська';
+	else if (lang_num == 1) el.innerHTML = 'Deutsch';
+	else if (lang_num == 2) el.innerHTML = 'Čeština';
+	else if (lang_num == 3) el.innerHTML = 'Русский';
+	else if (lang_num == 4) el.innerHTML = 'Українська';
 
 	return lang_num;
 }
@@ -845,9 +847,10 @@ function setUpClickOnHelloSubmitLanguageButton () {
 function getLanguageByNumber (lang_num) {
 
 	if (lang_num == 0) return 'en';
-	else if (lang_num == 1) return 'cz';
-	else if (lang_num == 2) return 'ru';
-	else if (lang_num == 3) return 'ua';
+	else if (lang_num == 1) return 'de';
+	else if (lang_num == 2) return 'cz';
+	else if (lang_num == 3) return 'ru';
+	else if (lang_num == 4) return 'ua';
 	return lang_num;
 }
 
@@ -926,13 +929,13 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '2.4.9';
+	let version = '3.0.0';
 
 	if (!localStorage.getItem('V')) {
 
 		localStorage.setItem('V', version);
 		setTimeout(() => {
-			showNotification('update 2.4', 6500);
+			showNotification('update 3.0.0', 6500);
 		}, 3000);
 
 	} else if (localStorage.getItem('V') != version) {
@@ -995,6 +998,8 @@ function uploadNotificationMessage (type, titleEl, detailsEl) {
 	if (type == `update ${localStorage.getItem('V')}` || type == 'update 2.4') {
 		if (lang == 'en')
 			detailsEl.innerText = `WalletStats got new update version ${localStorage.getItem('V')}!`;
+		else if (lang == 'de')
+			detailsEl.innerText = `WalletStats hat ein neues Update auf Version ${localStorage.getItem('V')}!`;
 		else if (lang == 'cz')
 			detailsEl.innerText = `WalletStats dostal novou aktualizaci verze ${localStorage.getItem('V')}!`;
 		else if (lang == 'ru')
@@ -1052,7 +1057,105 @@ function uploadUpdateDetailsToItsWindow (type) {
 function getUpdateDetailsArrayByLang (type) {
 	let lang = localStorage.getItem('L');
 
-	if (type == `update ${localStorage.getItem('V')}`) {
+	if (type == 'update 3.0.0') {
+
+		if (lang == 'en')
+			return [
+				`<h3>Desktop optimazing</h3>
+				<p>
+					Now WalletStats is optimized for using on desktop.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>German language support</h3>
+				<p>
+					Now WalletStats is available in German. Change language to German or other you can in settings.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Other</h3>
+				<p>
+					Other features, bug fixing and visual improvements.
+				</p>`
+			];
+		else if (lang == 'de')
+			return [
+				`<h3>Desktop optimieren</h3>
+				<p>
+					Jetzt ist WalletStats für die Verwendung auf dem Desktop optimiert.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Unterstützung für die deutsche Sprache</h3>
+				<p>
+					Jetzt ist WalletStats auf Deutsch verfügbar. Die Sprache kann in den Einstellungen auf Deutsch oder eine andere Sprache geändert werden.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Sonstiges</h3>
+				<p>
+					Weitere Funktionen, Fehlerbehebungen und visuelle Verbesserungen.
+				</p>`
+			];
+		else if (lang == 'cz')
+			return [
+				`<h3>Optimalizace pro počítač</h3>
+				<p>
+					Nyní je WalletStats optimalizován pro použití na počítači.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Podpora německého jazyka</h3>
+				<p>
+					Nyní je WalletStats dostupný v němčině. Jazyk můžete změnit na němčinu nebo jiný v nastavení.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Jiné</h3>
+				<p>
+					Další funkce, opravy chyb a vizuální vylepšení.
+				</p>`
+			];
+		else if (lang == 'ru')
+			return [
+				`<h3>Оптимизация для компьютеров</h3>
+				<p>
+					Теперь WalletStats оптимизирован для использования на компьютерах.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Поддержка немецкого языка</h3>
+				<p>
+					Теперь WalletStats доступен на немецком языке. Вы можете изменить язык на немецкий или другой в настройках.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Прочее</h3>
+				<p>
+					Другие функции, исправление ошибок и визуальные улучшения.
+				</p>`
+			];
+		else if (lang == 'ua')
+			return [
+				`<h3>Оптимізація для комп'ютера</h3>
+				<p>
+					Тепер WalletStats оптимізований для використання на комп'ютері.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Підтримка німецької мови</h3>
+				<p>
+					Тепер WalletStats доступний німецькою мовою. Мову можна змінити на німецьку або іншу в налаштуваннях.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Інше</h3>
+				<p>
+					Інші функції, виправлення помилок та візуальні поліпшення.
+				</p>`
+			];	
+
+	} else if (type == `update ${localStorage.getItem('V')}`) {
 		
 		if (lang == 'en')
 			return [
@@ -1063,6 +1166,17 @@ function getUpdateDetailsArrayByLang (type) {
 				/* `<h3>Other</h3>
 				<p>
 					Bug fixing.
+				</p>` */
+			];
+		else if (lang == 'de')
+			return [
+				`<h3>Sonstiges</h3>
+				<p>
+					Visuelle Verbesserungen.
+				</p>`
+				/* `<h3>Sonstiges</h3>
+				<p>
+					Fehlerbehebungen.
 				</p>` */
 			];
 		else if (lang == 'cz')
@@ -1098,109 +1212,6 @@ function getUpdateDetailsArrayByLang (type) {
 					Виправлення помилок.
 				</p>` */
 			];
-		
-	} else if (type == 'update 2.4') {
-
-		if (lang == 'en')
-			return [
-				`<h3>Repeating records</h3>
-				<p>
-					Now you can duplicate records if you need to record the new one with the same data. Just click on a record in the history and click the button "repeat". For more, if you need to duplicate record but with some other data, for example for other category, you can change it and click "repeat" button, after that almost the same record will be saved already as the new one.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Records notes</h3>
-				<p>
-					Now you can to add notes for you records. It also will be shown in the history in each record.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>"Today" widget</h3>
-				<p>
-					Now you can view, how much have you spend for just today.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Other</h3>
-				<p>
-					Other features, bug fixing and visual improvements.
-				</p>`
-			];
-		else if (lang == 'cz')
-			return [
-				`<h3>Opakování záznamů</h3>
-				<p>
-					Nyní můžete duplikovat záznamy, pokud potřebujete zaznamenat nový se stejnými daty. Stačí kliknout na záznam v historii a kliknout na tlačítko "opakovat". Navíc, pokud potřebujete duplikovat záznam, ale s nějakými jinými údaji, například pro jinou kategorii, můžete to změnit a kliknout na tlačítko "opakovat", poté bude téměř stejný záznam uložen již jako nový.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Poznámky záznamů</h3>
-				<p>
-					Nyní můžete přidávat poznámky k vašim záznamům. Také se zobrazí v historii v každém záznamu.
-				</p>`,
-				`<hr class="small-hr">`,
-				
-				`<h3>Widget "Dnes"</h3>
-				<p>
-					Nyní se můžete podívat, kolik jste utratili jen za dnešní den.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Ostatní</h3>
-				<p>
-					Další funkce, opravy chyb a vizuální vylepšení.
-				</p>`
-			];
-		else if (lang == 'ru')
-			return [
-				`<h3>Повторение записей</h3>
-				<p>
-					Теперь вы можете дублировать записи, если вам нужно записать новую с теми же данными. Просто нажмите на запись в истории и нажмите кнопку "повторить". Более того, если вам нужно продублировать запись, но с какими-то другими данными, например для другой категории, вы можете изменить ее и нажать кнопку "повторить", после чего почти такая же запись будет сохранена уже как новая.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Примечание</h3>
-				<p>
-					Теперь вы можете добавлять примечания к своим записям. Они также будут отображаться в истории у каждой записи.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Виджет "Сегодня"</h3>
-				<p>
-					Теперь вы можете посмотреть, сколько вы потратили только сегодня.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Другое</h3>
-				<p>
-					Другие функции, исправление ошибок и визуальные улучшения.
-				</p>`
-			];
-		else if (lang == 'ua')
-			return [
-				`<h3>Повторення записів</h3>
-				<p>
-					Тепер ви можете дублювати записи, якщо вам потрібно записати новий з тими ж даними. Просто натисніть на запис в історії та натисніть кнопку "повторити". Більш того, якщо вам потрібно дублювати запис, але з деякими іншими даними, наприклад, для іншої категорії, ви можете змінити це та натиснути кнопку "повторити", після чого майже той самий запис буде збережено вже як новий.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Примітки записів</h3>
-				<p>
-					Тепер ви можете додавати примітки до своїх записів. Вони також будуть показани в історії у кожного запису.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Віджет "Сьогодні"</h3>
-				<p>
-					Тепер ви можете переглянути, скільки ви витратили лише за сьогодні.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Інше</h3>
-				<p>
-					Інші функції, виправлення помилок і візуальні покращення.
-				</p>`
-			];	
 	}
 }
 
@@ -1256,7 +1267,7 @@ function uploadLanguage (lang) {
 
 function uploadFontFamilyByLanguage (lang) {
 
-	if (lang == 'en' || lang == 'cz')
+	if (lang == 'en' || lang == 'de' || lang == 'cz')
 		id('body').classList.add('font1');
 	else if (lang == 'ru' || lang == 'ua')
 		id('body').classList.add('font2');
@@ -1284,6 +1295,19 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 			/* 8 */ 'Financial expenses',
 			/* 9 */ 'Investments',
 			/* 10 */ 'Other'
+		];
+	else if (lang == 'de')
+		return [
+			/* 1 */ 'Essen und Getränke',
+			/* 2 */ 'Einkaufen',
+			/* 3 */ 'Haus',
+			/* 4 */ 'Verkehrsmittel',
+			/* 5 */ 'Fahrzeug',
+			/* 6 */ 'Leben und Freizeit',
+			/* 7 */ 'Kommunikation',
+			/* 8 */ 'Finanzierungsspesen',
+			/* 9 */ 'Investitionen',
+			/* 10 */ 'Andere'
 		];
 	else if (lang == 'cz')
 		return [
@@ -1416,6 +1440,96 @@ function getSubategoriesTitlesByLanguage (lang) {
 			[
 				'Missing',
 				'Other'
+			]
+		];
+	else if (lang == 'de')
+		return [
+			/* 1 */
+			[
+				'Lebensmittel',
+				'Restaurant, Fastfood',
+				'Cafe, Bar',
+			],
+			/* 2 */
+			[
+				'Kleidung und Schuhe',
+				'Apotheke',
+				'Elektronik, Zubehör',
+				'Geschäfte, Lust',
+				'Gesundheit, Schönheit',
+				'Haus und Garten',
+				'Schmuck, Zubehör',
+				'Kinder',
+				'Haustiere',
+				'Schreibwaren, Werkzeuge',
+			],
+			/* 3 */
+			[
+				'Nebenkosten',
+				'Instandhaltung',
+				'Hypothek',
+				'Versicherung',
+				'Miete',
+				'Dienst',
+			],
+			/* 4 */
+			[
+				'Öffentliche Verkehrsmittel',
+				'Taxi',
+				'Dienstreisen',
+				'Langstrecke',
+			],
+			/* 5 */
+			[
+				'Kraftstoff',
+				'Parken',
+				'Leasing',
+				'Autovermietung',
+				'Autoversicherung',
+				'Service des Autos',
+			],
+			/* 6 */
+			[
+				'Schönheit',
+				'Aktivsport, Fitness',
+				'Alkohol, Tabakwaren',
+				'Bücher, Audio',
+				'Geschenke, Wohltätigkeit',
+				'Kultur, Veranstaltungen',
+				'Ausbildung, Entwicklung',
+				'Gesundheit, Arzt',
+				'Interessen, Hobbys',
+				'Freizeit, Reisen, Hotels',
+				'Lebensereignisse',
+				'Lotterie, Glücksspiel',
+				'Fernsehen',
+			],
+			/* 7 */
+			[
+				'Telefonkommunikation',
+				'Internet',
+				'Abonnements, Software, Apps, Spiele',
+				'Postdienste',
+			],
+			/* 8 */
+			[
+				'Beratungen',
+				'Einziehung',
+				'Abgaben',
+				'Bußgelder',
+				'Versicherung',
+				'Kredit',
+			],
+			/* 9 */
+			[
+				'Finanzielle Investitionen',
+				'Liegenschaft',
+				'Ersparnisse',
+			],
+			/* 10 */
+			[
+				'abwesend',
+				'andere'
 			]
 		];
 	else if (lang == 'cz')
@@ -1568,7 +1682,7 @@ function getSubategoriesTitlesByLanguage (lang) {
 				'Отдых, поездки, отели',
 				'Жизненные события',
 				'Лотерея, азартные игры',
-				'Телевидение',
+				'Телевидение'
 			],
 			/* 7 */
 			[
@@ -1704,6 +1818,18 @@ function getCategoriesIncomeTitlesByLanguage (lang) {
 			/* 8 */ 'Refund',
 			/* 9 */ 'Transfers'
 		  ];
+	else if (lang == 'de')
+		return [
+			/* 1 */ 'Gehalt',
+			/* 2 */ 'Stipendium',
+			/* 3 */ 'Verkauf',
+			/* 4 */ 'Miete',
+			/* 5 */ 'Investitionen',
+			/* 6 */ 'Geschenke',
+			/* 7 */ 'Lotterie',
+			/* 8 */ 'Rückgabe',
+			/* 9 */ 'Überweisung'
+		];
 	else if (lang == 'cz')
 		return [
 			/* 1 */ 'Plat',
@@ -1715,7 +1841,7 @@ function getCategoriesIncomeTitlesByLanguage (lang) {
 			/* 7 */ 'Loterie',
 			/* 8 */ 'Vrácení peněz',
 			/* 9 */ 'Převody'
-		  ];
+		];
 	else if (lang == 'ru')
 		return [
 			/* 1 */ 'Зарплата',
@@ -1751,6 +1877,10 @@ function uploadLanguageToHistoryNavbars (lang) {
 		array[0].value = 'This month';
 		array[1].value = 'Prev month';
 		array[2].value = 'Custom';
+	} else if (lang == 'de') {
+		array[0].value = 'Dieser Monat';
+		array[1].value = 'Vormonat';
+		array[2].value = 'Filter';
 	} else if (lang == 'cz') {
 		array[0].value = 'Tento měsíc';
 		array[1].value = 'Před měsíc';
@@ -1771,6 +1901,10 @@ function uploadLanguageToHistoryNavbars (lang) {
 		array[0].value = 'Expenses';
 		array[1].value = 'Incomes';
 		array[2].value = 'View all';
+	} else if (lang == 'de') {
+		array[0].value = 'Spesen';
+		array[1].value = 'Einkünfte';
+		array[2].value = 'Alle';
 	} else if (lang == 'cz') {
 		array[0].value = 'Výdaje';
 		array[1].value = 'Příjmy';
@@ -1794,6 +1928,9 @@ function uploadLanguageToWidgets (lang) {
 	if (lang == 'en') {
 		el[0].firstElementChild.firstElementChild.innerHTML = 'Incomes';
 		el[1].firstElementChild.firstElementChild.innerHTML = 'Expenses';
+	} else if (lang == 'de') {
+		el[0].firstElementChild.firstElementChild.innerHTML = 'Einkünfte';
+		el[1].firstElementChild.firstElementChild.innerHTML = 'Spesen';
 	} else if (lang == 'cz') {
 		el[0].firstElementChild.firstElementChild.innerHTML = 'Příjmy';
 		el[1].firstElementChild.firstElementChild.innerHTML = 'Výdaje';
@@ -1809,6 +1946,8 @@ function uploadLanguageToWidgets (lang) {
 	
 	if (lang == 'en')
 		el.innerText = 'Today';
+	else if (lang == 'de')
+		el.innerText = 'Heute';
 	else if (lang == 'cz')
 		el.innerText = 'Dnes';
 	else if (lang == 'ru')
@@ -1820,6 +1959,8 @@ function uploadLanguageToWidgets (lang) {
 	
 	if (lang == 'en')
 		el.innerText = 'Total:';
+	else if (lang == 'de')
+		el.innerText = 'Gesamt:';
 	else if (lang == 'cz')
 		el.innerText = 'Celkem:';
 	else if (lang == 'ru')
@@ -1835,6 +1976,8 @@ function uploadLanguageToTitles(lang) {
 
 	if (lang == 'en')
 		el.innerText = `What's new in V${localStorage.getItem('V')}`;
+	else if (lang == 'de')
+		el.innerText = `Was gibt es Neues in V${localStorage.getItem('V')}`;
 	else if (lang == 'cz')
 		el.innerText = `Co je nové ve V${localStorage.getItem('V')}`;
 	else if (lang == 'ru')
@@ -1845,31 +1988,43 @@ function uploadLanguageToTitles(lang) {
 	el = id('make-record-window').getElementsByClassName('field-title');
 
 	if (lang == 'en') {
-		el[0].innerHTML = 'Note';
-		el[1].innerHTML = 'Account';
-		el[2].innerHTML = 'Amount';
-		el[3].innerHTML = 'Category';
+		el[0].innerHTML = 'Date';
+		el[1].innerHTML = 'Note';
+		el[2].innerHTML = 'Account';
+		el[3].innerHTML = 'Amount';
+		el[4].innerHTML = 'Category';
+	} else if (lang == 'de') {
+		el[0].innerHTML = 'Datum';
+		el[1].innerHTML = 'Anmerkung';
+		el[2].innerHTML = 'Konto';
+		el[3].innerHTML = 'Summe';
+		el[4].innerHTML = 'Kategorie';
 	} else if (lang == 'cz') {
-		el[0].innerHTML = 'Poznámka';
-		el[1].innerHTML = 'Účet';
-		el[2].innerHTML = 'Částka';
-		el[3].innerHTML = 'Kategorie';
+		el[0].innerHTML = 'Datum';
+		el[1].innerHTML = 'Poznámka';
+		el[2].innerHTML = 'Účet';
+		el[3].innerHTML = 'Částka';
+		el[4].innerHTML = 'Kategorie';
 	} else if (lang == 'ru') {
-		el[0].innerHTML = 'Примечание';
-		el[1].innerHTML = 'Счёт';
-		el[2].innerHTML = 'Сумма';
-		el[3].innerHTML = 'Категория';
+		el[0].innerHTML = 'Дата';
+		el[1].innerHTML = 'Примечание';
+		el[2].innerHTML = 'Счёт';
+		el[3].innerHTML = 'Сумма';
+		el[4].innerHTML = 'Категория';
 	} else if (lang == 'ua') {
-		el[0].innerHTML = 'Примітка';
-		el[1].innerHTML = 'Рахунок';
-		el[2].innerHTML = 'Сума';
-		el[3].innerHTML = 'Категорія';
+		el[0].innerHTML = 'Дата';
+		el[1].innerHTML = 'Примітка';
+		el[2].innerHTML = 'Рахунок';
+		el[3].innerHTML = 'Сума';
+		el[4].innerHTML = 'Категорія';
 	}
 
 	el = id('make-record-note');
 
 	if (lang == 'en')
 		el.setAttribute('placeholder', 'Note for more specific');
+	else if (lang == 'de')
+		el.setAttribute('placeholder', 'Hinweis für weitere Einzelheiten');
 	else if (lang == 'cz')
 		el.setAttribute('placeholder', 'Poznámka pro upřesnění');
 	else if (lang == 'ru')
@@ -1885,6 +2040,10 @@ function uploadLanguageToTitles(lang) {
 		el[0].innerHTML = 'Currency';
 		el[1].innerHTML = 'Balance';
 		el[2].innerHTML = 'Color';
+	} else if (lang == 'de') {
+		el[0].innerHTML = 'Währung';
+		el[1].innerHTML = 'Bilanz';
+		el[2].innerHTML = 'Farbe';
 	} else if (lang == 'cz') {
 		el[0].innerHTML = 'Měna';
 		el[1].innerHTML = 'Zůstatek';
@@ -1904,6 +2063,9 @@ function uploadLanguageToTitles(lang) {
 	if (lang == 'en') {
 		el[0].innerHTML = 'From';
 		el[1].innerHTML = 'To';
+	} else if (lang == 'de') {
+		el[0].innerHTML = 'Von';
+		el[1].innerHTML = 'Bis';
 	} else if (lang == 'cz') {
 		el[0].innerHTML = 'Od';
 		el[1].innerHTML = 'Do';
@@ -1919,6 +2081,8 @@ function uploadLanguageToTitles(lang) {
 
 	if (lang == 'en')
 		el.innerHTML = 'Settings';
+	else if (lang == 'de')
+		el.innerHTML = 'Einstellungen';
 	else if (lang == 'cz')
 		el.innerHTML = 'Nastavení';
 	else if (lang == 'ru')
@@ -1934,6 +2098,8 @@ function uploadLanguageToButtons (lang) {
 
 	if (lang == 'en')
 		el.value = 'Show details';
+	else if (lang == 'de')
+		el.value = 'Details anzeigen';
 	else if (lang == 'cz')
 		el.value = 'Ukázat podrobnosti';
 	else if (lang == 'ru')
@@ -1945,6 +2111,8 @@ function uploadLanguageToButtons (lang) {
 
 	if (lang == 'en')
 		el.value = 'Make record';
+	else if (lang == 'de')
+		el.value = 'Eintrag erstellen';
 	else if (lang == 'cz')
 		el.value = 'Udělelat záznam';
 	else if (lang == 'ru')
@@ -1952,16 +2120,25 @@ function uploadLanguageToButtons (lang) {
 	else if (lang == 'ua')
 		el.value = 'Зробити запис';
 
-	el = id('settings-button');
+	el[0] = id('settings-button-desktop');
+	el[1] = id('settings-button-cont-mobile');
 
-	if (lang == 'en')
-		el.value = 'Settings';
-	else if (lang == 'cz')
-		el.value = 'Nastavení';
-	else if (lang == 'ru')
-		el.value = 'Настройки';
-	else if (lang == 'ua')
-		el.value = 'Налаштування';
+	if (lang == 'en') {
+		el[0].value = 'Settings';
+		el[1].value = 'Settings';
+	} else if (lang == 'de') {
+		el[0].value = 'Einstellungen';
+		el[1].value = 'Einstellungen';
+	} else if (lang == 'cz') {
+		el[0].value = 'Nastavení';
+		el[1].value = 'Nastavení';
+	} else if (lang == 'ru') {
+		el[0].value = 'Настройки';
+		el[1].value = 'Настройки';
+	} else if (lang == 'ua') {
+		el[0].value = 'Налаштування';
+		el[1].value = 'Налаштування';
+	}
 
 	el = id('record-types').getElementsByTagName('input');
 
@@ -1969,6 +2146,10 @@ function uploadLanguageToButtons (lang) {
 		el[0].value = 'Transfer';
 		el[1].value = 'Expense';
 		el[2].value = 'Income';
+	} else if (lang == 'de') {
+		el[0].value = 'Übersetzung';
+		el[1].value = 'Spesen';
+		el[2].value = 'Einkommen';
 	} else if (lang == 'cz') {
 		el[0].value = 'Převod';
 		el[1].value = 'Výdaj';
@@ -1987,6 +2168,8 @@ function uploadLanguageToButtons (lang) {
 
 	if (lang == 'en')
 		el.value = 'Repeat';
+	else if (lang == 'de')
+		el.value = 'Wiederholen';
 	else if (lang == 'cz')
 		el.value = 'Zopakovat';
 	else if (lang == 'ru')
@@ -1998,6 +2181,8 @@ function uploadLanguageToButtons (lang) {
 
 	if (lang == 'en')
 		el.value = 'Remove';
+	else if (lang == 'de')
+		el.value = 'Löschen';
 	else if (lang == 'cz')
 		el.value = 'Smazat';
 	else if (lang == 'ru')
@@ -2010,6 +2195,9 @@ function uploadLanguageToButtons (lang) {
 	if (lang == 'en')
 		for (let a = 0; a < el.length; a++)
 			el[a].value = 'Back';
+	else if (lang == 'de')
+		for (let a = 0; a < el.length; a++)
+			el[a].value = 'Zurück';
 	else if (lang == 'cz')
 		for (let a = 0; a < el.length; a++)
 			el[a].value = 'Zpátky';
@@ -2029,6 +2217,13 @@ function uploadLanguageToButtons (lang) {
 		el[3].value = 'Themes';
 		el[4].value = 'Top margin';
 		el[5].value = 'Accounts';
+	} else if (lang == 'de') {
+		el[0].value = 'Daten zurücksetzen';
+		el[1].value = 'Sprachen';
+		el[2].value = 'Unschärfe';
+		el[3].value = 'Themen';
+		el[4].value = 'Top-margin';
+		el[5].value = 'Konten';
 	} else if (lang == 'cz') {
 		el[0].value = 'Resetovat data';
 		el[1].value = 'Jazyk';
@@ -2057,6 +2252,9 @@ function uploadLanguageToButtons (lang) {
 	if (lang == 'en')
 		for (let a = 0; a < el.length; a++)
 			el[a].value = 'Close';
+	else if (lang == 'de')
+		for (let a = 0; a < el.length; a++)
+			el[a].value = 'Schließen';
 	else if (lang == 'cz')
 		for (let a = 0; a < el.length; a++)
 			el[a].value = 'Zavřít';
@@ -2071,6 +2269,8 @@ function uploadLanguageToButtons (lang) {
 
 	if (lang == 'en')
 		el.value = 'Remove account';
+	else if (lang == 'de')
+		el.value = 'Löschen';
 	else if (lang == 'cz')
 		el.value = 'Smazat účet';
 	else if (lang == 'ru')
@@ -2082,6 +2282,8 @@ function uploadLanguageToButtons (lang) {
 
 	if (lang == 'en')
 		el.value = 'Save account';
+	else if (lang == 'de')
+		el.value = 'Speichern';
 	else if (lang == 'cz')
 		el.value = 'Uložit účet';
 	else if (lang == 'ru')
@@ -2093,6 +2295,8 @@ function uploadLanguageToButtons (lang) {
 
 	if (lang == 'en')
 		el.value = 'Confirm';
+	else if (lang == 'de')
+		el.value = 'Bestätigen';
 	else if (lang == 'cz')
 		el.value = 'Potvrdit';
 	else if (lang == 'ru')
@@ -2107,6 +2311,11 @@ function uploadLanguageToButtons (lang) {
 		el[1].value = '7 days';
 		el[2].value = 'This year';
 		el[3].value = 'Prev year';
+	} else if (lang == 'de') {
+		el[0].value = 'Diese Woche';
+		el[1].value = '7 Tage';
+		el[2].value = 'Dieses Jahr';
+		el[3].value = 'Vorjahr';
 	} else if (lang == 'cz') {
 		el[0].value = 'Tento týden';
 		el[1].value = '7 dní';
@@ -2142,6 +2351,19 @@ function uploadLanguageToButtons (lang) {
 		el[9].value = 'Oct';
 		el[10].value = 'Nov';
 		el[11].value = 'Dec';
+	} else if (lang == 'de') {
+		el[0].value = 'Jan';
+		el[1].value = 'Feb';
+		el[2].value = 'Mär';
+		el[3].value = 'Apr';
+		el[4].value = 'Mai';
+		el[5].value = 'Jun';
+		el[6].value = 'Jul';
+		el[7].value = 'Aug';
+		el[8].value = 'Sep';
+		el[9].value = 'Okt';
+		el[10].value = 'Nov';
+		el[11].value = 'Dez';
 	} else if (lang == 'cz') {
 		el[0].value = 'Led';
 		el[1].value = 'Ún';
@@ -2463,7 +2685,7 @@ function uploadDataToCustomDateFilterMenu() {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 
-	let this_month = (new Date()).getMonth();
+	let this_month = (new Date()).getMonth() - 2;
 	let this_year = (new Date()).getFullYear();
 	let border1 = getDateBorderByInput(59, 59, 23, 0, this_month + 1, this_year);
 	let border2 = getDateBorderByInput(0, 0, 0, 1, this_month, this_year);
@@ -2561,7 +2783,8 @@ function setUpClickOnRecord (record) {
 		prepareEditRecordWindow(record_num);
 
 		let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-		windowEl.setAttribute('top-position', top_position);
+		windowEl.setAttribute('top-position-x', top_position.x);
+		windowEl.setAttribute('top-position-y', top_position.y);
 
 		// set up click on remove record button
 		setUpClickOnRepeatRecordButton(clickEl, windowEl_cont, windowEl);
@@ -2718,6 +2941,8 @@ function getShowMessageInEmptyHistoryByLang (period, lang) {
 
 		if (lang == 'en')
 			message = 'You have no records in this month';
+		else if (lang == 'de')
+			message = 'Sie haben keine Einträge für diesen Monat';
 		else if (lang == 'cz')
 			message = 'V tomto měsíci nemáte žádné záznamy';
 		else if (lang == 'ru')
@@ -2729,6 +2954,8 @@ function getShowMessageInEmptyHistoryByLang (period, lang) {
 
 		if (lang == 'en')
 			message = 'You have no records in previous month';
+		else if (lang == 'de')
+			message = 'Sie haben keine Einträge vom letzten Monat';
 		else if (lang == 'cz')
 			message = 'V minulém měsíci nemáte žádné záznamy';
 		else if (lang == 'ru')
@@ -2740,6 +2967,8 @@ function getShowMessageInEmptyHistoryByLang (period, lang) {
 
 		if (lang == 'en')
 			message = 'You have no records in this period';
+		else if (lang == 'de')
+			message = 'Sie haben keine Einträge für diesen Zeitraum';
 		else if (lang == 'cz')
 			message = 'V tomto období nemáte žádné záznamy';
 		else if (lang == 'ru')
@@ -2810,6 +3039,8 @@ function changeChangeScrollButtonTitle (el, status, lang) {
 
 		if (lang == 'en')
 			el.value = 'Disable scrolling';
+		else if (lang == 'de')
+			el.value = 'Scrolling ausschalten';
 		else if (lang == 'cz')
 			el.value = 'Vypnout rolování';
 		else if (lang == 'ru')
@@ -2821,6 +3052,8 @@ function changeChangeScrollButtonTitle (el, status, lang) {
 
 		if (lang == 'en')
 			el.value = 'Enable scrolling';
+		else if (lang == 'de')
+			el.value = 'Scrolling einschalten';
 		else if (lang == 'cz')
 			el.value = 'Zapnout rolování';
 		else if (lang == 'ru')
@@ -2938,6 +3171,8 @@ function showTodayStatsMessageNoExpences (el, lang) {
 
 	if (lang == 'en')
 		el.innerHTML = 'there have been no expenses yet. I hope you are here not for the first one for today';
+	else if (lang == 'de')
+		el.innerHTML = `Es wurden noch keine Spesen gemacht. Ich hoffe, dass Sie  hier nicht für die erste für heute sind`;
 	else if (lang == 'cz')
 		el.innerHTML = `ještě nebyly žádné výdaje. Doufám, že jste tady ne pro záznam prvního za dnes`;
 	else if (lang == 'ru')
@@ -2953,6 +3188,8 @@ function showTodayStatsMessageSomeExpences (el, lang, today_amount, account_curr
 
 	if (lang == 'en')
 		el.innerHTML = `you spent <span class="underlined-text">${today_amount} ${account_currency}</span>, or <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${default_balance} ${account_currency})`;
+	else if (lang == 'de')
+		el.innerHTML = `Sie haben bereits <span class="underlined-text">${today_amount} ${account_currency}</span> ausgegeben, was <span class="underlined-text">${today_percent_amount}%</span> des Gesamtsaldos dieses Kontos entspricht (${default_balance} ${account_currency})`;
 	else if (lang == 'cz')
 		el.innerHTML = `jste utratil(-a) <span class="underlined-text">${today_amount} ${account_currency}</span>, neboli <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${default_balance} ${account_currency})`;
 	else if (lang == 'ru')
@@ -2968,6 +3205,8 @@ function showTodayStatsMessageManyExpences (el, lang, today_amount, account_curr
 
 	if (lang == 'en')
 		el.innerHTML = `you have been already spent <span class="underlined-text">${today_amount} ${account_currency}</span>, what is <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${default_balance} ${account_currency}). I hope you now when to stop`;
+	else if (lang == 'de')
+		el.innerHTML = `Sie haben schon <span class="underlined-text">${today_amount} ${account_currency}</span>, das sind <span class="underlined-text">${today_percent_amount}%</span> der Bilanz dieses Kontos (${default_balance} ${account_currency}). Ich hoffe, dass Sie wissen, wann Sie aufhören müssen`;
 	else if (lang == 'cz')
 		el.innerHTML = `jste už utratil(-a) <span class="underlined-text">${today_amount} ${account_currency}</span>, co je <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${default_balance} ${account_currency}). Doufám, že víte, kdy se zastavit`;
 	else if (lang == 'ru')
@@ -3015,6 +3254,8 @@ function uploadExpensesIncomesStatsTitle (el, period, lang) {
 
 			if (lang == 'en')
 				el.innerText = 'This month';
+			else if (lang == 'de')
+				el.innerText = 'Dieser Monat';
 			else if (lang == 'cz')
 				el.innerText = 'Tento měsíc';
 			else if (lang == 'ru')
@@ -3026,6 +3267,8 @@ function uploadExpensesIncomesStatsTitle (el, period, lang) {
 			
 			if (lang == 'en')
 				el.innerText = 'Previous month';
+			else if (lang == 'de')
+				el.innerText = 'Vormonat';
 			else if (lang == 'cz')
 				el.innerText = 'Předchozí měsíc';
 			else if (lang == 'ru')
@@ -3036,12 +3279,15 @@ function uploadExpensesIncomesStatsTitle (el, period, lang) {
 		} else if (period == 'custom') {
 			
 			let inputs = id('date-filter-menu').getElementsByClassName('field-date'),
-				from = getDateFormatByDayMonthYear(inputs[0].value),
-				to = getDateFormatByDayMonthYear(inputs[1].value);
+				from = getReadableDateByFormatDayMonthYear(inputs[0].value),
+				to = getReadableDateByFormatDayMonthYear(inputs[1].value);
 	
 			if (lang == 'en')
 				el.innerText = `From ${from}
 					to ${to}`;
+			else if (lang == 'de')
+				el.innerText = `Von ${from}
+					bis ${to}`;
 			else if (lang == 'cz')
 				el.innerText = `Od ${from}
 					do ${to}`;
@@ -3058,9 +3304,9 @@ function uploadExpensesIncomesStatsTitle (el, period, lang) {
 	}, 300);
 }
 
-function getDateFormatByDayMonthYear (date) {
+function getReadableDateByFormatDayMonthYear (date) {
 	date = new Date(date);
-	return `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`;
+	return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
 }
 
 function getTotalAmountOfExactlyType (type) {
@@ -3683,7 +3929,7 @@ function fixCurrentWidthOfElements () {
 
 
 function calculateScaleX (clickEl, windowEl_cont) {
-	return ( clickEl.offsetWidth / (window.innerWidth - ((parseInt(window.getComputedStyle(windowEl_cont).paddingTop)) * 2)) );
+	return ( clickEl.offsetWidth / ( windowEl_cont.lastElementChild.offsetWidth ) );
 }
 
 function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
@@ -3691,21 +3937,28 @@ function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
 	
 	windowEl_cont.classList.add('floating-window-cont-visible');
 	
-	let clickEl_position = (windowEl.getBoundingClientRect().top + (windowEl.offsetHeight / 2) - clickEl.getBoundingClientRect().top + ((clickEl.offsetHeight / 2))) * scaleX;
 	clickEl.style.transition = transition;
-	
 	let windowEl_full_height = windowEl.clientHeight;
 	let scaleY = scaleX / ((windowEl_full_height * scaleX) / clickEl.offsetHeight);
-	windowEl.style.transform = `translateY(0px) scale(${scaleX}, ${scaleY})`;
-	let top_position = clickEl.getBoundingClientRect().bottom - windowEl.getBoundingClientRect().bottom;
-	windowEl.style.transform = `translateY(${top_position}px) scale(${scaleX}, ${scaleY})`;
+	
+	let clickEl_position_X = ( windowEl.getBoundingClientRect().left + (windowEl.offsetWidth / 2) - clickEl.getBoundingClientRect().left - (clickEl.offsetWidth / 2) ) * Math.max(scaleX, scaleY);
+	let clickEl_position_Y = ( windowEl.getBoundingClientRect().top + (windowEl.offsetHeight / 2) - clickEl.getBoundingClientRect().top - (clickEl.offsetHeight / 2) ) * Math.max(scaleX, scaleY);
+
+	windowEl.style.transform = `translate(0px, 0px) scale(${scaleX}, ${scaleY})`;
+
+	let top_position = {
+		x: clickEl.getBoundingClientRect().left - windowEl.getBoundingClientRect().left,
+		y: clickEl.getBoundingClientRect().bottom - windowEl.getBoundingClientRect().bottom
+	};
+	
+	windowEl.style.transform = `translate(${top_position.x}px, ${top_position.y}px) scale(${scaleX}, ${scaleY})`;
 
 	setTimeout(() => {
 		windowEl.style.transition = transition;
 		windowEl_cont.classList.add('floating-window-cont-darker');
 
 		clickEl.style.opacity = '0';
-		clickEl.style.transform = `scale(${1 * 1 / scaleX}) translateY(${clickEl_position}px)`;
+		clickEl.style.transform = `scale(${Math.min(1 * 1 / scaleX, 1 * 1 / scaleY)}) translate(${clickEl_position_X}px, ${clickEl_position_Y}px)`;
 	}, 1);
 
 	return top_position;
@@ -3739,11 +3992,14 @@ function changeFloatingWindowTransformation (clickEl, windowEl_cont, windowEl) {
 	
 	let scaleX = calculateScaleX(clickEl, windowEl_cont);
 	let scaleY = scaleX / ((windowEl.clientHeight * scaleX) / clickEl.clientHeight);
-	let top_position = windowEl.getAttribute('top-position');
-	windowEl.style.transform = `translateY(${top_position}px) scale(${scaleX}, ${scaleY})`;
+	let top_position_X = windowEl.getAttribute('top-position-x');
+	let top_position_Y = windowEl.getAttribute('top-position-y');
 
-	let clickEl_position = (windowEl.getBoundingClientRect().top + (windowEl.clientHeight / 2) - clickEl.getBoundingClientRect().top + ((clickEl.clientHeight / 2))) * scaleX;
-	clickEl.style.transform = `scale(${1 * 1 / scaleX}) translateY(${clickEl_position}px)`;
+	windowEl.style.transform = `translate(${top_position_X}px, ${top_position_Y}px) scale(${scaleX}, ${scaleY})`;
+
+	let clickEl_position_X = ( windowEl.getBoundingClientRect().left + (windowEl.offsetWidth / 2) - clickEl.getBoundingClientRect().left - (clickEl.offsetWidth / 2) ) * Math.max(scaleX, scaleY);
+	let clickEl_position_Y = ( windowEl.getBoundingClientRect().top + (windowEl.clientHeight / 2) - clickEl.getBoundingClientRect().top + ((clickEl.clientHeight / 2)) ) * Math.max(scaleX, scaleY);
+	clickEl.style.transform = `scale(${1 / scaleX}) translate(${clickEl_position_X}px, ${clickEl_position_Y}px)`;
 
 	return clickEL_transition;
 }
@@ -3754,10 +4010,12 @@ function reconnectFloatingWindow (previous_clickEl, clickEl, windowEl_cont, wind
 	let scaleX = calculateScaleX(clickEl, windowEl_cont);
 	let scaleY = scaleX / ((windowEl.clientHeight * scaleX) / clickEl.clientHeight);
 
+	let width_difference = windowEl.clientWidth - (windowEl.clientWidth * scaleX);
 	let height_difference = windowEl.clientHeight - (windowEl.clientHeight * scaleY);
-	let top_position = clickEl.getBoundingClientRect().top - ((height_difference / 2) + windowEl.getBoundingClientRect().top);
+	let top_position_X = clickEl.getBoundingClientRect().left - ((width_difference / 2) + windowEl.getBoundingClientRect().left);
+	let top_position_Y = clickEl.getBoundingClientRect().top - ((height_difference / 2) + windowEl.getBoundingClientRect().top);
 
-	windowEl.style.transform = `translateY(${top_position}px) scale(${scaleX}, ${scaleY})`;
+	windowEl.style.transform = `translate(${top_position_X}px, ${top_position_Y}px) scale(${scaleX}, ${scaleY})`;
 }
 
 function closeReconnectedFloatingWindow (windowEl_cont, windowEl) {
@@ -3829,6 +4087,8 @@ function uploadPopUpNotificationMessage (notification_command, notificationEl) {
 	if (notification_command == 'remove account') {
 		if (lang == 'en')
 			notificationEl.innerHTML = 'It will also delete all records connected with this account. It is irreversible action.';
+		else if (lang == 'de')
+			notificationEl.innerHTML = 'Damit werden auch alle mit diesem Konto verbundenen Datensätze gelöscht. Dieser Vorgang kann man nicht rückgängig gemacht werden.';
 		else if (lang == 'cz')
 			notificationEl.innerHTML = 'To také smaže všechny záznamy spojené s tímto účtem. Je to nevratná akce.';
 		else if (lang == 'ru')
@@ -3948,6 +4208,7 @@ for (let button of history_period_nav_buttons) {
 			uploadRecordsToHistoryAnimated();
 			// upload expenses and incomes stats
 			uploadExpensesIncomesStats();
+			// upload pie chart statistic
 			updatePieChart();
 		}
 
@@ -4200,6 +4461,11 @@ function uploadSaveRecordButtonTitle (long) {
 			el.value = 'Save record';
 		else
 			el.value = 'Save';
+	} else if (lang == 'de') {
+		if (long == 'long')
+			el.value = 'Eintrag speichern';
+		else
+			el.value = 'Speichern';
 	} else if (lang == 'cz') {
 		if (long == 'long')
 			el.value = 'Uložit záznam';
@@ -4337,7 +4603,8 @@ id('make-record-account').onclick = function() {
 		checkAccountsColorInExactlyCont(windowEl);
 	
 		let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-		windowEl.setAttribute('top-position', top_position);
+		windowEl.setAttribute('top-position-x', top_position.x);
+		windowEl.setAttribute('top-position-y', top_position.y);
 	
 		// set up click on accounts
 		setUpChoosingAccount(clickEl, windowEl_cont, windowEl);
@@ -4406,7 +4673,8 @@ id('make-record-category').onclick = () => {
 function openCategoryWindow (clickEl, windowEl_cont, windowEl) {
 	
 	let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-	windowEl.setAttribute('top-position', top_position);
+	windowEl.setAttribute('top-position-x', top_position.x);
+	windowEl.setAttribute('top-position-y', top_position.y);
 	
 	windowEl_cont.firstElementChild.onclick = () => {
 		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
@@ -4883,14 +5151,21 @@ function reuploadRecordsToHistoryAnimated () {
 const settings_categories = id('settings-categories').getElementsByTagName('div');
 const settings_category_windows = id('root').getElementsByClassName('settings-category-window-cont');
 
-id('settings-button').onclick = () => {
-	let windowEl_cont = id('settings-cont');
-	let windowEl = id('settings');
-	let clickEl = id('settings-button');
+id('settings-button-cont-mobile').onclick = function() {
+	openSettings(this);
+}
+id('settings-button-desktop').onclick = function() {
+	openSettings(this);
+}
+
+function openSettings (clickEl) {
+
+	let windowEl_cont = id('settings-cont'),
+		windowEl = id('settings');
 	
 	disableScrolling();
 
-  openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
+  	openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
 
 	windowEl.lastElementChild.lastElementChild.onclick = () => {
 		enableScrolling();
@@ -4973,19 +5248,23 @@ function uploadSettingsCategoryData_Reset (content_cont, button_cont) {
 function getDescription_ResetData (lang) {
 	
 	if (lang == 'en')
-		return ('Reset all data (accounts, records, settings), then application will be reloaded. <b>It is irreversible action.</b>');
+		return ('Reset all data (accounts, records, settings), then application will be reloaded. <b>It is irreversible action!</b>');
+	else if (lang == 'de')
+		return ('Das wird alle Daten (Konten, Einträge, Einstellungen) zurücksetzen und die Web-Anwendung neu starten. <b>Dieser Vorgang kann man nicht rückgängig gemacht werden!</b>');
 	else if (lang == 'cz')
-		return ('Resetovat všechna data (účty, záznamy, nastavení), poté se web-aplikace restartuje. <b>Je to nevratná akce.</b>');
+		return ('Resetovat všechna data (účty, záznamy, nastavení), poté se web-aplikace restartuje. <b>Je to nevratná akce!</b>');
 	else if (lang == 'ru')
-		return ('Сбросить все данные (счета, записи, настройки), после чего приложение перезагрузится. <b>Это необратимое действие.</b>');
+		return ('Сбросить все данные (счета, записи, настройки), после чего приложение перезагрузится. <b>Это необратимое действие!</b>');
 	else if (lang == 'ua')
-		return ('Скинути всі дані (рахунки, записи, налаштування), після чого веб-програма буде перезавантажена. <b>Це незворотна дія.</b>');
+		return ('Скинути всі дані (рахунки, записи, налаштування), після чого веб-програма буде перезавантажена. <b>Це незворотна дія!</b>');
 }
 
 function setUpButtonsValue_ResetData (button, lang) {
 
 	if (lang == 'en') {
 		button.value = 'Reset data';
+	} else if (lang == 'de') {
+		button.value = 'Daten löschen';
 	} else if (lang == 'cz') {
 		button.value = 'Resetovat data';
 	} else if (lang == 'ru') {
@@ -5046,25 +5325,42 @@ function uploadSettingsCategoryData_Language (content_cont, button_cont) {
 		`<p class="description">
 			${getDescription_Language(lang)}
 		</p>
-		<input type="button" lang="en" value="English" class="language-button clickable-button">
-		<input type="button" lang="cz" value="Czech" class="language-button clickable-button">
-		<input type="button" lang="ru" value="Russian" class="language-button clickable-button">
-		<input type="button" lang="ua" value="Ukrainian" class="language-button clickable-button">`
+		<label class="radio-button-label">
+			<input type="radio" name="radio-language" lang="en">
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="radio-language" lang="de">
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="radio-language" lang="cz">
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="radio-language" lang="ru">
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="radio-language" lang="ua">
+		</label>`
 	);
 	button_cont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
 		<input type="button" value="Save" class="clickable-button" id="save-language-button">`	
 	);
 
+	uploadChoosenLanguageToChangeLanguageWindow(content_cont);
 	id('save-language-button').setAttribute('lang', lang);
 	
 	setUpButtonsValue_Language(id('settings-category-window-cont'), lang);
 	setClickOnLanguageButtons(content_cont);
 
-	id('save-language-button').onclick = function() {
-		localStorage.setItem('L', this.getAttribute('lang'));
-		window.location.reload();
-	}
+	setUpClickOnSaveLanguageButton(content_cont);
+}
+
+function uploadChoosenLanguageToChangeLanguageWindow (content_cont) {
+	let lang = localStorage.getItem('L');
+
+	for (let el of content_cont.getElementsByTagName('input'))
+		if (el.getAttribute('lang') == lang)
+			el.setAttribute('checked', '');
 }
 
 function setClickOnLanguageButtons (container) {
@@ -5079,6 +5375,8 @@ function getDescription_Language (lang) {
 	
 	if (lang == 'en')
 		return ('After setting the new language, web-application will be reloaded.');
+	else if (lang == 'de')
+		return ('Nach der Installation einer neuen Sprache wird die Webanwendung geladen.');
 	else if (lang == 'cz')
 		return ('Po nastavení nového jazyka se web-aplikace restartuje.');
 	else if (lang == 'ru')
@@ -5088,32 +5386,62 @@ function getDescription_Language (lang) {
 }
 
 function setUpButtonsValue_Language (container, lang) {
-	let buttons = container.getElementsByTagName('input');
+	let els = container.getElementsByTagName('label'),
+		button = id('save-language-button');
 
 	if (lang == 'en') {
-		buttons[0].value = 'English';
-		buttons[1].value = 'Czech';
-		buttons[2].value = 'Russian';
-		buttons[3].value = 'Ukrainian';
-		buttons[4].value = 'Save';
+		els[0].insertAdjacentText('beforeend', 'English');
+		els[1].insertAdjacentText('beforeend', 'German');
+		els[2].insertAdjacentText('beforeend', 'Czech');
+		els[3].insertAdjacentText('beforeend', 'Russian');
+		els[4].insertAdjacentText('beforeend', 'Ukrainian');
+		button.value = 'Save';
+	} else if (lang == 'de') {
+		els[0].insertAdjacentText('beforeend', 'Englisch');
+		els[1].insertAdjacentText('beforeend', 'Deutsch');
+		els[2].insertAdjacentText('beforeend', 'Tschechisch');
+		els[3].insertAdjacentText('beforeend', 'Russisch');
+		els[4].insertAdjacentText('beforeend', 'Ukrainisch');
+		button.value = 'Speichern';
 	} else if (lang == 'cz') {
-		buttons[0].value = 'Angličtina';
-		buttons[1].value = 'Čeština';
-		buttons[2].value = 'Ruština';
-		buttons[3].value = 'Ukrainština';
-		buttons[4].value = 'Uložit';
+		els[0].insertAdjacentText('beforeend', 'Angličtina');
+		els[1].insertAdjacentText('beforeend', 'Němčina');
+		els[2].insertAdjacentText('beforeend', 'Čeština');
+		els[3].insertAdjacentText('beforeend', 'Ruština');
+		els[4].insertAdjacentText('beforeend', 'Ukrainština');
+		button.value = 'Uložit';
 	} else if (lang == 'ru') {
-		buttons[0].value = 'Английский';
-		buttons[1].value = 'Чешский';
-		buttons[2].value = 'Русский';
-		buttons[3].value = 'Украинский';
-		buttons[4].value = 'Сохранить';
+		els[0].insertAdjacentText('beforeend', 'Английский');
+		els[1].insertAdjacentText('beforeend', 'Немецкий');
+		els[2].insertAdjacentText('beforeend', 'Чешский');
+		els[3].insertAdjacentText('beforeend', 'Русский');
+		els[4].insertAdjacentText('beforeend', 'Украинский');
+		button.value = 'Сохранить';
 	} else if (lang == 'ua') {
-		buttons[0].value = 'Англійська';
-		buttons[1].value = 'Чеська';
-		buttons[2].value = 'Російська';
-		buttons[3].value = 'Українська';
-		buttons[4].value = 'Зберегти';
+		els[0].insertAdjacentText('beforeend', 'Англійська');
+		els[1].insertAdjacentText('beforeend', 'Німецька');
+		els[2].insertAdjacentText('beforeend', 'Чеська');
+		els[3].insertAdjacentText('beforeend', 'Російська');
+		els[4].insertAdjacentText('beforeend', 'Українська');
+		button.value = 'Зберегти';
+	}
+}
+
+function setUpClickOnSaveLanguageButton (content_cont) {
+	let save_button = id('save-language-button'),
+		lang = localStorage.getItem('L'),
+		choosen_lang = lang;
+
+	save_button.onclick = function() {
+
+		for (let el of content_cont.getElementsByTagName('input'))
+			if (el.checked) choosen_lang = el.getAttribute('lang');
+
+		if (choosen_lang != lang) {
+			localStorage.setItem('L', choosen_lang);
+			window.location.reload();
+		} else
+			closeSettingsCategoryWindow();
 	}
 }
 
@@ -5159,6 +5487,8 @@ function getDescription_Blurring (lang) {
 	
 	if (lang == 'en')
 		return ('You can turn blurring of some elements off for better performance.');
+	else if (lang == 'de')
+		return ('Sie können die Unschärfe einiger Elemente deaktivieren, um die Leistung zu verbessern.');
 	else if (lang == 'cz')
 		return ('Můžete pro lepší výkon vypnout rozmazání některých elementů.');
 	else if (lang == 'ru')
@@ -5170,6 +5500,8 @@ function getDescription_Blurring (lang) {
 function getOffWordByLanguage (lang) {
 	if (lang == 'en')
 		return ('Off');
+	else if (lang == 'de')
+		return ('Aus');
 	else if (lang == 'cz')
 		return ('Vyp');
 	else if (lang == 'ru')
@@ -5181,6 +5513,8 @@ function getOffWordByLanguage (lang) {
 function getOnWordByLanguage (lang) {
 	if (lang == 'en')
 		return ('On');
+	else if (lang == 'de')
+		return ('Ein');
 	else if (lang == 'cz')
 		return ('Zap');
 	else if (lang == 'ru')
@@ -5221,7 +5555,8 @@ function uploadSettingsCategoryData_Themes (content_cont, button_cont) {
 
 				id('settings-category-window-cont').classList.add('dark');
 				id('settings').style.transition = '0s background';
-	
+				updatePieChart();
+
 				setTimeout(() => {
 					changeTheme(el.getAttribute('theme'));
 					setTimeout(() => {
@@ -5314,6 +5649,8 @@ function getDescription_TopMargin (lang) {
 
 	if (lang == 'en')
 		return ('Set the top margin for easy viewing of the interface on the screen with notch.');
+	else if (lang == 'de')
+		return ('Setzen Sie den oberen Abstand, um eine bequeme Ansicht der Benutzeroberfläche auf einem Bildschirm mit Aussparung zu gewährleisten.');
 	else if (lang == 'cz')
 		return ('Nastavte horní okraj pro snadné prohlížení rozhraní na zářezové obrazovce.');
 	else if (lang == 'ru')
@@ -5326,6 +5663,8 @@ function setUpButtonsValue_TopMargin (button, lang) {
 
 	if (lang == 'en') {
 		button.value = 'Save';
+	} else if (lang == 'de') {
+		button.value = 'Speichern';
 	} else if (lang == 'cz') {
 		button.value = 'Uložit';
 	} else if (lang == 'ru') {
@@ -5384,7 +5723,8 @@ function setUpClickOnAccount (account) {
 		prepareEditAccountWindow(clickEl.getAttribute('accountnum'));
 		// open edit account window
 		let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-		windowEl.setAttribute('top-position', top_position);
+		windowEl.setAttribute('top-position-x', top_position.x);
+		windowEl.setAttribute('top-position-y', top_position.y);
 
 		// set up closing edit account window
 		id('edit-account-cont').firstElementChild.onclick = () => {
@@ -5814,15 +6154,16 @@ function checkAccountColorExlicitlyEverywhere (account_num) {
 
 function setUpButtonsValue_Accounts (button, lang) {
 
-	if (lang == 'en') {
+	if (lang == 'en')
 		button.value = 'Add account';
-	} else if (lang == 'cz') {
+	else if (lang == 'de')
+		button.value = 'Konto hinzufügen';
+	else if (lang == 'cz')
 		button.value = 'Přidat účet';
-	} else if (lang == 'ru') {
+	else if (lang == 'ru')
 		button.value = 'Добавить счёт';
-	} else if (lang == 'ua') {
+	else if (lang == 'ua')
 		button.value = 'Додати рахунок';
-	}
 }
 
 
@@ -5874,7 +6215,7 @@ function adaptInputLength () {
 	let less_length, bigger_length;
 	let lang = localStorage.getItem('L');
 
-	if (lang == 'en' || lang == 'cz') {
+	if (lang == 'en' || lang == 'de' || lang == 'cz') {
 		less_length = 3.5;
 		bigger_length = 1.1;
 	} else if (lang == 'ru' || lang == 'ua') {
@@ -5897,7 +6238,7 @@ function adaptInputLengthExplicitly (el) {
 	let less_length, bigger_length;
 	let lang = localStorage.getItem('L');
 
-	if (lang == 'en' || lang == 'cz') {
+	if (lang == 'en' || lang == 'de' || lang == 'cz') {
 		less_length = 3.5;
 		bigger_length = 1.1;
 	} else if (lang == 'ru' || lang == 'ua') {
