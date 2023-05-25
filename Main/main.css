@@ -532,12 +532,8 @@ body.font2 .window-close-button > div > svg {
 	transition: 0s all;
     will-change: opacity, transform;
 }
-.floating-fullview-window-cont-darker > :last-child {
-	transform: translateY(0px) scale(1) !important;
-	opacity: 1;
-}
 
-.floating-fullview-window-cont .button-window-block {
+.button-window-block {
     width: 100%;
     padding-bottom: 15px;
 	gap: 15px;
@@ -674,6 +670,88 @@ body.font2 .floating-window-cont .field-date {
 	
 	overflow-x: scroll;
 	overflow-y: visible;
+}
+
+
+
+
+
+.bubble-queue-window-cont {
+	width: 100vw;
+	height: 100vh;
+	box-sizing: border-box;
+	top: 0;
+	left: 0;
+	
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	visibility: hidden;
+
+	background: rgba(0, 0, 0, 0);
+	transition: 0s visibility .5s;
+    will-change: visibility;
+}
+.bubble-queue-window-cont.visible {
+	visibility: visible;
+	transition: 0s visibility 0s;
+}
+
+.bubble-queue-window-cont > :first-child {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+
+	background: var(--main-background);
+	background-size: cover;
+	opacity: 0;
+	transition: .5s opacity;
+}
+.bubble-queue-window-cont.visible > :first-child {
+	opacity: 1;
+	transition: 1s opacity;
+}
+
+.bubble-queue-window-cont > :last-child {
+	width: 100%;
+	height: 100%;
+	border-radius: 22px;
+	box-sizing: border-box;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	overflow-x: hidden;
+	overflow-y: scroll;	
+}
+
+.bubble-queue-window-cont .title-block {
+	opacity: 0;
+	transition: .5s opacity;
+}
+.bubble-queue-window-cont.visible .title-block {
+	opacity: 1;
+	transition: 1s opacity;
+}
+
+.bubble-queue-el {
+	transform: scale(0.5) translateY(10px);
+	opacity: 0;
+}
+.bubble-queue-el.show {
+	transform: scale(1) translateY(0);
+	opacity: 1;
+}
+.bubble-queue-el:active {
+	transform: scale(0.95);
+}
+
+.bubble-hide {
+	transform: scale(0.5);
+	opacity: 0;
 }
 
 
@@ -2250,11 +2328,14 @@ body.font2 .make-record-note {
     z-index: 101;
 }
 .settings-cont > :first-child {
-    border-radius: 0;
-	background-image: var(--main-background);
-	background-size: cover !important;
-	background-position-y: 50% !important;
     z-index: 102;
+}
+.settings-cont > :last-child {
+    border-radius: 0;
+	/* background-image: var(--main-background);
+	background-size: cover !important;
+	background-position-y: 50% !important; */
+    z-index: 103;
 }
 
 .settings-cont .title-block {
@@ -2322,6 +2403,13 @@ body.font2 .make-record-note {
 }
 
 
+
+.switch-button-block {
+	gap: .4rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
 
 .switch-cont {
 	gap: 12px;

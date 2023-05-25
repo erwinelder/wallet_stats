@@ -889,8 +889,13 @@ function uploadAppData () {
 	);
 
 	// apply theme
-	if (!localStorage.getItem('T')) localStorage.setItem('T', 'l');
-		applyTheme(localStorage.getItem('T'));
+	
+	if (!localStorage.getItem('T')) {
+		localStorage.setItem('T', 'l');
+		localStorage.setItem('AT', '0');
+	}
+	applyTheme(localStorage.getItem('T'));
+
 
 	// apply top margin
 	if (!(localStorage.getItem('TM'))) localStorage.setItem('TM', 0);
@@ -929,7 +934,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '3.0.0';
+	let version = '3.0.1';
 
 	if (!localStorage.getItem('V')) {
 
@@ -995,7 +1000,7 @@ function showNotification (type, timer) {
 function uploadNotificationMessage (type, titleEl, detailsEl) {
 	let lang = localStorage.getItem('L');
 
-	if (type == `update ${localStorage.getItem('V')}` || type == 'update 2.4') {
+	if (type == `update ${localStorage.getItem('V')}` || type == 'update 3.0.0') {
 		if (lang == 'en')
 			detailsEl.innerText = `WalletStats got new update version ${localStorage.getItem('V')}!`;
 		else if (lang == 'de')
@@ -1159,10 +1164,21 @@ function getUpdateDetailsArrayByLang (type) {
 		
 		if (lang == 'en')
 			return [
+				`<h3>Auto adjust theme</h3>
+				<p>
+					Now theme can be automatically sync to theme on your device. Turn it on can you in settings.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Other</h3>
 				<p>
+					New settings window animation.
+				</p>`,
+				
+				/* `<h3>Other</h3>
+				<p>
 					Visual improvements.
-				</p>`
+				</p>` */
 				/* `<h3>Other</h3>
 				<p>
 					Bug fixing.
@@ -1170,10 +1186,21 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'de')
 			return [
+				`<h3>Thema automatisch anpassen</h3>
+				<p>
+					Jetzt kann das Thema automatisch mit dem Thema auf Ihrem Gerät synchronisiert werden. Sie können es in den Einstellungen aktivieren.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Sonstiges</h3>
 				<p>
+					Neue Animation des Einstellungsfensters.
+				</p>`,
+
+				/* `<h3>Sonstiges</h3>
+				<p>
 					Visuelle Verbesserungen.
-				</p>`
+				</p>` */
 				/* `<h3>Sonstiges</h3>
 				<p>
 					Fehlerbehebungen.
@@ -1181,10 +1208,21 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'cz')
 			return [
+				`<h3>Automatické prizpůsobení motivu</h3>
+				<p>
+					Nyní lze motiv automaticky synchronizovat s motivem na vašem zařízení. Můžete to zapnout v nastavení.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Ostatní</h3>
 				<p>
+					Nová animace okna nastavení.
+				</p>`,
+
+				/* `<h3>Ostatní</h3>
+				<p>
 					Vizuální vylepšení.
-				</p>`
+				</p>` */
 				/* `<h3>Ostatní</h3>
 				<p>
 					Opravy chyb.
@@ -1192,10 +1230,21 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'ru')
 			return [
+				`<h3>Автоматическая адаптация темы</h3>
+				<p>
+					Теперь тему можно автоматически синхронизировать с темой на вашем устройстве. Включить это можно в настройках.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Другое</h3>
 				<p>
+					Новая анимация окна настроек.
+				</p>`,
+
+				/* `<h3>Другое</h3>
+				<p>
 					Визуальные улучшения.
-				</p>`
+				</p>` */
 				/* `<h3>Другое</h3>
 				<p>
 					Исправление ошибок.
@@ -1203,10 +1252,21 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'ua')
 			return [
+				`<h3>Автоматична адаптація теми</h3>
+				<p>
+					Тепер тему можна автоматично синхронізувати з темою на вашому пристрої. Увімкнути це можна в налаштуваннях.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Інше</h3>
 				<p>
+					Нова анімація вікна налаштувань.
+				</p>`,
+
+				/* `<h3>Інше</h3>
+				<p>
 					Візуальні покращення.
-				</p>`
+				</p>` */
 				/* `<h3>Інше</h3>
 				<p>
 					Виправлення помилок.
@@ -1214,7 +1274,6 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 	}
 }
-
 
 
 
@@ -2466,6 +2525,15 @@ function operateElementsArrayClass (array, class_to_remove, class_to_add) {
 
 
 function applyTheme (theme) {
+
+	if (Number(localStorage.getItem('AT')) == 1) {
+		if (window.matchMedia('(prefers-color-scheme: dark)').matches)
+			theme = 'd';
+		else theme = 'l';
+
+		localStorage.setItem('T', theme);
+	}
+	
 	if (theme == 'l') {
 		id('root').classList.remove('wallet-darkblue');
 		id('root').classList.remove('wallet-dark');
@@ -4155,6 +4223,71 @@ function closeWindowBlock (windowEl_cont, windowEl) {
 
 
 
+function openWindowByBubbleFrontMethod (clickEl, windowEl_cont, close_button, bubble_els_array) {
+
+	// hide click element
+	clickEl.style.transition = '.5s transform, .5s opacity';
+	clickEl.classList.add('bubble-hide');
+
+	// show elements' container 
+	windowEl_cont.classList.add('visible');
+	
+	let len = bubble_els_array.length,
+		delay = 80;
+	
+	// show elements one by one
+	for (let a = len; a > 0; a--) {
+		
+		setTimeout(() => {
+			bubble_els_array[a - 1].style.transition = '.15s transform, .15s opacity';
+			bubble_els_array[a - 1].classList.add('show');
+		}, delay * (len - a));
+
+		if (a == 1)
+			setTimeout(() => {
+				close_button.style.transition = '.15s transform, .15s opacity';
+				close_button.classList.add('show');
+			}, delay * len);
+	}
+}
+
+function closeWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, bubble_els_array) {
+
+	clickEl.style.transition = '.15s transform, .15s opacity';
+
+	let len = bubble_els_array.length,
+		delay = 40;
+
+	// hide elements one by one
+	for (let a = len - 1; a >= 0; a--) {
+
+		if (a == len - 1) {
+			close_button.style.transition = '.15s transform, .15s opacity';
+			close_button.classList.remove('show');
+		}
+		
+		setTimeout(() => {
+			bubble_els_array[a].style.transition = '.15s transform, .15s opacity';
+			bubble_els_array[a].classList.remove('show');
+		}, delay * (len - a + 1));
+
+		if (a == 0) {
+			setTimeout(() => {
+				// show click element
+				clickEl.classList.remove('bubble-hide');
+			}, delay * len);
+			setTimeout(() => {
+				// hide elements' container 
+				windowEl_cont.classList.remove('visible');
+			}, delay * len);
+		}
+	}
+}
+
+
+
+
+
 // set up clicks on accounts on topbar
 function setUpClickOnAccounts () {
 
@@ -5161,15 +5294,21 @@ id('settings-button-desktop').onclick = function() {
 function openSettings (clickEl) {
 
 	let windowEl_cont = id('settings-cont'),
-		windowEl = id('settings');
+		close_button = windowEl_cont.lastElementChild.lastElementChild;
 	
 	disableScrolling();
 
-  	openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
+	openWindowByBubbleFrontMethod(
+		clickEl, windowEl_cont, close_button,
+		id('settings-categories').getElementsByTagName('div')
+	);
 
-	windowEl.lastElementChild.lastElementChild.onclick = () => {
+	close_button.onclick = () => {
 		enableScrolling();
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+		closeWindowByBubbleQueueMethod(
+			clickEl, windowEl_cont, close_button,
+			id('settings-categories').getElementsByTagName('div')
+		);
 	}
 }
 
@@ -5221,6 +5360,7 @@ function closeSettingsCategoryWindow () {
 		id('settings-category-window-button').classList.remove('button-block-hide');
 	}, 300);
 }
+
 
 
 
@@ -5452,22 +5592,24 @@ function uploadSettingsCategoryData_Blurring (content_cont, button_cont) {
 	let lang = localStorage.getItem('L');
 	
 	content_cont.insertAdjacentHTML('afterbegin',
-		`<p class="description">
-			${getDescription_Blurring(lang)}
-		</p>
-		<div class="switch-cont">
-			<p>${getOffWordByLanguage(lang)}</p>
-			<div class="switch">
-				${getSwitchInput(Number(localStorage.getItem('B')))}
-				<span class="switch-slider"></span>
+		`<div class="switch-button-block">
+			<p class="description">
+				${getDescription_Blurring(lang)}
+			</p>
+			<div class="switch-cont">
+				<p>${getOffWordByLanguage(lang)}</p>
+				<div class="switch">
+					${getSwitchInput(Number(localStorage.getItem('B')))}
+					<span class="switch-slider"></span>
+				</div>
+				<p>${getOnWordByLanguage(lang)}</p>
 			</div>
-			<p>${getOnWordByLanguage(lang)}</p>
-		</div>
-		`
+		</div>`
 	);
 	button_cont.classList.add('button-block-hide');
-
-	id('switch-input').onclick = function() {
+	
+	let switch_button = content_cont.getElementsByClassName('switch')[0].firstElementChild;
+	switch_button.onclick = function() {
 
 		if (this.checked) localStorage.setItem('B', '1');
 		else localStorage.setItem('B', '0');
@@ -5479,8 +5621,8 @@ function uploadSettingsCategoryData_Blurring (content_cont, button_cont) {
 function getSwitchInput (blur_status) {
 
 	if (blur_status)
-		return (`<input type="checkbox" id="switch-input" checked>`);
-	else return (`<input type="checkbox" id="switch-input">`);
+		return (`<input type="checkbox" checked>`);
+	else return (`<input type="checkbox">`);
 }
 
 function getDescription_Blurring (lang) {
@@ -5527,9 +5669,24 @@ function getOnWordByLanguage (lang) {
 
 // themes - settings category content
 function uploadSettingsCategoryData_Themes (content_cont, button_cont) {
+	let lang = localStorage.getItem('L');
 	
 	content_cont.insertAdjacentHTML('afterbegin',
-		`<div class="themes-cont">
+		`<div class="switch-button-block">
+			<p class="description">
+				${getDescription_AutoTheme(lang)}
+			</p>
+			<div class="switch-cont">
+				<p>${getOffWordByLanguage(lang)}</p>
+				<div class="switch">
+					${getSwitchInput(Number(localStorage.getItem('AT')))}
+					<span class="switch-slider"></span>
+				</div>
+				<p>${getOnWordByLanguage(lang)}</p>
+			</div>
+		</div>
+		<hr class="small-hr">
+		<div class="themes-cont">
 			<div theme="l" class="theme-cont" style="background: #ededed;" id="theme-button-light">
 				<div class="theme-account"></div>
 				<div class="theme-widget"></div>
@@ -5549,9 +5706,42 @@ function uploadSettingsCategoryData_Themes (content_cont, button_cont) {
 	);
 	button_cont.classList.add('button-block-hide');
 
-	for ( let el of content_cont.firstElementChild.getElementsByClassName('theme-cont') )
+	// set up click on switch checkbox
+	let switch_button = content_cont.getElementsByClassName('switch')[0].firstElementChild;
+	switch_button.onclick = function() {
+		changeAutomaticThemeStatusInStorage(this);
+		applyTheme(localStorage.getItem('T'));
+		checkAccountsColorInExactlyCont(id('root'));
+	}
+	
+	// set up click on themes
+	setUpClickOnThemes(content_cont, switch_button);
+}
+
+function getDescription_AutoTheme (lang) {
+
+	if (lang == 'en')
+		return ('Auto adjust theme');
+	else if (lang == 'de')
+		return ('Thema automatisch anpassen');
+	else if (lang == 'cz')
+		return ('Automaticky prizpůsobovat motiv');
+	else if (lang == 'ru')
+		return ('Автоматически адаптировать тему');
+	else if (lang == 'ua')
+		return ('Автоматично адаптувати тему');
+}
+
+function setUpClickOnThemes (container, switch_button) {
+
+	for ( let el of container.lastElementChild.getElementsByClassName('theme-cont') )
 		el.onclick = () => {
 			if (el.getAttribute('theme') != localStorage.getItem('T')) {
+
+				if (switch_button.checked) {
+					switch_button.checked = false;
+					changeAutomaticThemeStatusInStorage(switch_button);
+				}
 
 				id('settings-category-window-cont').classList.add('dark');
 				id('settings').style.transition = '0s background';
@@ -5566,6 +5756,11 @@ function uploadSettingsCategoryData_Themes (content_cont, button_cont) {
 				
 			}
 		}
+}
+
+function changeAutomaticThemeStatusInStorage (switch_button) {
+	if (switch_button.checked) localStorage.setItem('AT', '1');
+		else localStorage.setItem('AT', '0');
 }
 
 function changeTheme (theme) {
