@@ -2390,6 +2390,7 @@ body.font2 .make-record-note {
 .settings-category-window-cont .description {
 	font-size: 1.1em;
 	cursor: default;
+	font-weight: 700;
 }
 
 
@@ -2417,6 +2418,7 @@ body.font2 .make-record-note {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	font-weight: 700;
 }
 .switch-cont > :is(:first-child, :last-child) {
 	width: 6ch;

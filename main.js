@@ -715,8 +715,8 @@ function uploadHelloTitle (lang) {
 
 function uploadHelloLanguageName (lang_num) {
 
-	if (lang_num == -1) lang_num = 3;
-	else if (lang_num == 4) lang_num = 0;
+	if (lang_num == -1) lang_num = 4;
+	else if (lang_num == 5) lang_num = 0;
 
 	let el = id('hello-language');
 	
@@ -934,7 +934,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '3.0.1';
+	let version = '3.0.2';
 
 	if (!localStorage.getItem('V')) {
 
@@ -1164,21 +1164,10 @@ function getUpdateDetailsArrayByLang (type) {
 		
 		if (lang == 'en')
 			return [
-				`<h3>Auto adjust theme</h3>
-				<p>
-					Now theme can be automatically sync to theme on your device. Turn it on can you in settings.
-				</p>`,
-				`<hr class="small-hr">`,
-
 				`<h3>Other</h3>
 				<p>
-					New settings window animation.
-				</p>`,
-				
-				/* `<h3>Other</h3>
-				<p>
-					Visual improvements.
-				</p>` */
+					Bug fixing and visual improvements.
+				</p>`
 				/* `<h3>Other</h3>
 				<p>
 					Bug fixing.
@@ -1186,21 +1175,10 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'de')
 			return [
-				`<h3>Thema automatisch anpassen</h3>
-				<p>
-					Jetzt kann das Thema automatisch mit dem Thema auf Ihrem Gerät synchronisiert werden. Sie können es in den Einstellungen aktivieren.
-				</p>`,
-				`<hr class="small-hr">`,
-
 				`<h3>Sonstiges</h3>
 				<p>
-					Neue Animation des Einstellungsfensters.
-				</p>`,
-
-				/* `<h3>Sonstiges</h3>
-				<p>
-					Visuelle Verbesserungen.
-				</p>` */
+					Fehlerbehebungen und visuelle Verbesserungen.
+				</p>`
 				/* `<h3>Sonstiges</h3>
 				<p>
 					Fehlerbehebungen.
@@ -1208,21 +1186,10 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'cz')
 			return [
-				`<h3>Automatické prizpůsobení motivu</h3>
-				<p>
-					Nyní lze motiv automaticky synchronizovat s motivem na vašem zařízení. Můžete to zapnout v nastavení.
-				</p>`,
-				`<hr class="small-hr">`,
-
 				`<h3>Ostatní</h3>
 				<p>
-					Nová animace okna nastavení.
-				</p>`,
-
-				/* `<h3>Ostatní</h3>
-				<p>
-					Vizuální vylepšení.
-				</p>` */
+					Opravy chyb a vizuální vylepšení.
+				</p>`
 				/* `<h3>Ostatní</h3>
 				<p>
 					Opravy chyb.
@@ -1230,21 +1197,10 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'ru')
 			return [
-				`<h3>Автоматическая адаптация темы</h3>
-				<p>
-					Теперь тему можно автоматически синхронизировать с темой на вашем устройстве. Включить это можно в настройках.
-				</p>`,
-				`<hr class="small-hr">`,
-
 				`<h3>Другое</h3>
 				<p>
-					Новая анимация окна настроек.
-				</p>`,
-
-				/* `<h3>Другое</h3>
-				<p>
-					Визуальные улучшения.
-				</p>` */
+					Исправление ошибок и визуальные улучшения.
+				</p>`
 				/* `<h3>Другое</h3>
 				<p>
 					Исправление ошибок.
@@ -1252,21 +1208,10 @@ function getUpdateDetailsArrayByLang (type) {
 			];
 		else if (lang == 'ua')
 			return [
-				`<h3>Автоматична адаптація теми</h3>
-				<p>
-					Тепер тему можна автоматично синхронізувати з темою на вашому пристрої. Увімкнути це можна в налаштуваннях.
-				</p>`,
-				`<hr class="small-hr">`,
-
 				`<h3>Інше</h3>
 				<p>
-					Нова анімація вікна налаштувань.
-				</p>`,
-
-				/* `<h3>Інше</h3>
-				<p>
-					Візуальні покращення.
-				</p>` */
+					Виправлення помилок і візуальні покращення.
+				</p>`
 				/* `<h3>Інше</h3>
 				<p>
 					Виправлення помилок.
@@ -5630,7 +5575,7 @@ function getDescription_Blurring (lang) {
 	if (lang == 'en')
 		return ('You can turn blurring of some elements off for better performance.');
 	else if (lang == 'de')
-		return ('Sie können die Unschärfe einiger Elemente deaktivieren, um die Leistung zu verbessern.');
+		return ('Sie können die Unschärfe einiger Elemente ausmachen, um die Leistung zu verbessern.');
 	else if (lang == 'cz')
 		return ('Můžete pro lepší výkon vypnout rozmazání některých elementů.');
 	else if (lang == 'ru')
