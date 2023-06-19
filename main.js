@@ -5168,8 +5168,7 @@ function setUpChoosingAccount (clickEl, windowEl_cont, windowEl) {
 async function checkAccountInOtherFieldThanThisForRepeating (clickEl, choosen_acc_num) {
 
 	let from_accountEl = id('make-record-account'),
-		to_accountEl = id('make-transfer-to-account'),
-		field;
+		to_accountEl = id('make-transfer-to-account');
 
 	if (
 		id('make-record-window').classList.contains('make-transfer-status') ||
@@ -5178,18 +5177,20 @@ async function checkAccountInOtherFieldThanThisForRepeating (clickEl, choosen_ac
 		if (
 			clickEl == from_accountEl &&
 			choosen_acc_num == to_accountEl.getAttribute('accountnum')
-		)
-			field = to_accountEl;
+		) {
+			await hideFieldByHideSlideMethod(to_accountEl);
+			uploadAnotherAccountToExactlyField(to_accountEl);
+			await showFieldByHideSlideMethod(to_accountEl);
+		}
 			
 		else if (
 			clickEl == to_accountEl &&
 			choosen_acc_num == from_accountEl.getAttribute('accountnum')
-		)
-			field = from_accountEl;
-				
-		await hideFieldByHideSlideMethod(field);
-		uploadAnotherAccountToExactlyField(field);
-		await showFieldByHideSlideMethod(field);
+		) {
+			await hideFieldByHideSlideMethod(from_accountEl);
+			uploadAnotherAccountToExactlyField(from_accountEl);
+			await showFieldByHideSlideMethod(from_accountEl);
+		}
 	}
 }
 
