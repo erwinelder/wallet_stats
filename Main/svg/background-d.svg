@@ -6,5 +6,5 @@
     <circle cx="256.378" cy="585.647" r="88.5" filter="url(#blurMe)" style="fill: rgb(14, 55, 66); fill-opacity: 0.33;"></circle>
     <circle cx="-30.623" cy="424.103" r="97.5" filter="url(#blurMe)" style="fill: rgb(66, 14, 55); fill-opacity: 0.42;"></circle>
     <circle cx="292.13" cy="198.605" r="98" filter="url(#blurMe)" style="fill: rgb(111, 57, 97); fill-opacity: 0.44;"></circle>
-    <rect width="281.9" height="755.4" style="fill: rgb(18, 18, 18); fill-opacity: 0.6;"></rect>
+    <rect width="281.9" height="755.4" style="fill: rgb(18, 18, 18); fill-opacity: 0.7;"></rect>
 </svg>

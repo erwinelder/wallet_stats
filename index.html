@@ -9,6 +9,8 @@
 	<link rel="icon" type="svg" href="Main/Icons/wallet_icon_new.svg">
 	<link rel="apple-touch-icon" sizes="144x144" href="Main/Icons/wallet_icon_bg_new_144.png"/>
 	<link rel="manifest" href="WalletStats.webmanifest"/>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body id="body">
 
@@ -239,20 +241,27 @@
 				</div>
 
 			</div>
+			
+			<div class="content-buttons">
 
-			<div class="settings-button-cont-mobile" id="settings-button-cont-mobile">
-				<div>
-					<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+				<div class="plate-button" id="edit-home-screen" style="display: none;">
+					<svg class="plate-button-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 						<path d="M 418.961 230.018 C 423.932 267.662 471.234 302.655 456.396 337.608 C 441.557 372.563 383.527 362.843 352.995 385.42 C 322.364 408.069 314.592 466.217 276.743 470.546 C 239.219 474.839 218.802 420.16 184.036 405.403 C 149.27 390.646 95.755 413.94 72.777 383.967 C 49.601 353.734 86.024 307.748 81.039 269.98 C 76.068 232.336 28.766 197.344 43.604 162.391 C 58.442 127.435 116.47 137.158 147.003 114.579 C 177.634 91.929 185.408 33.782 223.258 29.454 C 260.781 25.162 281.198 79.84 315.967 94.597 C 350.732 109.353 404.248 86.058 427.226 116.033 C 450.401 146.266 413.976 192.251 418.961 230.018 Z" transform="matrix(0.390731, 0.920505, -0.920505, 0.390731, 382.44353, -77.808985)"></path>
 						<ellipse cx="250" cy="249.999" rx="71.222" ry="71.222"></ellipse>
-					  </svg>
-					<input type="button" value="Settings" class="settings-categories-button">
+					</svg>
+					<input type="button" value="Home screen">
 				</div>
-			</div>
 
-			<!-- <div class="content-buttons">
-			</div> -->
-			
+				<div class="plate-button" id="settings-button-cont-mobile">
+					<svg class="plate-button-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+						<path d="M 418.961 230.018 C 423.932 267.662 471.234 302.655 456.396 337.608 C 441.557 372.563 383.527 362.843 352.995 385.42 C 322.364 408.069 314.592 466.217 276.743 470.546 C 239.219 474.839 218.802 420.16 184.036 405.403 C 149.27 390.646 95.755 413.94 72.777 383.967 C 49.601 353.734 86.024 307.748 81.039 269.98 C 76.068 232.336 28.766 197.344 43.604 162.391 C 58.442 127.435 116.47 137.158 147.003 114.579 C 177.634 91.929 185.408 33.782 223.258 29.454 C 260.781 25.162 281.198 79.84 315.967 94.597 C 350.732 109.353 404.248 86.058 427.226 116.033 C 450.401 146.266 413.976 192.251 418.961 230.018 Z" transform="matrix(0.390731, 0.920505, -0.920505, 0.390731, 382.44353, -77.808985)"></path>
+						<ellipse cx="250" cy="249.999" rx="71.222" ry="71.222"></ellipse>
+					</svg>
+					<input type="button" value="Settings">
+				</div>
+
+			</div> <!-- content-buttons -->
+
 			<div class="sticky-bottombar blur">
 				<input type="button" value="Settings" class="button-for-floating-window settings-button-desktop clickable-button" id="settings-button-desktop">
 				<input type="button" value="New record" class="button-for-floating-window make-record-button clickable-button" id="make-record-button">
@@ -298,48 +307,65 @@
 					</div>
 				</div>
 
-				<!-- <div class="button-block-top" id="remove-record-button-block">
-					<hr class="big-hr">
-				</div> -->
-
-                <div class="field make-rec-date">
-					<h6 class="field-title">Date</h6>
-                    <input class="field-date interective-field" type="datetime-local" id="make-record-date">
-                </div>
-
-                
-				<div class="field">
-					<h6 class="field-title">Note</h6>
-					<input type="text" class="active-input interective-field make-record-note" id="make-record-note">
-				</div>
-
-				<div class="field">
-					<h6 class="field-title">Account</h6>
-					<div id="make-record-account" accountnum=""></div>
-				</div>
-
-				<div class="field">
-					<h6 class="field-title">Amount</h6>
-					<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-record-amount">
-				</div>
-
-				<!-- <div class="field make-record-transfer-account-cont make-record-transfer-account-cont-hide" id="make-record-transfer-account-cont">
-					<h6 class="field-title">To account</h6>
-					<div id="make-record-transfer-account"></div>
-				</div> -->
-
-				<div class="field category-cont" id="make-record-category-cont">
-					<h6 class="field-title">Category</h6>
-					<div class="button-for-floating-window interective-field" id="make-record-category" categorynum="-" subcategorynum="">
-						<div></div>
-						<input type="button" placeholder="None" readonly>
+				<div class="floating-window-content">
+				
+					<div class="field make-rec-date">
+						<h6 class="field-title">Date</h6>
+						<input class="field-date interective-field" type="datetime-local" id="make-record-date">
 					</div>
+					
+					<div class="field make-rec-note">
+						<h6 class="field-title">Note</h6>
+						<input type="text" class="active-input interective-field make-record-note" id="make-record-note">
+					</div>
+
+					<div class="field">
+						<h6 class="field-title">Account</h6>
+						<div class="slide-hide-anim-el" id="make-record-account" accountnum=""></div>
+					</div>
+
+					<div class="field make-transfer-to-account">
+						<h6 class="field-title">To account</h6>
+						<div class="slide-hide-anim-el" id="make-transfer-to-account" accountnum=""></div>
+					</div>
+
+					<div class="horizontal-field-cont">
+						<div class="field make-transfer-rate">
+							<h6 class="field-title">Start rate</h6>
+							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-transfer-start-rate">
+						</div>
+						<div class="field">
+							<h6 class="field-title">Amount</h6>
+							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-record-amount">
+						</div>
+					</div>
+
+					<div class="horizontal-field-cont make-transfer-final-amount">
+						<div class="field make-transfer-rate">
+							<h6 class="field-title">Final rate</h6>
+							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-transfer-final-rate">
+						</div>
+						<div class="field">
+							<h6 class="field-title">Final amount</h6>
+							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-transfer-final-amount">
+						</div>
+					</div>
+
+					<div class="field category-cont" id="make-record-category-cont">
+						<h6 class="field-title">Category</h6>
+						<div class="button-for-floating-window interective-field slide-hide-anim-el" id="make-record-category" categorynum="-" subcategorynum="">
+							<div></div>
+							<input type="button" placeholder="None" readonly>
+						</div>
+					</div>
+					
 				</div>
 
 				<div class="button-block-bottom">
 					<hr class="big-hr">
 					<div class="button-block-inline" id="make-record-button-block">
 						<input type="button" value="Save" class="clickable-button" id="make-record-save-button">
+						<input type="button" value="Transfer" class="clickable-button" id="make-transfer-button">
 						<input type="button" value="Repeat" class="clickable-button" id="repeat-record">
 						<input type="button" value="Remove" class="clickable-button" id="remove-record">
 					</div>
@@ -351,7 +377,9 @@
 
 		<div class="floating-window-cont accounts-window-cont" id="accounts-window-cont">
 			<div></div>
-			<div class="floating-window" id="accounts-window"></div>
+			<div class="floating-window" id="accounts-window">
+				<div class="floating-window-content"></div>
+			</div>
 		</div>
 
 
@@ -400,30 +428,15 @@
 			<div id="settings">
 
 				<div class="title-block">
-					<h1>Settings</h1>
+					<div>
+						<h1>Settings</h1>
+						<h4></h6>
+					</div>
 					<hr class="big-hr">
 				</div>
 
 				<div class="settings-categories" id="settings-categories">
-					<div class="bubble-queue-el">
-						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-							<path d="M 379.29 396.79 C 341.733 434.348 289.848 457.576 232.538 457.576 C 175.228 457.576 123.343 434.348 85.786 396.79 C 48.23 359.233 25 307.348 25 250.038 C 25 192.728 48.23 140.843 85.786 103.286 C 123.343 65.73 175.228 42.5 232.538 42.5 C 289.848 42.5 341.733 65.73 379.29 103.286 C 416.848 140.843 440.076 192.728 440.076 250.038"></path>
-							<polyline points="366.285 168.406 442.382 252.344 475 150.104"></polyline>
-						  </svg>
-						<input type="button" category-name="Reset data" class="settings-categories-button">
-					</div>
-					<div class="bubble-queue-el">
-						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-							<ellipse cx="250" cy="250" rx="225" ry="225"></ellipse>
-							<line x1="25" y1="250" x2="475" y2="250"></line>
-							<line x1="250" y1="25" x2="250" y2="475"></line>
-							<path d="M 69 118 C 69 118 138 170 250 170 C 362 170 432 118 432 118"></path>
-							<path d="M 69 382 C 69 382 138 330 250 330 C 362 330 432 382 432 382"></path>
-							<path d="M 250 25 C 250 25 127 90 127 250 C 127 410 250 475 250 475"></path>
-							<path d="M 250 25 C 250 25 373 90 373 250 C 373 410 250 475 250 475"></path>
-						</svg>
-						<input type="button" category-name="Language" class="settings-categories-button">
-					</div>
+					<!-- About -->
 					<div class="bubble-queue-el">
 						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 							<ellipse cx="250" cy="250" rx="90" ry="90"></ellipse>
@@ -435,9 +448,31 @@
 							<ellipse cx="130.001" cy="369.999" rx="29.999" ry="29.999"></ellipse>
 							<ellipse cx="369.999" cy="130.001" rx="29.999" ry="29.999"></ellipse>
 							<ellipse cx="369.999" cy="369.999" rx="29.999" ry="29.999"></ellipse>
-						  </svg>
-						<input type="button" category-name="Blurring" class="settings-categories-button">
+						</svg>
+						<input type="button" category-name="Links">
 					</div>
+					<!-- Reset data -->
+					<div class="bubble-queue-el">
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+							<path d="M 379.29 396.79 C 341.733 434.348 289.848 457.576 232.538 457.576 C 175.228 457.576 123.343 434.348 85.786 396.79 C 48.23 359.233 25 307.348 25 250.038 C 25 192.728 48.23 140.843 85.786 103.286 C 123.343 65.73 175.228 42.5 232.538 42.5 C 289.848 42.5 341.733 65.73 379.29 103.286 C 416.848 140.843 440.076 192.728 440.076 250.038"></path>
+							<polyline points="366.285 168.406 442.382 252.344 475 150.104"></polyline>
+						  </svg>
+						<input type="button" category-name="Reset data">
+					</div>
+					<!-- Language -->
+					<div class="bubble-queue-el">
+						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+							<ellipse cx="250" cy="250" rx="225" ry="225"></ellipse>
+							<line x1="25" y1="250" x2="475" y2="250"></line>
+							<line x1="250" y1="25" x2="250" y2="475"></line>
+							<path d="M 69 118 C 69 118 138 170 250 170 C 362 170 432 118 432 118"></path>
+							<path d="M 69 382 C 69 382 138 330 250 330 C 362 330 432 382 432 382"></path>
+							<path d="M 250 25 C 250 25 127 90 127 250 C 127 410 250 475 250 475"></path>
+							<path d="M 250 25 C 250 25 373 90 373 250 C 373 410 250 475 250 475"></path>
+						</svg>
+						<input type="button" category-name="Language">
+					</div>
+					<!-- Appearance -->
 					<div class="bubble-queue-el">
 						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 							<path d="M 88.283 408.423 C 88.283 408.423 142.40349429970922 456.5814850032518 176.47 465.902 C 214.6648344065022 476.35201591933395 297.52605704623085 477.6159729018327 308.669 460.147 C 316.3882481913236 448.0454090615718 282.6559914485967 419.9255812195042 284.427 401.454 C 286.1702903474402 383.2715190535344 301.467375306329 359.7337622614359 318.294 350.083 C 337.2416595612019 339.2157368878346 372.03093010650065 354.636885612145 396.202 345.908 C 421.9795808935503 336.5989559250362 455.38696059218273 318.28431869311396 467.399 292.946 C 481.3204032298374 263.5800497465069 474.09339081688574 209.4474892559454 461.936 173.884 C 450.1295640259311 139.3471437584762 425.3425515901969 105.75918735461154 397.272 81.941 C 368.3372604226768 57.38953915338593 327.2988643911892 37.19008000284888 289.698 30.056 C 252.4508909909046 22.989038645569416 207.96510204693476 26.740911204751214 172.826 38.767 C 138.890529903029 50.381154970425165 105.45466088536791 72.8901416606342 81.703 99.134 C 57.82352648785901 125.51908199893228 38.23982274947128 161.0560470114425 30.147 196.852 C 21.518651200090876 235.0166772173037 24.080161899163123 285.6992261431088 35.269 322.338 C 45.3077847825923 355.21082934408446 88.283 408.423 88.283 408.423 C 88.28300000000002 408.4230000000001 88.283 408.423 88.283 408.423" bx:d="M 88.283 408.423 R 176.47 465.902 R 308.669 460.147 R 284.427 401.454 R 318.294 350.083 R 396.202 345.908 R 467.399 292.946 R 461.936 173.884 R 397.272 81.941 R 289.698 30.056 R 172.826 38.767 R 81.703 99.134 R 30.147 196.852 R 35.269 322.338 R 88.283 408.423 Z 1@1963239d"></path>
@@ -446,16 +481,18 @@
 							<ellipse cx="298.044" cy="133.248" rx="29.137" ry="28.377"></ellipse>
 							<ellipse cx="368.239" cy="210.064" rx="29.137" ry="28.377"></ellipse>
 						</svg>
-						<input type="button" category-name="Themes" class="settings-categories-button">
+						<input type="button" category-name="Appearance">
 					</div>
+					<!-- Top margin -->
 					<div class="bubble-queue-el">
 						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 							<polyline points="175 125 250 25 325 125"></polyline>
 							<line x1="250" y1="25" x2="250" y2="475"></line>
 							<polyline points="175 375 250 475 325 375"></polyline>
 						</svg>
-						<input type="button" category-name="Top margin" class="settings-categories-button">
+						<input type="button" category-name="Top margin">
 					</div>
+					<!-- Accounts -->
 					<div class="bubble-queue-el">
 						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
 							<path d="M 125.924 134.134 L 125.924 462.134" transform="matrix(0.984808, -0.173648, 0.173648, 0.984808, -49.857361, 26.395797)" bx:d="M 125.924 134.134 R 125.924 462.134 1@fa9a0077"></path>
@@ -464,8 +501,9 @@
 							<line x1="227.313" y1="94.022" x2="381.628" y2="94.022" transform="matrix(0.965926, 0.258819, -0.258819, 0.965926, 34.709249, -75.599012)"></line>
 							<line x1="213.371" y1="146.05" x2="367.687" y2="146.05" transform="matrix(0.965926, 0.258819, -0.258819, 0.965926, 47.700035, -70.217886)"></line>
 						</svg>
-						<input type="button" category-name="Accounts" class="settings-categories-button">
+						<input type="button" category-name="Accounts">
 					</div>
+
 				</div>
                 
 				<div class="button-window-block bubble-queue-el">
@@ -525,27 +563,65 @@
 					<hr class="big-hr">
 				</div>
 
-				<div class="field">
-					<h3 class="field-title">Currency</h3>
-					<input type="text" value="" class="field-input active-input interective-field" id="edit-account-currency">
-				</div>
+				<div class="floating-window-content">
+				
+					<div class="switch-button-block">
+						<p class="description"></p>
+						<div class="switch-cont">
+							<p>Off</p>
+							<div class="switch">
+								<input type="checkbox" id="hide-account-from-topbar-switch">
+								<span class="switch-slider"></span>
+							</div>
+							<p>On</p>
+						</div>
+					</div>
 
-				<div class="field">
-					<h3 class="field-title">Balance</h3>
-					<input type="number" value="" class="field-input active-input interective-field input-ban-specsym" id="edit-account-balance">
-				</div>
+					<div class="field">
+						<h3 class="field-title">Currency</h3>
+						<input type="text" value="" class="field-input active-input interective-field" id="edit-account-currency">
+					</div>
 
-				<div class="field">
-					<h3 class="field-title">Color</h3>
-					<div class="edit-account-color-button" id="edit-account-color-button"></div>
-				</div>
+					<div class="field">
+						<h3 class="field-title">Balance</h3>
+						<input type="number" value="" class="field-input active-input interective-field input-ban-specsym" id="edit-account-balance">
+					</div>
+					<div class="switch-button-block">
+						<p class="description"></p>
+						<div class="switch-cont">
+							<p>Off</p>
+							<div class="switch">
+								<input type="checkbox" id="without-account-balance-switch">
+								<span class="switch-slider"></span>
+							</div>
+							<p>On</p>
+						</div>
+					</div>
+					<div class="switch-button-block">
+						<p class="description"></p>
+						<div class="switch-cont">
+							<p>Off</p>
+							<div class="switch">
+								<input type="checkbox" id="hide-account-balance-switch">
+								<span class="switch-slider"></span>
+							</div>
+							<p>On</p>
+						</div>
+					</div>
+
+					<div class="field">
+						<h3 class="field-title">Color</h3>
+						<div class="edit-account-color-button" id="edit-account-color-button"></div>
+					</div>
+
+				</div> <!-- floating-window-content -->
 
 				<div class="button-block-bottom">
 					<hr class="big-hr">
 					<input type="button" value="Save" class="clickable-button" id="save-account">
 				</div>
 
-			</div>
+			</div> <!-- floating-window -->
 		</div>
 
 		<div class="floating-window-cont edit-account-color-cont" id="edit-account-color-cont">
