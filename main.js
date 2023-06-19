@@ -1058,6 +1058,14 @@ function updateStorageDataToV3_1_0 () {
 
 		localStorage.setItem(`RD${a}`, date);
 	}
+
+	arr_from = [
+		'Minute', 'Hour', 'Day', 'Month', 'Year'
+	];
+
+	for (let a = 1; a <= Number(localStorage.getItem('RCount')); a++)
+		for (let b = 0; b < arr_from.length; b++)
+			localStorage.removeItem(`R${arr_from[b]}${a}`);
 }
 
 
