@@ -945,7 +945,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '3.1.0';
+	let version = '3.1.1';
 
 	if (!localStorage.getItem('V')) {
 
@@ -991,20 +991,6 @@ function updateStorageDataToV3_1_0 () {
 	}
 	// add setting 'start animation'
 	localStorage.setItem('SA', '1');
-
-	// let arr_ta = [
-	// 	'Type', 'Amount', 'Account', 'Category', 'Subcategory', 'Note',
-	// 	'Minute', 'Hour', 'Day', 'Month', 'Year'
-	// ];
-	// let arr_tb = [
-	// 	'-', '4', '1', '3', '2', 'neg',
-	// 	'18', '2', '18', '6', '2023'
-	// ];
-
-	// for (let a = 1; a < 4; a++)
-	// 	for (let b = 0; b < arr_ta.length; b++)
-	// 		localStorage.setItem(`R${arr_ta[b]}${a}`, arr_tb[b]);
-	// localStorage.setItem('RCount', 3);
 
 	// change records' variables to compact ones
 
@@ -1053,8 +1039,6 @@ function updateStorageDataToV3_1_0 () {
 		if (Number(minute) < 10) minute = '0' + minute;
 
 		let date = year + month + day + hour + minute;
-
-		console.log('new date:', date);
 
 		localStorage.setItem(`RD${a}`, date);
 	}
@@ -2234,7 +2218,7 @@ function uploadLanguageToWidgets (lang) {
 }
 
 
-function uploadLanguageToTitles(lang) {
+function uploadLanguageToTitles (lang) {
 
 	let el = id('update-details-title');
 
@@ -2254,35 +2238,43 @@ function uploadLanguageToTitles(lang) {
 	if (lang == 'en') {
 		el[0].innerHTML = 'Date';
 		el[1].innerHTML = 'Note';
-		el[4].innerHTML = 'Start rate';
+		el[4].innerHTML = 'Rate';
 		el[5].innerHTML = 'Amount';
-		el[6].innerHTML = 'Final rate';
+		el[6].innerHTML = 'Rate';
 		el[7].innerHTML = 'Final amount';
 		el[8].innerHTML = 'Category';
 	} else if (lang == 'de') {
 		el[0].innerHTML = 'Datum';
 		el[1].innerHTML = 'Anmerkung';
-		el[4].innerHTML = 'Summe';
-		el[5].innerHTML = 'Endbetrag';
-		el[6].innerHTML = 'Kategorie';
+		el[4].innerHTML = 'Anfangsrate';
+		el[5].innerHTML = 'Summe';
+		el[6].innerHTML = 'Schlussrate';
+		el[7].innerHTML = 'Endbetrag';
+		el[8].innerHTML = 'Kategorie';
 	} else if (lang == 'cz') {
 		el[0].innerHTML = 'Datum';
 		el[1].innerHTML = 'Poznámka';
-		el[4].innerHTML = 'Částka';
-		el[5].innerHTML = 'Konečná částka';
-		el[6].innerHTML = 'Kategorie';
+		el[4].innerHTML = 'Kurz';
+		el[5].innerHTML = 'Částka';
+		el[6].innerHTML = 'Kurz';
+		el[7].innerHTML = 'Konečná částka';
+		el[8].innerHTML = 'Kategorie';
 	} else if (lang == 'ru') {
 		el[0].innerHTML = 'Дата';
 		el[1].innerHTML = 'Примечание';
-		el[4].innerHTML = 'Сумма';
-		el[5].innerHTML = 'Итоговая сумма';
-		el[6].innerHTML = 'Категория';
+		el[4].innerHTML = 'Курс';
+		el[5].innerHTML = 'Сумма';
+		el[6].innerHTML = 'Курс';
+		el[7].innerHTML = 'Итоговая сумма';
+		el[8].innerHTML = 'Категория';
 	} else if (lang == 'ua') {
 		el[0].innerHTML = 'Дата';
 		el[1].innerHTML = 'Примітка';
-		el[4].innerHTML = 'Сума';
-		el[5].innerHTML = 'Кінцева сума';
-		el[6].innerHTML = 'Категорія';
+		el[4].innerHTML = 'Курс';
+		el[5].innerHTML = 'Сума';
+		el[6].innerHTML = 'Курс';
+		el[7].innerHTML = 'Кінцева сума';
+		el[8].innerHTML = 'Категорія';
 	}
 
 	el = id('make-record-note');

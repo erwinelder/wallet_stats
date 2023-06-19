@@ -921,7 +921,7 @@ body.font2 .window-block-cont .title-block {
 .window-el-amount {
 	max-width: 95%;
 	border-radius: 15px;
-	font-size: 2.2rem;
+	font-size: 2rem;
 	text-align: center;
 	transition: .2s width,
 		.15s transform;
