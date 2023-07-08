@@ -1,2 +1,2 @@
 # walletstats
-Make records of your incomes and expenses and view statistics of that.
+Keep track of your expenses and income and view the statistics of this.
