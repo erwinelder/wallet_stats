@@ -945,7 +945,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '3.1.1';
+	let version = '3.1.2';
 
 	if (!localStorage.getItem('V')) {
 
@@ -1264,158 +1264,38 @@ function getUpdateDetailsArrayByLang (type) {
 		
 		if (lang == 'en')
 			return [
-				`<h3>Transfers</h3>
-				<p>
-					Now you can make transfer from one of your accounts to another with submiting a rate. Transfer will be counted in widgets statistics like new subcategory "Transfer".
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Subcategory "Transfer"</h3>
-				<p>
-					Added subcategory of expense "Transfer" in category "Other".
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>More settings for accounts</h3>
-				<p>
-					Now you can hide account from topbar, for example if you use it only as account for savings, where you transfer money, and don't want to see this account in topbar.
-					Also now you can hide balance of account. In that way balance of this account will be shown only in the account settings. Double click on the account in topbar to fast hide or show account balance.
-					Also now you can define account as account without balance so it is not be consider in the today stats widget.
-				</p>`,
-				`<hr class="small-hr">`,
-
 				`<h3>Other</h3>
 				<p>
-					Bug fixing and visual changes.
-				</p>`
-				/* `<h3>Other</h3>
-				<p>
 					Bug fixing.
-				</p>` */
+				</p>`
 			];
 		else if (lang == 'de')
 			return [
-				`<h3>Überweisungen</h3>
-				<p>
-					Jetzt können Sie Überweisungen von einem Ihrer Konten auf ein anderes durchführen, indem Sie einen Kurs angeben. Die Überweisung wird in den Widget-Statistiken wie eine neue Unterkategorie "Überweisung" gezählt.
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Unterkategorie "Überweisung"</h3>
-				<p>
-					Dem Ausgabebereich "Sonstiges" wurde eine Unterkategorie "Überweisung" hinzugefügt.
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Mehr Kontoeinstellungen</h3>
-				<p>
-					Jetzt können Sie ein Konto in der Top-Leiste ausblenden, zum Beispiel, wenn Sie es nur als Spar- oder Transferkonto verwenden und dieses Konto nicht in der Top-Leiste sehen möchten.
-					Sie können auch den Kontostand ausblenden. Auf diese Weise wird der Kontostand nur in den Kontoeinstellungen angezeigt. Doppelklicken Sie auf das Konto in der Top-Leiste, um den Kontostand schnell ein- oder auszublenden.
-					Sie können außerdem ein Konto als Konto ohne Kontostand definieren, sodass es nicht in das heutige Statistik-Widget einbezogen wird.
-				</p>
-				<hr class="small-hr">`,
-
 				`<h3>Sonstiges</h3>
 				<p>
-					Fehlerbehebungen und visuelle Änderungen.
-				</p>`
-				/* `<h3>Sonstiges</h3>
-				<p>
 					Fehlerbehebungen.
-				</p>` */
+				</p>`
 			];
 		else if (lang == 'cz')
 			return [
-				`<h3>Převody</h3>
-				<p>
-					Nyní můžete provádět převody z jednoho účtu na druhý s určením kurzu. Převod bude zahrnut v statistikách widgetu jako nová podkategorie "Převod".
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Podkategorie "Převod"</h3>
-				<p>
-					Byla přidána podkategorie "Převod" do kategorie "Ostatní" ve výdajích.
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Více nastavení pro účty</h3>
-				<p>
-					Nyní můžete skrýt účet z horního panelu, například pokud jej používáte pouze jako účet pro úspory, kam převádíte peníze, a nechcete tento účet vidět v horním panelu.
-					Také nyní můžete skrýt zůstatek účtu. Zůstatek tohoto účtu se zobrazí pouze v nastavení účtu. Dvojklikem na účet v horním panelu rychle skryjete nebo zobrazíte zůstatek účtu.
-					Také nyní můžete definovat účet jako účet bez zůstatku, aby nebyl zahrnut ve widgetu dnešních statistik.
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Jiné</h3>
-				<p>
-					Opravy chyb a vizuální změny.
-				</p>`
-				/* `<h3>Ostatní</h3>
+				`<h3>Ostatní</h3>
 				<p>
 					Opravy chyb.
-				</p>` */
+				</p>`
 			];
 		else if (lang == 'ru')
 			return [
-				`<h3>Переводы</h3>
-				<p>
-					Теперь вы можете осуществлять переводы с одного из ваших счетов на другой, указывая курс. Перевод будет учтен в статистике виджетов как подкатегория "Перевод".
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Подкатегория "Перевод"</h3>
-				<p>
-					Добавлена подкатегория "Перевод" в категорию "Прочее" в расходах.
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Больше настроек для счетов</h3>
-				<p>
-					Теперь вы можете скрывать счёт из верхней панели, например, если вы используете его только в качестве счёта для накоплений, куда переводите деньги, и не хотите видеть этот счёт в верхней панели.
-					Также теперь вы можете скрывать остаток на счёте. Таким образом, остаток счёта будет отображаться только в настройках счёта. Дважды щелкните на счёте в верхней панели, чтобы быстро скрыть или показать остаток счёта.
-					Также теперь вы можете определить счёт как счёт без остатка, чтобы он не учитывался в виджете статистики на сегодня.
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Прочее</h3>
-				<p>
-					Исправление ошибок и визуальные изменения.
-				</p>`
-				/* `<h3>Другое</h3>
+				`<h3>Другое</h3>
 				<p>
 					Исправление ошибок.
-				</p>` */
+				</p>`
 			];
 		else if (lang == 'ua')
 			return [
-				`<h3>Перекази</h3>
-				<p>
-					Тепер ви можете робити перекази з одного зі своїх рахунків на інший з вказуванням курсу. Переказ буде враховуватися в статистиці віджетів як нова підкатегорія "Переказ".
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Підкатегорія "Переказ"</h3>
-				<p>
-					Додано підкатегорію "Переказ" в категорію "Інше" в витратах.
-				</p>
-				<hr class="small-hr">`,
-
-				`<h3>Більше налаштувань для рахунків</h3>
-				<p>
-					Тепер ви можете приховати рахунок з верхньої панелі, наприклад, якщо ви використовуєте його лише як рахунок для накопичень, куди переказуєте гроші, і не бажаєте бачити цей рахунок у верхній панелі.
-					Також тепер ви можете приховати баланс рахунку. Таким чином, баланс цього рахунку буде показуватися лише в налаштуваннях рахунку. Подвійний клік на рахунку в верхній панелі швидко приховує або показує баланс рахунку.
-					Також тепер ви можете визначити рахунок як рахунок без балансу, щоб його не враховувати в віджеті статистики на сьогодні.
-				</p>
-				<hr class="small-hr">`,
-
 				`<h3>Інше</h3>
 				<p>
-					Виправлення помилок та візуальні зміни.
-				</p>`
-				/* `<h3>Інше</h3>
-				<p>
 					Виправлення помилок.
-				</p>` */
+				</p>`
 			];
 	}
 }
@@ -5924,7 +5804,7 @@ function updateHistoryForEditedRecord (record_num, record) {
 
 function updateRecordInHistory (record_num, recordEl) {
 
-	let record_date = localStorage.getItem(`RD${record_num}`) + '.' + ( Number(localStorage.getItem(`RN${record_num}`)) ),
+	let record_date = getRecordDate_DayMonth(record_num),
 		category_num = localStorage.getItem(`RC${record_num}`),
 		subcategory_num = localStorage.getItem(`RS${record_num}`),
 		icon, title;
