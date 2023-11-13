@@ -2294,7 +2294,7 @@ function uploadLanguageToButtons (lang) {
 	else if (lang == 'de')
 		el.value = 'Eintrag erstellen';
 	else if (lang == 'cz')
-		el.value = 'Udělelat záznam';
+		el.value = 'Udělat záznam';
 	else if (lang == 'ru')
 		el.value = 'Сделать запись';
 	else if (lang == 'ua')
