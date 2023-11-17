@@ -945,7 +945,7 @@ function uploadAppData () {
 }
 
 function uploadVersionUpdate () {
-	let version = '3.1.2';
+	let version = '3.1.3';
 
 	if (!localStorage.getItem('V')) {
 
