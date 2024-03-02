@@ -1,4 +1,4 @@
-const id = function (id) {
+const id = function(id) {
 	return document.getElementById(id);
 }
 
@@ -625,44 +625,55 @@ const constructAccountEl = (num) => {
  * returns '∞' character instead of the actual account balance. If it has "hide balance setting", it returns "???"
  * string instead of the actual account balance. Else it returns actual account balance stored in the local storage.
  */
-function getAccountBalance (num) {
+function getAccountBalance(num) {
 
 	if (localStorage.getItem(`AWB${num}`) === "true") {
 		return ('∞');
 	} else if (localStorage.getItem(`AHB${num}`) === "false") {
-		return getReadableNumber(Number(localStorage.getItem('ABalance' + num)).toFixed(2));
+		return getReadableNumber(
+			Number(
+				Number(localStorage.getItem('ABalance' + num)).toFixed(2)
+			)
+		);
 	} else {
 		return ('???');
 	}
 }
 
-function getReadableNumber (number) {
+/**
+ * Format a number for readability by adding commas as a thousand separators.
+ *
+ * @param {number} number - The number to be formatted.
+ *
+ * @return {string} - Returns the formatted number as a string with commas as a thousand separators.
+ */
+function getReadableNumber(number) {
+	let formattedNumber = number.toString();
 
-	number = number + '';
-	let number_len = number.length - 3;
-	number = number.split('');
-	number = number.reverse();
+	let number_len = formattedNumber.length - 3;
+	formattedNumber = formattedNumber.split('');
+	formattedNumber = formattedNumber.reverse();
 	
-	let readable_number = '';
+	let readable_number = "";
 	readable_number = readable_number.split('');
-	readable_number[0] = number[0];
-	readable_number[1] = number[1];
-	readable_number[2] = number[2];
+	readable_number[0] = formattedNumber[0];
+	readable_number[1] = formattedNumber[1];
+	readable_number[2] = formattedNumber[2];
 	
 	let step = 2;
 
 	for (let a = 1; a <= number_len; a++) {
 
-		if (number[a + 2] === '-' || number[a + 2] === '+') {
+		if (formattedNumber[a + 2] === '-' || formattedNumber[a + 2] === '+') {
 			readable_number[a + step] = ' ';
-			readable_number[a + step + 1] = number[a + 2];
+			readable_number[a + step + 1] = formattedNumber[a + 2];
 			break;
 		}
 
-		readable_number[a + step] = number[a + 2];
+		readable_number[a + step] = formattedNumber[a + 2];
 		if (
 			a % 3 === 0 && a !== number_len &&
-			number[a + 3] !== '-' && number[a + 3] !== '+'
+			formattedNumber[a + 3] !== '-' && formattedNumber[a + 3] !== '+'
 		) {
 			step++;
 			readable_number[a + step] = ' ';
@@ -676,22 +687,46 @@ function getReadableNumber (number) {
 
 
 
-const category_list_el = (category_num, icons_array, titles_array) => {
+/**
+ * Generate HTML for a category element based on provided parameters.
+ *
+ * @param {number} categoryNum - Category number.
+ * @param {Array} iconsArray - Array of category icons.
+ * @param {Array} titlesArray - Array of category titles.
+ *
+ * @return {string} - Returns HTML string for a category element.
+ */
+const category_list_el = (categoryNum, iconsArray, titlesArray) => {
 	return (`
-		<div class="category" data-categorynum="${category_num}">
-			<div class="category-svg-cont">${icons_array[category_num]}</div>
-			<h3 class="category-title">${titles_array[category_num]}</h3>
+		<div class="category" data-categorynum="${categoryNum}">
+			<div class="category-svg-cont">${iconsArray[categoryNum]}</div>
+			<h3 class="category-title">${titlesArray[categoryNum]}</h3>
 		</div>
 	`);
 }
-const subcategory_list_el = (subcategory_num, icons_array, titles_array, array_num, nested_array_num) => {
+
+/**
+ * Generate HTML for a subcategory element based on provided parameters.
+ *
+ * @param {number} subcategoryNum - Subcategory number.
+ * @param {Array} iconsArray - Array of subcategory icons.
+ * @param {Array} titlesArray - Array of subcategory titles.
+ * @param {number} arrayNum - Index in the outer array.
+ * @param {number} nestedArrayNum - Index in the nested array.
+ *
+ * @return {string} - Returns HTML string for a subcategory element.
+ */
+const subcategory_list_el = (
+	subcategoryNum, iconsArray, titlesArray, arrayNum, nestedArrayNum
+) => {
 	return (`
-		<div class="subcategory" data-subcategorynum="${subcategory_num}">
-			<div class="subcategory-svg-cont">${icons_array[array_num][nested_array_num]}</div>
-			<h3 class="subcategory-title">${titles_array[array_num][nested_array_num]}</h3>
+		<div class="subcategory" data-subcategorynum="${subcategoryNum}">
+			<div class="subcategory-svg-cont">${iconsArray[arrayNum][nestedArrayNum]}</div>
+			<h3 class="subcategory-title">${titlesArray[arrayNum][nestedArrayNum]}</h3>
 		</div>
 	`);
 }
+
 const category_list_hr = `<hr class="categories-hr">`;
 
 
@@ -712,12 +747,19 @@ window.addEventListener('load', async () => {
 	startApp();
 });
 
-function startApp () {
+/**
+ * Start the application by checking if data exists in local storage.
+ * If data exists, upload the application data, otherwise, open the hello screen.
+ */
+function startApp() {
 	if (localStorage.getItem('L')) uploadAppData();
 	else openHelloScreen();
 }
 
-function openHelloScreen () {
+/**
+ * Open the hello screen by hiding the scroll, showing the hello screen, and initializing language selection.
+ */
+function openHelloScreen() {
 
 	disableScrolling();
 
@@ -740,7 +782,12 @@ function openHelloScreen () {
 	}, 1800);
 }
 
-function uploadHelloTitle (langNumber) {
+/**
+ * Upload the hello title based on the selected language.
+ *
+ * @param {number} langNumber - Language number.
+ */
+function uploadHelloTitle(langNumber) {
 	let el = id('hello-screen').firstElementChild;
 
 	el.style.transition = 'opacity .5s';
@@ -752,7 +799,14 @@ function uploadHelloTitle (langNumber) {
 	}, 500);
 }
 
-function uploadHelloLanguageName (langNumber) {
+/**
+ * Upload the hello language name based on the selected language.
+ *
+ * @param {number} langNumber - Language number.
+ *
+ * @return {number} - Returns the updated language number.
+ */
+function uploadHelloLanguageName(langNumber) {
 
 	if (langNumber < 0) langNumber = 4;
 	else if (langNumber > 4) langNumber = 0;
@@ -766,7 +820,12 @@ function uploadHelloLanguageName (langNumber) {
 	return langNumber;
 }
 
-function hideHelloLanguageName (direction) {
+/**
+ * Hide the hello language name with a specified direction.
+ *
+ * @param {number} direction - Direction for hiding (1 for right, -1 for left).
+ */
+function hideHelloLanguageName(direction) {
 	let el = id('hello-language');
 	let x = 50 * direction;
 
@@ -775,7 +834,12 @@ function hideHelloLanguageName (direction) {
 	el.style.opacity = '0';
 }
 
-function showHelloLanguage (direction) {
+/**
+ * Show the hello language name with a specified direction.
+ *
+ * @param {number} direction - Direction for showing (1 for right, -1 for left).
+ */
+function showHelloLanguage(direction) {
 	let el = id('hello-language');
 	let x = 50 * direction;
 
@@ -789,7 +853,10 @@ function showHelloLanguage (direction) {
 	}, 50);
 }
 
-function setUpClickOnHelloSliderButtons () {
+/**
+ * Set up click events on hello screen slider buttons.
+ */
+function setUpClickOnHelloSliderButtons() {
 
 	id('button-slider').firstElementChild.style.opacity = '1';
 
@@ -806,7 +873,10 @@ function setUpClickOnHelloSliderButtons () {
 	}
 }
 
-function clickOnHelloScreenLeftButton () {
+/**
+ * Handle the click event on the left button of the hello screen slider.
+ */
+function clickOnHelloScreenLeftButton() {
 
 	id('hello-screen').setAttribute('data-animstatus', 'processing');
 	hideHelloLanguageName(1);
@@ -825,7 +895,10 @@ function clickOnHelloScreenLeftButton () {
 	}, 500);
 }
 
-function clickOnHelloScreenRightButton () {
+/**
+ * Handle the click event on the right button of the hello screen slider.
+ */
+function clickOnHelloScreenRightButton() {
 
 	id('hello-screen').setAttribute('data-animstatus', 'processing');
 	hideHelloLanguageName(-1);
@@ -844,7 +917,10 @@ function clickOnHelloScreenRightButton () {
 	}, 500);
 }
 
-function setUpClickOnHelloSubmitLanguageButton () {
+/**
+ * Set up click events on the hello screen submit language button.
+ */
+function setUpClickOnHelloSubmitLanguageButton() {
 
 	id('hello-submit-language').style.opacity = '1';
 
@@ -873,7 +949,7 @@ function setUpClickOnHelloSubmitLanguageButton () {
 			id('hello-language').style.opacity = '0';
 
 			setTimeout(() => {
-				localStorage.setItem( 'L', getLanguageByNumber(id('hello-language').getAttribute('data-langnum')) );
+				localStorage.setItem( 'L', getLanguageByNumber( Number(id('hello-language').getAttribute('data-langnum')) ) );
 				closeHelloScreen();
 			}, 1000);
 		}, 1200);
@@ -881,7 +957,14 @@ function setUpClickOnHelloSubmitLanguageButton () {
 	}
 }
 
-function getLanguageByNumber (n) {
+/**
+ * Get language enum value based on the provided number.
+ *
+ * @param {number} n - Language number.
+ *
+ * @return {string} - Returns the language enum value.
+ */
+function getLanguageByNumber(n) {
 	if (n === 0) return LANG_ENUM.en;
 	else if (n === 1) return LANG_ENUM.cz;
 	else if (n === 2) return LANG_ENUM.de;
@@ -890,7 +973,10 @@ function getLanguageByNumber (n) {
 	return LANG_ENUM.en;
 }
 
-function closeHelloScreen () {
+/**
+ * Close the hello screen by adding the 'hide' class and initiating the upload of application data.
+ */
+function closeHelloScreen() {
 	id('hello-screen').classList.add('hide');
 	uploadAppData();
 	startPreloaderAnimation().then();
@@ -898,7 +984,10 @@ function closeHelloScreen () {
 
 
 
-function uploadAppData () {
+/**
+ * Uploads various app data on window load.
+ */
+function uploadAppData() {
 
 	// upload version update
 	uploadVersionUpdate();
@@ -910,7 +999,7 @@ function uploadAppData () {
 	// upload blur
 	if (!(localStorage.getItem('B')))
 		localStorage.setItem('B', '1');
-	reapplyBlur(Number(localStorage.getItem('B')));
+	reapplyBlur(localStorage.getItem('B') === "true");
 
 	// upload categories to its windows
 
@@ -967,7 +1056,10 @@ function uploadAppData () {
 	setTimeout(fixCurrentWidthOfElements, 1);
 }
 
-function uploadVersionUpdate () {
+/**
+ * Checks and displays version update notifications.
+ */
+function uploadVersionUpdate() {
 	let version = '3.1.3';
 
 	if (!localStorage.getItem('V')) {
@@ -990,7 +1082,12 @@ function uploadVersionUpdate () {
 
 
 
-function checkVersionForNeededStorageUpdates (version) {
+/**
+ * Checks if storage data needs updates based on the app version.
+ *
+ * @param {string} version - Current app version.
+ */
+function checkVersionForNeededStorageUpdates(version) {
 	
 	// if current version is older than 3.1.0
 	if (
@@ -1001,7 +1098,10 @@ function checkVersionForNeededStorageUpdates (version) {
 	updateStorageDataToV3_1_0();
 }
 
-function updateStorageDataToV3_1_0 () {
+/**
+ * Updates storage data to version 3.1.0 format.
+ */
+function updateStorageDataToV3_1_0() {
 	console.log('storage has been updated');
 	// change name of variable in storage from 'Auto Theme' to 'Theme Auto'
 	localStorage.setItem('TA', localStorage.getItem('AT'));
@@ -1079,7 +1179,13 @@ function updateStorageDataToV3_1_0 () {
 
 
 
-function showNotification (type, timer) {
+/**
+ * Shows a notification with the given type and timer.
+ *
+ * @param {string} type - Type of notification.
+ * @param {number} timer - Duration of the notification display.
+ */
+function showNotification(type, timer) {
 
 	let notification_contEl = id('notification-cont'),
 		notificationEl = id('notification'),
@@ -1120,7 +1226,14 @@ function showNotification (type, timer) {
 	}
 }
 
-function uploadNotificationMessage (type, titleEl, detailsEl) {
+/**
+ * Uploads notification messages based on the type and language.
+ *
+ * @param {string} type - Type of notification.
+ * @param {HTMLElement} titleEl - Element to display the title.
+ * @param {HTMLElement} detailsEl - Element to display details.
+ */
+function uploadNotificationMessage(type, titleEl, detailsEl) {
 	let lang = localStorage.getItem('L');
 	titleEl.innerText = "";
 
@@ -1138,7 +1251,13 @@ function uploadNotificationMessage (type, titleEl, detailsEl) {
 	}
 }
 
-function uploadNotificationButtons (type, notificationEl) {
+/**
+ * Uploads and handles notification buttons based on the type.
+ *
+ * @param {string} type - Type of notification.
+ * @param {HTMLElement} notificationEl - Notification element.
+ */
+function uploadNotificationButtons(type, notificationEl) {
 
 	if (type === `update ${localStorage.getItem('V')}` || type === 'update 3.0.0') {
 
@@ -1163,18 +1282,28 @@ function uploadNotificationButtons (type, notificationEl) {
 	}
 }
 
-function hideNotification (notification_contEl) {
+/**
+ * Hides the notification container.
+ *
+ * @param {HTMLElement} notificationContEl - Notification container element.
+ */
+function hideNotification(notificationContEl) {
 
-	notification_contEl.classList.remove('animate-end');
+	notificationContEl.classList.remove('animate-end');
 	
 	setTimeout(() => {
-		notification_contEl.style.visibility = 'hidden';
+		notificationContEl.style.visibility = 'hidden';
 	}, 400);
 }
 
 
 
-function uploadUpdateDetailsToItsWindow (type) {
+/**
+ * Uploads update details content to the update details window.
+ *
+ * @param {string} type - Type of update.
+ */
+function uploadUpdateDetailsToItsWindow(type) {
 	let container = id('update-details-paragraphs');
 
 	let paragraphs = getUpdateDetailsArrayByLang(type);
@@ -1183,7 +1312,14 @@ function uploadUpdateDetailsToItsWindow (type) {
 		container.insertAdjacentHTML('beforeend', paragraphs[a]);
 }
 
-function getUpdateDetailsArrayByLang (type) {
+/**
+ * Gets an array of update details based on the language.
+ *
+ * @param {string} type - Type of update.
+ *
+ * @returns {Array} - Array of update details paragraphs.
+ */
+function getUpdateDetailsArrayByLang(type) {
 	let lang = localStorage.getItem('L');
 
 	if (type === 'update 3.0.0') {
@@ -1330,7 +1466,15 @@ function getUpdateDetailsArrayByLang (type) {
 
 const makeDelay = (delay) => new Promise (resolve => setTimeout(resolve, delay));
 
-async function startPreloaderAnimation () {
+/**
+ * Starts the preloader animation based on app settings.
+ * If animation is enabled, shows the preloader animation and hides it when finished.
+ * If animation is disabled, hides the preloader immediately.
+ * Enables scrolling after animation or hiding.
+ *
+ * @returns {Promise<void>} - A Promise that resolves when the animation/hiding is completed.
+ */
+async function startPreloaderAnimation() {
 
 	disableScrolling();
 
@@ -1386,7 +1530,12 @@ async function startPreloaderAnimation () {
 
 
 
-function uploadLanguage (lang) {
+/**
+ * Uploads language-specific settings and content to various parts of the app based on the given language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguage(lang) {
 
 	uploadFontFamilyByLanguage(lang);
 	uploadLanguageToRecordCategories(lang);
@@ -1396,8 +1545,12 @@ function uploadLanguage (lang) {
 	uploadLanguageToButtons(lang);
 }
 
-
-function uploadFontFamilyByLanguage (lang) {
+/**
+ * Uploads the appropriate font family to the body element based on the selected language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadFontFamilyByLanguage(lang) {
 	if (lang === LANG_ENUM.ru || lang === LANG_ENUM.ua) {
 		id('body').classList.add('font2');
 	} else {
@@ -1406,14 +1559,26 @@ function uploadFontFamilyByLanguage (lang) {
 }
 
 
-function uploadLanguageToRecordCategories (lang) {
+/**
+ * Uploads language-specific titles to record categories based on the given language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToRecordCategories(lang) {
 	categories_expense_titles = getCategoriesExpenseTitlesByLanguage(lang);
 	subcategories_titles = getSubcategoriesTitlesByLanguage(lang);
 	categories_income_titles = getCategoriesIncomeTitlesByLanguage(lang);
 	above_categories_titles = getAboveCategoriesExpenseTitlesByLanguage(lang);
 }
 
-function getCategoriesExpenseTitlesByLanguage (lang) {
+/**
+ * Returns an array of expense category titles based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[]} An array of expense category titles.
+ */
+function getCategoriesExpenseTitlesByLanguage(lang) {
 
 	if (lang === LANG_ENUM.en)
 		return [
@@ -1482,7 +1647,14 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 		];
 }
 
-function getSubcategoriesTitlesByLanguage (lang) {
+/**
+ * Returns an array of subcategory titles for each expense category based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[][]} An array of subcategory titles for each expense category.
+ */
+function getSubcategoriesTitlesByLanguage(lang) {
 	
 	if (lang === LANG_ENUM.en)
 		return [
@@ -1941,7 +2113,14 @@ function getSubcategoriesTitlesByLanguage (lang) {
 		];
 }
 
-function getCategoriesIncomeTitlesByLanguage (lang) {
+/**
+ * Retrieves income category titles based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[]} An array containing income category titles.
+ */
+function getCategoriesIncomeTitlesByLanguage(lang) {
 
 	if (lang === LANG_ENUM.en)
 		return [
@@ -2005,7 +2184,14 @@ function getCategoriesIncomeTitlesByLanguage (lang) {
 		  ];
 }
 
-function getAboveCategoriesExpenseTitlesByLanguage (lang) {
+/**
+ * Retrieves titles for categories above expenses based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[]} An array containing titles for categories above expenses.
+ */
+function getAboveCategoriesExpenseTitlesByLanguage(lang) {
 
 	if (lang === LANG_ENUM.en) {
 		return [
@@ -2030,8 +2216,12 @@ function getAboveCategoriesExpenseTitlesByLanguage (lang) {
 	}
 }
 
-
-function uploadLanguageToHistoryNavBars (lang) {
+/**
+ * Updates language for navigation bars in the history section.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToHistoryNavBars(lang) {
 
 	let els = id('history-period-nav').getElementsByTagName('button');
 	els[0].innerText = getStrings(lang).this_month;
@@ -2044,8 +2234,12 @@ function uploadLanguageToHistoryNavBars (lang) {
 	els[2].innerText = getStrings(lang).view_all;
 }
 
-
-function uploadLanguageToWidgets (lang) {
+/**
+ * Updates language for widgets.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToWidgets(lang) {
 
 	let els = id('stats-column').getElementsByClassName('stats-column-title');
 	els[0].firstElementChild.firstElementChild.innerHTML = getStrings(lang).income_plural;
@@ -2056,8 +2250,12 @@ function uploadLanguageToWidgets (lang) {
 	id('incomes-expenses-total-title').innerText = getStrings(lang).total;
 }
 
-
-function uploadLanguageToTitles (lang) {
+/**
+ * Updates language for titles across the application.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToTitles(lang) {
 
 	id('update-details-title').innerText = getStrings(lang).whats_new_message + localStorage.getItem('V');
 
@@ -2095,8 +2293,12 @@ function uploadLanguageToTitles (lang) {
 	els[2].firstElementChild.innerText = getStrings(lang).do_not_show_balance;
 }
 
-
-function uploadLanguageToButtons (lang) {
+/**
+ * Updates language for buttons across the application.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToButtons(lang) {
 
 	id('notification-show-details-button').value = getStrings(lang).show_details;
 
@@ -2164,8 +2366,13 @@ function uploadLanguageToButtons (lang) {
 	id('enable-categories-details-scroll-button').value = getStrings(lang).disable_scrolling;
 }
 
-
-function uploadAccountFieldTitle (status) {
+/**
+ * Updates the account field title at the make record window based on the specified record status
+ * ("record" or "transfer").
+ *
+ * @param {string} status - The status indicating whether it's for a record or transfer.
+ */
+function uploadAccountFieldTitle(status) {
 	let lang = localStorage.getItem('L');
 
 	if (status === 'record') {
@@ -2180,9 +2387,14 @@ function uploadAccountFieldTitle (status) {
 
 
 
-function reapplyBlur (blur_status) {
+/**
+ * Reapplies blur effect to specified elements based on the given blur status.
+ *
+ * @param {boolean} newStatus - Indicates whether to apply or remove the blur effect.
+ */
+function reapplyBlur(newStatus) {
 
-	if (blur_status) {
+	if (newStatus) {
 
 		for (let el of document.getElementsByClassName('solid-background')) {
 
@@ -2213,12 +2425,19 @@ function reapplyBlur (blur_status) {
 	}
 }
 
-function operateElementsArrayClass (array, class_to_remove, class_to_add) {
+/**
+ * Operates on an array of elements to add and remove specified classes with a delay.
+ *
+ * @param {HTMLCollection} array - The array of elements to operate on.
+ * @param {string} classToRemove - The class to be removed.
+ * @param {string} classToAdd - The class to be added.
+ */
+function operateElementsArrayClass(array, classToRemove, classToAdd) {
 
 	for (let el of array) {
-		el.classList.add(class_to_add);
+		el.classList.add(classToAdd);
 		setTimeout(() => {
-			el.classList.remove(class_to_remove);
+			el.classList.remove(classToRemove);
 		}, 1);
 	}
 }
@@ -2227,7 +2446,12 @@ function operateElementsArrayClass (array, class_to_remove, class_to_add) {
 
 
 
-function applyTheme (theme) {
+/**
+ * Applies the specified theme to the application and updates the preloader theme accordingly.
+ *
+ * @param {string} theme - The theme code ('l' for light, 'b' for dark blue, 'd' for dark).
+ */
+function applyTheme(theme) {
 
 	if (Number(localStorage.getItem('TA')) === 1) {
 		if (window.matchMedia('(prefers-color-scheme: dark)').matches)
@@ -2256,7 +2480,12 @@ function applyTheme (theme) {
 	}, 1);
 }
 
-function applyThemeForPreloader (theme) {
+/**
+ * Applies the specified theme to the preloader element.
+ *
+ * @param {string} theme - The theme code ('l' for light, 'b' for dark blue, 'd' for dark).
+ */
+function applyThemeForPreloader(theme) {
 
 	if (theme === 'l') {
 		id('preloader').classList.add('light');
@@ -2267,7 +2496,10 @@ function applyThemeForPreloader (theme) {
 	}
 }
 
-function applyTopMargin () {
+/**
+ * Applies the top margin to specified elements based on the value stored in local storage.
+ */
+function applyTopMargin() {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('notification-cont').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px`;
@@ -2275,7 +2507,10 @@ function applyTopMargin () {
 
 
 
-function addAccount () {
+/**
+ * Increments the account count and initializes default values for the new account.
+ */
+function addAccount() {
 	localStorage.setItem("ACount", (Number(localStorage.getItem("ACount")) + 1).toString());
 	let acc_count = localStorage.getItem("ACount");
 
@@ -2287,33 +2522,49 @@ function addAccount () {
 	localStorage.setItem("AHB" + acc_count, "false");
 }
 
-function uploadAccount (account_num, container) {
+/**
+ * Uploads account information to the specified container, excluding hidden accounts.
+ *
+ * @param {number} accountNum - The account number.
+ * @param {HTMLElement} container - The container to upload the account to.
+ */
+function uploadAccount(accountNum, container) {
 	if (
 		!(container === id('accounts') &&
-		localStorage.getItem(`AHT${account_num}`) === "true")
+		localStorage.getItem(`AHT${accountNum}`) === "true")
 	) {
-		container.insertAdjacentHTML('beforeend', constructAccountEl(account_num));
+		container.insertAdjacentHTML('beforeend', constructAccountEl(accountNum));
 	}
 }
 
 
 
-function uploadCategoriesToItsWindow (container, titles_array, icons_array) {
+/**
+ * Uploads category titles and icons to the specified container.
+ *
+ * @param {HTMLElement} container - The container to upload categories to.
+ * @param {string[]} titlesArray - Array of category titles.
+ * @param {string[]} iconsArray - Array of category icons.
+ */
+function uploadCategoriesToItsWindow(container, titlesArray, iconsArray) {
 
 	container.insertAdjacentHTML(
 		'afterbegin',
-		category_list_el(titles_array.length - 1, icons_array, titles_array)
+		category_list_el(titlesArray.length - 1, iconsArray, titlesArray)
 	);
 
-	for (let a = titles_array.length - 2; a >= 0; a--) {
+	for (let a = titlesArray.length - 2; a >= 0; a--) {
 		container.insertAdjacentHTML('afterbegin', category_list_hr);
 		container.insertAdjacentHTML(
 			'afterbegin',
-			category_list_el(a, icons_array, titles_array)
+			category_list_el(a, iconsArray, titlesArray)
 		);
 	}
 }
 
+/**
+ * Uploads subcategories to the subcategories window.
+ */
 function uploadSubcategoriesToItsWindow() {
 	
 	for (let a = subcategories_titles.length - 1; a >= 0; a--) {
@@ -2344,14 +2595,18 @@ function uploadSubcategoriesToItsWindow() {
 
 
 
-/** 
- * @param {number} all Update all widgets
- * @param {number} today Update today widget
- * @param {number} expenses_incomes Update expenses/incomes widget
- * @param {[number, number]} history Array of 2 numbers: update history widget and update history widget animated
- * @param {number} pie_chart Update pie chart widget
+/**
+ * Updates widgets data based on the specified parameters.
+ *
+ * @param {number} all - Update all widgets.
+ * @param {number} today - Update today widget.
+ * @param {number} expensesIncomes - Update expenses/incomes widget.
+ * @param {[number, number]} history - Array of 2 numbers: update history widget and update history widget animated.
+ * @param {number} pieChart - Update pie chart widget.
  */
-function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
+function updateWidgetsData(
+	all, today, expensesIncomes, history, pieChart
+) {
 
 	if (all) {
 		uploadTodayStats();
@@ -2364,7 +2619,7 @@ function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
 	if (today) {
 		uploadTodayStats();
 	}
-	if (expenses_incomes) {
+	if (expensesIncomes) {
 		uploadExpensesIncomesStats();
 	}
 	if (history[0]) {
@@ -2372,7 +2627,7 @@ function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
 	} else if (history[1]) {
 		uploadRecordsToHistoryAnimated();
 	}
-	if (pie_chart) {
+	if (pieChart) {
 		updatePieChart();
 	}
 }
@@ -2381,9 +2636,16 @@ function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
 
 
 
-function getDateFormat (input_date) {
+/**
+ * Formats the input date object into a string with the following format: 'YYYY-MM-DDTHH:mm:ss'.
+ *
+ * @param {Date} inputDate - The input date object to be formatted.
+ *
+ * @returns {string} The formatted date string.
+ */
+function getDateFormat(inputDate) {
 
-	let date = input_date;
+	let date = inputDate;
 	
 	let year = date.getFullYear();
 	let month = date.getMonth() + 1;
@@ -2400,7 +2662,10 @@ function getDateFormat (input_date) {
 	return (`${year}-${month}-${day}T${hours}:${minutes}:${seconds}`);
 }
 
-function uploadRecordsToHistory () {
+/**
+ * Uploads records to the history section based on the selected date range.
+ */
+function uploadRecordsToHistory() {
 	let period = uiState.date_range;
 
 	id('history').innerHTML = null;
@@ -2420,7 +2685,12 @@ function uploadRecordsToHistory () {
 	}	
 }
 
-function changeDatePeriodInCustomDateMenu (period) {
+/**
+ * Changes the date period in the custom date menu based on the selected date range.
+ *
+ * @param {string} period - The selected date range.
+ */
+function changeDatePeriodInCustomDateMenu(period) {
 
 	let date = new Date();
 	let current_date = date;
@@ -2463,17 +2733,34 @@ function changeDatePeriodInCustomDateMenu (period) {
 	uploadExactlyDatePeriodToCustomDateMenu(date_top_border, date_bottom_border);
 }
 
-function getMonthTopBorder (date, current_date, month_difference) {
+/**
+ * Retrieves the top border of the month based on the specified date and month difference.
+ *
+ * @param {Date} date - The base date.
+ * @param {Date} currentDate - The current date.
+ * @param {number} monthDifference - The difference in months.
+ *
+ * @returns {Date} The calculated top border date.
+ */
+function getMonthTopBorder(date, currentDate, monthDifference) {
 
 	date.setSeconds(59);
 	date.setMinutes(59);
 	date.setHours(23);
-	date.setMonth(current_date.getMonth() + 1 + month_difference);
+	date.setMonth(currentDate.getMonth() + 1 + monthDifference);
 	date.setDate(0);
 
 	return date;
 }
-function getMonthBottomBorder (date) {
+
+/**
+ * Retrieves the bottom border of the month based on the specified date.
+ *
+ * @param {Date} date - The base date.
+ *
+ * @returns {Date} The calculated bottom border date.
+ */
+function getMonthBottomBorder(date) {
 
 	date.setSeconds(0);
 	date.setMinutes(0);
@@ -2483,14 +2770,23 @@ function getMonthBottomBorder (date) {
 	return date;
 }
 
-function uploadExactlyDatePeriodToCustomDateMenu (date_top_border, date_bottom_border) {
+/**
+ * Uploads the exactly selected date period to the custom date menu.
+ *
+ * @param {string} dateTopBorder - The top border date string.
+ * @param {string} dateBottomBorder - The bottom border date string.
+ */
+function uploadExactlyDatePeriodToCustomDateMenu(dateTopBorder, dateBottomBorder) {
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 
-	inputs[0].value = date_top_border;
-	inputs[1].value = date_bottom_border;
+	inputs[0].value = dateTopBorder;
+	inputs[1].value = dateBottomBorder;
 }
 
-function showCustomDateFilterMenu () {
+/**
+ * Displays the custom date filter menu.
+ */
+function showCustomDateFilterMenu() {
 
 	id('date-filter-menu-cont').classList.add('show');
 	
@@ -2512,11 +2808,17 @@ function showCustomDateFilterMenu () {
 	}
 }
 
-function hideCustomDateFilterMenu () {
+/**
+ * Hides the custom date filter menu.
+ */
+function hideCustomDateFilterMenu() {
 	id('date-filter-menu-cont').classList.remove('show');
 }
 
-function uploadRecordsByCustomPeriod () {
+/**
+ * Uploads records based on the custom date period.
+ */
+function uploadRecordsByCustomPeriod() {
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
 	let account = id('accounts').getAttribute('data-accountnum'),
@@ -2541,7 +2843,10 @@ function uploadRecordsByCustomPeriod () {
 	}
 }
 
-function uploadRecordsToHistoryAnimated () {
+/**
+ * Uploads records to the history widget with an animated reload effect.
+ */
+function uploadRecordsToHistoryAnimated() {
 
 	id('history-reloading-background').classList.add('history-reloading-background-show');
 	if (id('history-empty').classList.contains('visible'))
@@ -2554,7 +2859,14 @@ function uploadRecordsToHistoryAnimated () {
 	}, 390);
 }
 
-function getRecordDateFormat (n) {
+/**
+ * Retrieves the formatted date of a record based on its number.
+ *
+ * @param {number} n - The record number.
+ *
+ * @returns {string} The formatted date string.
+ */
+function getRecordDateFormat(n) {
 	let date = localStorage.getItem(`RD${n}`);
 
 	return date.charAt(0) + date.charAt(1) + date.charAt(2) + date.charAt(3) + '-' +
@@ -2564,7 +2876,12 @@ function getRecordDateFormat (n) {
 		date.charAt(10) + date.charAt(11) + ':00';
 }
 
-function setUpClickOnRecord (record) {
+/**
+ * Sets up the click event on a record for editing.
+ *
+ * @param {HTMLElement} record - The record element to set up the click event for.
+ */
+function setUpClickOnRecord(record) {
 
 	let record_num = Number(record.getAttribute('data-recordnum')),
 		windowEl_cont = id('make-record-window-cont'),
@@ -2589,7 +2906,7 @@ function setUpClickOnRecord (record) {
 	// set up click on remove record button
 	id('remove-record').onclick = () => {
 		if (!(localStorage.getItem(`RB${record_num}`)) || record_above_category !== 0)
-			removeRecord(record_num, 1);
+			removeRecord(record_num, true);
 		else if (record_above_category === 0)
 			removeTransfer(record_num);
 		closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl);
@@ -2605,51 +2922,61 @@ function setUpClickOnRecord (record) {
 
 }
 
-function prepareEditRecordWindow (record_num) {
+/**
+ * Prepares the edit record window with data from the specified record number.
+ *
+ * @param {number} recordNum - The record number to edit.
+ */
+function prepareEditRecordWindow(recordNum) {
 
 	// set 'old' attribute, set record number as attribute
 	id('make-record-window').setAttribute('data-status', 'old');
-	id('make-record-window').setAttribute('data-recordnum', record_num);
+	id('make-record-window').setAttribute('data-recordnum', recordNum.toString());
 	// upload record type to change record type bar
-	id('record-types').setAttribute('data-record-type', localStorage.getItem(`RP${record_num}`));
+	id('record-types').setAttribute('data-record-type', localStorage.getItem(`RP${recordNum}`));
 	// hide fields for make record window and make transfer window
 	id('make-record-window').classList.remove('make-record-status');
 	id('make-record-window').classList.add('edit-record-status');
 	// upload record date
-	id('make-record-date').value = getRecordDateFormat(record_num);
+	id('make-record-date').value = getRecordDateFormat(recordNum);
 	// upload record note
-	let note = localStorage.getItem(`RT${record_num}`);
+	let note = localStorage.getItem(`RT${recordNum}`);
 	if (note) {
 		id('make-record-note').value = note;
 		adaptInputLengthExplicitly(id('make-record-note'));
 	}
 	// upload record account
-	let account_num = Number(localStorage.getItem(`RA${record_num}`));
+	let account_num = Number(localStorage.getItem(`RA${recordNum}`));
 	id('make-record-account').innerHTML = constructAccountEl(account_num);
 	id('make-record-account').setAttribute('data-accountnum', account_num.toString());
 	// upload record amount
-	id('make-record-amount').value = localStorage.getItem(`RU${record_num}`);
+	id('make-record-amount').value = localStorage.getItem(`RU${recordNum}`);
 	adaptInputLengthExplicitly(id('make-record-amount'));
 	// upload category to edit record window
-	uploadCategoryToEditRecordWindow(record_num);
+	uploadCategoryToEditRecordWindow(recordNum);
 	// upload save record button title
 	id('make-record-save-button').value = getStrings(localStorage.getItem('L')).save;
 }
 
-function prepareEditTransferWindow (record_num) {
-	let transfer_pair = getTransfersPairNums(record_num);
+/**
+ * Prepares the edit transfer window with data from the specified record number.
+ *
+ * @param {number} recordNum - The record number to edit.
+ */
+function prepareEditTransferWindow(recordNum) {
+	let transfer_pair = getTransfersPairNums(recordNum);
 
 	// set 'old' attribute, set record number as attribute
 	id('make-record-window').setAttribute('data-status', 'old');
-	id('make-record-window').setAttribute('data-recordnum', record_num);
+	id('make-record-window').setAttribute('data-recordnum', recordNum.toString());
 	// upload record type to change record type bar
-	id('record-types').setAttribute('data-record-type', localStorage.getItem(`RP${record_num}`));
+	id('record-types').setAttribute('data-record-type', localStorage.getItem(`RP${recordNum}`));
 	// hide fields for make record window and make transfer window
 	id('make-record-window').classList.remove('make-record-status');
 	id('make-record-window').classList.add('edit-transfer-status');
 
 	// upload record date
-	id('make-record-date').value = getRecordDateFormat(record_num);
+	id('make-record-date').value = getRecordDateFormat(recordNum);
 	// upload 'transfer to account' field's title
 	uploadAccountFieldTitle('transfer');
 	// upload accounts
@@ -2673,27 +3000,39 @@ function prepareEditTransferWindow (record_num) {
 	id('make-transfer-button').value = getStrings(localStorage.getItem('L')).save;
 }
 
-function getTransfersPairNums (record_num) {
+/**
+ * Gets the pair of record numbers for transfer records.
+ *
+ * @param {number} recordNum - The record number of the transfer.
+ *
+ * @returns {object} An object containing 'from' and 'to' record numbers.
+ */
+function getTransfersPairNums(recordNum) {
 	let record_num_pair = {
 		from: 0,
 		to: 0
 	};
 
 	// decide which account is 'from' and which is 'to'
-	if (localStorage.getItem(`RP${record_num}`) === '-') {
-		record_num_pair.from = record_num;
-		record_num_pair.to = record_num + 1;
+	if (localStorage.getItem(`RP${recordNum}`) === '-') {
+		record_num_pair.from = recordNum;
+		record_num_pair.to = recordNum + 1;
 	} else {
-		record_num_pair.from = record_num - 1;
-		record_num_pair.to = record_num;
+		record_num_pair.from = recordNum - 1;
+		record_num_pair.to = recordNum;
 	}
 
 	return record_num_pair;
 }
 
-function uploadAccountsToEditTransferWindow (record_num_pair) {
-	let account_from_num = localStorage.getItem(`RA${record_num_pair.from}`),
-		account_to_num = localStorage.getItem(`RA${record_num_pair.to}`);
+/**
+ * Uploads accounts to the edit transfer window based on the record numbers pair.
+ *
+ * @param {object} recordNumPair - An object containing 'from' and 'to' record numbers.
+ */
+function uploadAccountsToEditTransferWindow(recordNumPair) {
+	let account_from_num = localStorage.getItem(`RA${recordNumPair.from}`),
+		account_to_num = localStorage.getItem(`RA${recordNumPair.to}`);
 	
 	// upload account to 'from account' field
 	id('make-record-account').innerHTML = constructAccountEl(Number(account_from_num));
@@ -2704,54 +3043,74 @@ function uploadAccountsToEditTransferWindow (record_num_pair) {
 	id('make-transfer-to-account').setAttribute('data-accountnum', account_to_num);
 }
 
-function uploadCategoryToEditRecordWindow (record_num) {
+/**
+ * Uploads category data to the edit record window based on the specified record number.
+ *
+ * @param {number} recordNum - The record number to edit.
+ */
+function uploadCategoryToEditRecordWindow(recordNum) {
 	let category_button = id('make-record-category');
 
-	if (localStorage.getItem(`RP${record_num}`) === '-') {
+	if (localStorage.getItem(`RP${recordNum}`) === '-') {
 		
 		id('record-type-expense').classList.add('active-input-cont');
 		id('record-type-income').classList.remove('active-input-cont');
 		
-		category_button.firstElementChild.innerHTML = SUBCATEGORY_ICONS[localStorage.getItem(`RC${record_num}`)][localStorage.getItem(`RS${record_num}`)];
-		category_button.lastElementChild.value = subcategories_titles[localStorage.getItem(`RC${record_num}`)][localStorage.getItem(`RS${record_num}`)];
+		category_button.firstElementChild.innerHTML = SUBCATEGORY_ICONS[localStorage.getItem(`RC${recordNum}`)][localStorage.getItem(`RS${recordNum}`)];
+		category_button.lastElementChild.value = subcategories_titles[localStorage.getItem(`RC${recordNum}`)][localStorage.getItem(`RS${recordNum}`)];
 		
-	} else if (localStorage.getItem(`RP${record_num}`) === '+') {
+	} else if (localStorage.getItem(`RP${recordNum}`) === '+') {
 		
 		id('record-type-expense').classList.remove('active-input-cont');
 		id('record-type-income').classList.add('active-input-cont');
 		
-		category_button.firstElementChild.innerHTML = CATEGORY_INCOME_ICONS[localStorage.getItem(`RC${record_num}`)];
-		category_button.lastElementChild.value = categories_income_titles[localStorage.getItem(`RC${record_num}`)];
+		category_button.firstElementChild.innerHTML = CATEGORY_INCOME_ICONS[localStorage.getItem(`RC${recordNum}`)];
+		category_button.lastElementChild.value = categories_income_titles[localStorage.getItem(`RC${recordNum}`)];
 		
 	}
 	
-	category_button.setAttribute('data-categorynum', localStorage.getItem(`RC${record_num}`));
-	category_button.setAttribute('data-subcategorynum', localStorage.getItem(`RS${record_num}`));
+	category_button.setAttribute('data-categorynum', localStorage.getItem(`RC${recordNum}`));
+	category_button.setAttribute('data-subcategorynum', localStorage.getItem(`RS${recordNum}`));
 }
 
 
-function setUpClickOnRepeatRecordButton (clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up the click event on the repeat record button.
+ *
+ * @param {HTMLElement} clickEl - Make record button element.
+ * @param {HTMLElement} windowElCont - The container of the edit record window.
+ * @param {HTMLElement} windowEl - The edit record window element.
+ */
+function setUpClickOnRepeatRecordButton(
+	clickEl, windowElCont, windowEl
+) {
 	id('repeat-record').onclick = () => {
 
 		// add attribute 'new' and 'record number' attribute to make record window
 		windowEl.setAttribute('data-status', 'repeat');
-		windowEl.setAttribute('data-recordnum', Number(localStorage.getItem('RCount')) + 1);
+		windowEl.setAttribute('data-recordnum', (Number(localStorage.getItem('RCount')) + 1).toString());
 		// upload current date
 		id('make-record-date').value = getDateFormat(new Date());
 
 		if (windowEl.classList.contains('edit-record-status'))
-			onSaveRecordButton(clickEl, windowEl_cont, windowEl);
+			onSaveRecordButton(clickEl, windowElCont, windowEl);
 		else if (windowEl.classList.contains('edit-transfer-status'))
-			saveTransfer(clickEl, windowEl_cont, windowEl);
+			saveTransfer(clickEl, windowElCont, windowEl);
 	}	
 }
 
 
-function removeRecord (record_num, return_status) {
+/**
+ * Removes a record from storage based on its record number and updates the records.
+ *
+ * @param {number} recordNum - The record number to remove.
+ * @param {boolean} returnRecordAmountToAccount - Whether to return the record amount to balance.
+ */
+function removeRecord(recordNum, returnRecordAmountToAccount) {
 	
-	if (return_status) returnRecordAmountToBalance(record_num);
+	if (returnRecordAmountToAccount) returnRecordAmountToBalance(recordNum);
 
-	for (let a = record_num; a <= Number(localStorage.getItem('RCount')); a++)
+	for (let a = recordNum; a <= Number(localStorage.getItem('RCount')); a++)
 	
 		if ( a < Number(localStorage.getItem('RCount')) )
 			// move record from to
@@ -2765,8 +3124,13 @@ function removeRecord (record_num, return_status) {
 		}
 }
 
-function removeTransfer (record_num) {
-	let transfer_pair = getTransfersPairNums(record_num);
+/**
+ * Removes a transfer record from storage based on its record number and updates the records.
+ *
+ * @param {number} recordNum - The record number of the transfer to remove.
+ */
+function removeTransfer(recordNum) {
+	let transfer_pair = getTransfersPairNums(recordNum);
 	
 	returnRecordAmountToBalance(transfer_pair.from);
 	returnRecordAmountToBalance(transfer_pair.to);
@@ -2789,7 +3153,12 @@ function removeTransfer (record_num) {
 		}
 }
 
-function returnRecordAmountToBalance (recordNum) {
+/**
+ * Returns the record amount to the account balance based on the record number.
+ *
+ * @param {number} recordNum - The record number.
+ */
+function returnRecordAmountToBalance(recordNum) {
 
 	let type = localStorage.getItem(`RP${recordNum}`);
 	let amount = Number(localStorage.getItem(`RU${recordNum}`));
@@ -2804,7 +3173,15 @@ function returnRecordAmountToBalance (recordNum) {
 	}, 400);
 }
 
-function getShowMessageInEmptyHistoryByLang (period, lang) {
+/**
+ * Gets the message to show in an empty history based on the period and language.
+ *
+ * @param {string} period - The date range period.
+ * @param {string} lang - The language.
+ *
+ * @returns {string} The message to display.
+ */
+function getShowMessageInEmptyHistoryByLang(period, lang) {
 	if (period === DATE_RANGE_ENUM.this_month) {
 		return getStrings(lang).no_records_this_month_message;
 	} else if (period === DATE_RANGE_ENUM.last_month) {
@@ -2815,10 +3192,19 @@ function getShowMessageInEmptyHistoryByLang (period, lang) {
 }
 
 
-function closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl) {
+/**
+ * Closes the edit record window with the reconnecting animation.
+ *
+ * @param {HTMLElement} clickEl - The element triggering the click event.
+ * @param {HTMLElement} windowElCont - The container of the edit record window.
+ * @param {HTMLElement} windowEl - The edit record window element.
+ */
+function closeEditRecordWindowByReconnectMethod(
+	clickEl, windowElCont, windowEl
+) {
 
-	reconnectFloatingWindow(clickEl, id('history'), windowEl_cont, windowEl);
-	closeReconnectedFloatingWindow(windowEl_cont, windowEl);
+	reconnectFloatingWindow(clickEl, id('history'), windowElCont, windowEl);
+	closeReconnectedFloatingWindow(windowElCont, windowEl);
 	uploadRecordsToHistoryAnimated();
 
 	setTimeout(() => {
@@ -2845,7 +3231,12 @@ id('enable-categories-details-scroll-button').onclick = function() {
 	changeWidgetScroll(id('pie-chart-categories-details'));
 }
 
-function changeChangeScrollButtonStatus (el) {
+/**
+ * Changes the status of the scroll button, enabling or disabling scrolling.
+ *
+ * @param {HTMLElement} el - The HTML element representing the scroll button.
+ */
+function changeChangeScrollButtonStatus(el) {
 
 	let holding_el = freezeWidthOfEl(el);
 
@@ -2863,7 +3254,12 @@ function changeChangeScrollButtonStatus (el) {
 	}, 200);
 }
 
-function changeWidgetScroll (el) {
+/**
+ * Changes the scroll status of a widget.
+ *
+ * @param {HTMLElement} el - The HTML element representing the widget.
+ */
+function changeWidgetScroll(el) {
 
 	animateClickOnHistory(el);
 
@@ -2874,7 +3270,12 @@ function changeWidgetScroll (el) {
 	}, 200);
 }
 
-function animateClickOnHistory (el) {
+/**
+ * Animates a click effect on the history element.
+ *
+ * @param {HTMLElement} el - The history widget html element.
+ */
+function animateClickOnHistory(el) {
 	el.style.transform = 'scale(0.99)';
 	setTimeout(() => { el.style.transform = 'scale(1)'; }, 100);
 }
@@ -2883,7 +3284,14 @@ function animateClickOnHistory (el) {
 
 
 
-function freezeWidthOfEl (el) {
+/**
+ * Freezes the width of the element to maintain its width during animation.
+ *
+ * @param {HTMLElement} el - The HTML element to freeze the width.
+ *
+ * @returns {HTMLElement} The placeholder element used to hold the width.
+ */
+function freezeWidthOfEl(el) {
 	let	holding_el = id('test-p');
 
 	el.style.width = el.clientWidth + 'px';
@@ -2898,25 +3306,36 @@ function freezeWidthOfEl (el) {
 	return holding_el;
 }
 
-function updateWidthOfEl (el, holding_el) {
+/**
+ * Updates the width of the element after animation to the original size.
+ *
+ * @param {HTMLInputElement} el - The HTML element to update the width.
+ * @param {HTMLElement} holderEl - The placeholder element holding the width.
+ */
+function updateWidthOfEl(el, holderEl) {
 
-	if (el.value)
-		holding_el.innerText = el.value;
-	else holding_el.innerText = el.innerText;
-		
-	el.style.width = holding_el.clientWidth + 'px';
+	if (el.value) {
+		holderEl.innerText = el.value;
+	} else {
+		holderEl.innerText = el.innerText;
+	}
+
+	el.style.width = holderEl.clientWidth + 'px';
 	el.style.color = null;
 	el.style.paddingLeft = null;
 	el.style.paddingRight = null;
 
-	holding_el.style.display = 'none';
+	holderEl.style.display = 'none';
 }
 
 
 
 
 
-function uploadTodayStats () {
+/**
+ * Uploads today's statistics to the today stats widget.
+ */
+function uploadTodayStats() {
 	
 	let descriptionEl = id('today-stats-description'),
 		account_num = id('accounts').getAttribute('data-accountnum');
@@ -2937,31 +3356,51 @@ function uploadTodayStats () {
 	}, 300);
 }
 
-function uploadTodayStatsData (descriptionEl, lang, account_num, today_amount, account_currency) {
-
-	if (today_amount === 0) {
+/**
+ * Uploads today's statistics data to the specified element.
+ *
+ * @param {HTMLElement} descriptionEl - The HTML element to display the statistics description.
+ * @param {string} lang - The language code.
+ * @param {string} accountNum - The account number.
+ * @param {number} todayAmount - The amount spent today.
+ * @param {string} accountCurrency - The currency of the account.
+ */
+function uploadTodayStatsData(
+	descriptionEl, lang, accountNum, todayAmount, accountCurrency
+) {
+	if (todayAmount === 0) {
 		descriptionEl.innerText = getStrings(lang).greetings_no_expenses_message;
-	}
-
-	else if (
-		!Number(localStorage.getItem(`AWB${account_num}`)) &&
-		Number(localStorage.getItem(`ABalance${account_num}`)) >= 0
+	} else if (
+		!Number(localStorage.getItem(`AWB${accountNum}`)) &&
+		Number(localStorage.getItem(`ABalance${accountNum}`)) >= 0
 	) {
-
-		let default_account_balance = today_amount + Number(localStorage.getItem(`ABalance${account_num}`));
+		let default_account_balance = todayAmount + Number(localStorage.getItem(`ABalance${accountNum}`));
 		if (default_account_balance === 0) default_account_balance = 1;
 
-		let today_percent_amount = ( (100 / default_account_balance) * today_amount ).toFixed(2);
-
-		showTodayStatsMessageSomeExpenses(
-			descriptionEl, lang, getReadableNumber(today_amount.toFixed(2)), account_currency,
-			today_percent_amount, default_account_balance.toFixed(2)
+		let today_percent_amount = Number(
+			( (100 / default_account_balance) * todayAmount ).toFixed(2)
 		);
 
-	} else showTodayStatsMessageSomeExpenses(descriptionEl, lang, today_amount, account_currency);
+		showTodayStatsMessageSomeExpenses(
+			descriptionEl, lang, getReadableNumber(Number(todayAmount.toFixed(2))),
+			accountCurrency, today_percent_amount, default_account_balance.toFixed(2)
+		);
+	} else {
+		showTodayStatsMessageSomeExpenses(
+			descriptionEl, lang, getReadableNumber(Number(todayAmount.toFixed(2))),
+			accountCurrency, 0, ""
+		);
+	}
 }
 
-function getTodayStatsAmount (account) {
+/**
+ * Retrieves the amount spent today for the specified account.
+ *
+ * @param {string} account - The account number.
+ *
+ * @returns {number} The amount spent today.
+ */
+function getTodayStatsAmount(account) {
 
 	let amount = 0,
 		compare_date = new Date();
@@ -2979,10 +3418,17 @@ function getTodayStatsAmount (account) {
 				amount += Number(localStorage.getItem(`RU${record_num}`));
 		} else break;
 
-	return amount;
+	return Number(amount.toFixed(2));
 }
 
-function getTodayStatsTitle (lang) {
+/**
+ * Retrieves the title for today's statistics based on the current time.
+ *
+ * @param {string} lang - The language code.
+ *
+ * @returns {string} The appropriate greeting based on the time of the day.
+ */
+function getTodayStatsTitle(lang) {
 	let time = (new Date()).getHours();
 
 	if (6 <= time && time <= 12) {
@@ -2994,39 +3440,55 @@ function getTodayStatsTitle (lang) {
 	}
 }
 
-function showTodayStatsMessageSomeExpenses (el, lang, today_amount, account_currency, today_percent_amount, default_balance) {
+/**
+ * Displays the message for today's statistics with some expenses.
+ *
+ * @param {HTMLElement} el - The HTML element to display the message.
+ * @param {string} lang - The language code.
+ * @param {string} todayFormattedAmount - The amount spent today.
+ * @param {string} accountCurrency - The currency of the account.
+ * @param {number} todayPercentAmount - The percentage of today's amount relative to the total balance.
+ * @param {string} defaultBalance - The default balance.
+ */
+function showTodayStatsMessageSomeExpenses(
+	el, lang, todayFormattedAmount,
+	accountCurrency, todayPercentAmount, defaultBalance
+) {
 
 	let today_amount_by_percent = "";
-	if (today_percent_amount) {
+	if (todayPercentAmount) {
 		if (lang === LANG_ENUM.en)
-			today_amount_by_percent = `, or <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${default_balance} ${account_currency})`;
+			today_amount_by_percent = `, or <span class="underlined-text">${todayPercentAmount}%</span> of the total balance of this account (${defaultBalance} ${accountCurrency})`;
 		else if (lang === LANG_ENUM.cz)
-			today_amount_by_percent = `, was <span class="underlined-text">${today_percent_amount}%</span> des Gesamtsaldos dieses Kontos entspricht (${default_balance} ${account_currency})`;
+			today_amount_by_percent = `, was <span class="underlined-text">${todayPercentAmount}%</span> des Gesamtsaldos dieses Kontos entspricht (${defaultBalance} ${accountCurrency})`;
 		else if (lang === LANG_ENUM.de)
-			today_amount_by_percent = `, neboli <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${default_balance} ${account_currency})`;
+			today_amount_by_percent = `, neboli <span class="underlined-text">${todayPercentAmount}%</span> od celkového zůstatku tohoto účtu (${defaultBalance} ${accountCurrency})`;
 		else if (lang === LANG_ENUM.ru)
-			today_amount_by_percent = `, или же <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${default_balance} ${account_currency})`;
+			today_amount_by_percent = `, или же <span class="underlined-text">${todayPercentAmount}%</span> от общего баланса этого счёта (${defaultBalance} ${accountCurrency})`;
 		else if (lang === LANG_ENUM.ua)
-			today_amount_by_percent = `, або ж <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${default_balance} ${account_currency})`;
+			today_amount_by_percent = `, або ж <span class="underlined-text">${todayPercentAmount}%</span> від загального балансу цього рахунку (${defaultBalance} ${accountCurrency})`;
 	}
 
 	if (lang === LANG_ENUM.en)
-		el.innerHTML = `Today you spent <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
+		el.innerHTML = `Today you spent <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
 	else if (lang === LANG_ENUM.cz)
-		el.innerHTML = `Dnes jste utratil(-a) <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
+		el.innerHTML = `Dnes jste utratil(-a) <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
 	else if (lang === LANG_ENUM.de)
-		el.innerHTML = `Heute Sie haben bereits <span class="underlined-text">${today_amount} ${account_currency}</span> ausgegeben${today_amount_by_percent}`;
+		el.innerHTML = `Heute Sie haben bereits <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span> ausgegeben${today_amount_by_percent}`;
 	else if (lang === LANG_ENUM.ru)
-		el.innerHTML = `Сегодня вы потратили <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
+		el.innerHTML = `Сегодня вы потратили <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
 	else if (lang === LANG_ENUM.ua)
-		el.innerHTML = `Сьогодні ви витратили <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
+		el.innerHTML = `Сьогодні ви витратили <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
 }
 
 
 
 
 
-function uploadExpensesIncomesStats () {
+/**
+ * Uploads expenses and income statistics for the specified period and language.
+ */
+function uploadExpensesIncomesStats() {
 
 	// upload title
 	uploadExpensesIncomesStatsTitle(
@@ -3056,7 +3518,14 @@ function uploadExpensesIncomesStats () {
 	);
 }
 
-function uploadExpensesIncomesStatsTitle (el, period, lang) {
+/**
+ * Uploads the title for expenses and income statistics based on the specified period and language.
+ *
+ * @param {HTMLElement} el - The HTML element to display the title.
+ * @param {string} period - The period for which statistics are displayed.
+ * @param {string} lang - The language code.
+ */
+function uploadExpensesIncomesStatsTitle(el, period, lang) {
 
 	el.style.opacity = '0';
 	
@@ -3074,12 +3543,28 @@ function uploadExpensesIncomesStatsTitle (el, period, lang) {
 	}, 300);
 }
 
-function getReadableDateByFormatDayMonthYear (date) {
-	date = new Date(date);
-	return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+/**
+ * Converts a date to a readable format (day.month.year).
+ *
+ * @param {string} date - The date to be converted. Date has to be in format, accessible for the new Date() method.
+ *
+ * @returns {string} The readable date format.
+ */
+function getReadableDateByFormatDayMonthYear(date) {
+	let formattedDate = new Date(date);
+	return `${formattedDate.getDate()}.${formattedDate.getMonth() + 1}.${formattedDate.getFullYear()}`;
 }
 
-function getTotalAmountOfExactlyTypeByCustomPeriod (type, account, amount) {
+/**
+ * Retrieves the total amount of the specified type for the custom period and account.
+ *
+ * @param {string} type - The type of record ('+' for income, '-' for expense).
+ * @param {string} account - The account number.
+ * @param {number} amount - The initial amount (accumulative).
+ *
+ * @returns {number} The total amount of records of the specified type.
+ */
+function getTotalAmountOfExactlyTypeByCustomPeriod(type, account, amount) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
@@ -3105,10 +3590,20 @@ function getTotalAmountOfExactlyTypeByCustomPeriod (type, account, amount) {
 	return amount;
 }
 
-function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent, incomes_amount, expenses_amount) {
+/**
+ * Visualizes expenses and income data in the widget.
+ *
+ * @param {number} incomesPercent - The percentage of income relative to the total amount.
+ * @param {number} expensesPercent - The percentage of expenses relative to the total amount.
+ * @param {string} incomesAmount - The total amount of incomes.
+ * @param {string} expensesAmount - The total amount of expenses.
+ */
+function visualizeExpensesIncomesDataInWidget(
+	incomesPercent, expensesPercent, incomesAmount, expensesAmount
+) {
 
-	id('incomes-column').style.width = incomes_percent + '%';
-	id('expenses-column').style.width = expenses_percent + '%';
+	id('incomes-column').style.width = incomesPercent + '%';
+	id('expenses-column').style.width = expensesPercent + '%';
 	
 	let titles = id('stats-column').getElementsByClassName('stats-column-title');
 	
@@ -3116,20 +3611,20 @@ function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent
 	titles[1].style.opacity = '0';
 	id('incomes-expenses-total-cont').style.opacity = '0';
 	
-	let total = incomes_amount - expenses_amount;
+	let total = incomesAmount - expensesAmount;
 	let currency = localStorage.getItem('ACurrency' + id('accounts').getAttribute('data-accountnum'));
 	setTimeout(() => {
 
-		id('incomes-column-percent').innerText = incomes_percent.toFixed(2) + '%';
-		id('expenses-column-percent').innerText = expenses_percent.toFixed(2) + '%';
+		id('incomes-column-percent').innerText = incomesPercent.toFixed(2) + '%';
+		id('expenses-column-percent').innerText = expensesPercent.toFixed(2) + '%';
 		
-		id('incomes-column-amount').innerText = `+ ${getReadableNumber(incomes_amount)} ${currency}`;
-		id('expenses-column-amount').innerText = `- ${getReadableNumber(expenses_amount)} ${currency}`;
+		id('incomes-column-amount').innerText = `+ ${getReadableNumber(Number(incomesAmount))} ${currency}`;
+		id('expenses-column-amount').innerText = `- ${getReadableNumber(Number(expensesAmount))} ${currency}`;
 
 		if (total < 0)
-			id('incomes-expenses-total').innerText = `- ${getReadableNumber( (Math.abs(total)).toFixed(2) )} ${currency}`;
+			id('incomes-expenses-total').innerText = `- ${getReadableNumber( Number((Math.abs(total)).toFixed(2)) )} ${currency}`;
 		else
-			id('incomes-expenses-total').innerText = `+ ${getReadableNumber(total.toFixed(2))} ${currency}`;
+			id('incomes-expenses-total').innerText = `+ ${getReadableNumber( Number(total.toFixed(2)) )} ${currency}`;
 		
 		titles[0].style.opacity = '1';
 		titles[1].style.opacity = '1';
@@ -3141,18 +3636,32 @@ function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent
 
 
 
-function calculateInnerScale (parent, child) {
+/**
+ * Calculates the inner scale based on the parent and child elements.
+ *
+ * @param {HTMLElement} parent - The parent element.
+ * @param {HTMLElement} child - The child element.
+ *
+ * @returns {number} The calculated inner scale.
+ */
+function calculateInnerScale(parent, child) {
 	return ( (parent.clientWidth - ((parseInt(window.getComputedStyle(parent).paddingLeft)) * 2)) / child.clientWidth );
 }
 
-function fitPieChartSize () {
+/**
+ * Fits the size of the pie chart based on the inner scale.
+ */
+function fitPieChartSize() {
 
 	let scaleX = calculateInnerScale(id('pie-chart-cont'), id('pie-chart'));
-	id('pie-chart').setAttribute('scaleX', scaleX);
+	id('pie-chart').setAttribute('scaleX', scaleX.toString());
 	id('pie-chart').style.transform = `scale(${scaleX})`;
 }
 
-function updatePieChart () {
+/**
+ * Updates the pie chart.
+ */
+function updatePieChart() {
 	
 	id('pie-chart').style.transform = `scale(0)`;
 	let scaleX = id('pie-chart').getAttribute('scaleX');
@@ -3164,7 +3673,10 @@ function updatePieChart () {
 	}, 350);
 }
 
-function uploadDataToPieChart () {
+/**
+ * Uploads data to the pie chart.
+ */
+function uploadDataToPieChart() {
 
 	let results = getCategoriesStats();
 
@@ -3182,7 +3694,12 @@ function uploadDataToPieChart () {
 	uploadAmountToPieChart();
 }
 
-function getCategoriesStats () {
+/**
+ * Retrieves categories statistics based on the selected type and account.
+ *
+ * @returns {Array} Array containing the statistics for each category.
+ */
+function getCategoriesStats() {
 
 	let account = id('accounts').getAttribute('data-accountnum'),
 		type = id('history-type-nav').getAttribute('data-history-type');
@@ -3191,7 +3708,14 @@ function getCategoriesStats () {
 	return getCategoriesStatsByCustomPeriod(type, account, getArrayForStatsResults(type));
 }
 
-function getArrayForStatsResults (type) {
+/**
+ * Generates an array to store the statistics results for each category.
+ *
+ * @param {string} type - The type of history ('+' for income, '-' for expense).
+ *
+ * @returns {Array} The array for storing statistics results.
+ */
+function getArrayForStatsResults(type) {
 	let results,
 		theme = localStorage.getItem('T');
 
@@ -3257,7 +3781,16 @@ function getArrayForStatsResults (type) {
 	return results;
 }
 
-function getCategoriesStatsByCustomPeriod (type, account, results) {
+/**
+ * Retrieves category statistics for the custom period based on type and account.
+ *
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ * @param {Array} results - The array to store the category statistics.
+ *
+ * @returns {Array} The updated array of category statistics.
+ */
+function getCategoriesStatsByCustomPeriod(type, account, results) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
@@ -3283,7 +3816,14 @@ function getCategoriesStatsByCustomPeriod (type, account, results) {
 	return results;
 }
 
-function uploadCategoriesToDetailPieChartPreview (type, account, results) {
+/**
+ * Uploads categories to the detailed pie chart preview along with their details.
+ *
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ * @param {Array} results - The array of category statistics.
+ */
+function uploadCategoriesToDetailPieChartPreview(type, account, results) {
 
 	id('pie-chart-categories-details').innerHTML = null;
 
@@ -3297,21 +3837,32 @@ function uploadCategoriesToDetailPieChartPreview (type, account, results) {
 		id('pie-chart-categories-details').classList.remove('hide');
 }
 
-function uploadCategoryToDetailPieChartPreview (unit_num, amount, color, type, account) {
+/**
+ * Uploads a single category to the detailed pie chart preview.
+ *
+ * @param {number} unitNum - The category unit number.
+ * @param {number} amount - The total amount for the category.
+ * @param {string} color - The color associated with the category.
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ */
+function uploadCategoryToDetailPieChartPreview(
+	unitNum, amount, color, type, account
+) {
 	let el;
 	
 	if (type === '-')
 		el = constructCategoryPreviewEl(
-			CATEGORY_EXPENSE_ICONS[unit_num],
-			categories_expense_titles[unit_num],
-			unit_num, type, amount,
+			CATEGORY_EXPENSE_ICONS[unitNum],
+			categories_expense_titles[unitNum],
+			unitNum, type, amount,
 			localStorage.getItem(`ACurrency${account}`)
 		);
 	else if (type === '+')
 		el = constructCategoryPreviewEl(
-			CATEGORY_INCOME_ICONS[unit_num],
-			categories_income_titles[unit_num],
-			unit_num, type, amount,
+			CATEGORY_INCOME_ICONS[unitNum],
+			categories_income_titles[unitNum],
+			unitNum, type, amount,
 			localStorage.getItem(`ACurrency${account}`)
 		);
 
@@ -3320,21 +3871,38 @@ function uploadCategoryToDetailPieChartPreview (unit_num, amount, color, type, a
 	id('pie-chart-categories-details').lastElementChild.style.borderRight = `4px solid ${color}`;
 }
 
-function constructCategoryPreviewEl (icon, title, category_num, type, amount, account_currency) {
-	return `<div class="category-details" data-categorynum="${category_num}">
+/**
+ * Constructs HTML code for a category preview element.
+ *
+ * @param {string} icon - The icon for the category.
+ * @param {string} title - The title of the category.
+ * @param {number} categoryNum - The category number.
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {number} amount - The total amount for the category.
+ * @param {string} accountCurrency - The currency associated with the account.
+ *
+ * @returns {string} The HTML code for the category preview element.
+ */
+function constructCategoryPreviewEl(
+	icon, title, categoryNum, type, amount, accountCurrency
+) {
+	return `<div class="category-details" data-categorynum="${categoryNum}">
 				<div class="category">
 					<div>${icon}</div>
 					<h3>${title}</h3>
 				</div>
 				<div class="category-amount">
 					<h3>${type}</h3>
-					<h3>${getReadableNumber( amount.toFixed(2) )}</h3>
-					<h3>${account_currency}</h3>
+					<h3>${getReadableNumber( Number(amount.toFixed(2)) )}</h3>
+					<h3>${accountCurrency}</h3>
 				</div>
 			</div>`;
 }
 
-function setUpClickOnDetailCategoriesPreview () {
+/**
+ * Sets up click functionality for detailed categories preview.
+ */
+function setUpClickOnDetailCategoriesPreview() {
 
 	for (let el of id('pie-chart-categories-details').getElementsByClassName('category-details')) {
 		el.onclick = function() {
@@ -3360,7 +3928,13 @@ function setUpClickOnDetailCategoriesPreview () {
 	}
 }
 
-function uploadSubcategoriesToDetailCategoryPreview (category_num, container) {
+/**
+ * Uploads subcategories to the detailed category preview.
+ *
+ * @param {number} categoryNum - The category number.
+ * @param {HTMLElement} container - The container for subcategories.
+ */
+function uploadSubcategoriesToDetailCategoryPreview(categoryNum, container) {
 
 	let account = id('accounts').getAttribute('data-accountnum'),
 		type = id('history-type-nav').getAttribute('data-history-type');
@@ -3370,21 +3944,26 @@ function uploadSubcategoriesToDetailCategoryPreview (category_num, container) {
 	
 	results = getSubcategoriesStatsByCustomPeriod(type, account, results);
 	
-	for (let a = 0; results[category_num][a]; a++)
-		if (results[category_num][a].total !== 0) {
+	for (let a = 0; results[categoryNum][a]; a++)
+		if (results[categoryNum][a].total !== 0) {
 			container.insertAdjacentHTML(
 				'beforeend',
 				constructCategoryPreviewEl(
-					SUBCATEGORY_ICONS[category_num][a],
-					subcategories_titles[category_num][a],
-					a, '-', results[category_num][a].total,
+					SUBCATEGORY_ICONS[categoryNum][a],
+					subcategories_titles[categoryNum][a],
+					a, '-', results[categoryNum][a].total,
 					localStorage.getItem(`ACurrency${id('accounts').getAttribute('data-accountnum')}`)
 				)
 			);
 		}
 }
 
-function getArrayForSubcategoriesStatsResult () {
+/**
+ * Gets an array initialized with objects for subcategory statistics results.
+ *
+ * @returns {Array} An array of objects for subcategory statistics results.
+ */
+function getArrayForSubcategoriesStatsResult() {
 	return ([
 		/* 1 */
 		[ {total: 0}, {total: 0}, {total: 0} ],
@@ -3412,7 +3991,15 @@ function getArrayForSubcategoriesStatsResult () {
 	]);
 }
 
-function getSubcategoriesStatsByCustomPeriod (type, account, results) {
+/**
+ * Retrieves subcategory statistics for the custom period based on type and account.
+ *
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ * @param {Array} results - The array to store the subcategory statistics.
+ * @returns {Array} The updated array of subcategory statistics.
+ */
+function getSubcategoriesStatsByCustomPeriod(type, account, results) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
@@ -3442,7 +4029,12 @@ function getSubcategoriesStatsByCustomPeriod (type, account, results) {
 	return results;
 }
 
-function drawPieChart (results) {
+/**
+ * Draws the pie chart on the canvas based on the provided results.
+ *
+ * @param {Array} results - The array of category statistics.
+ */
+function drawPieChart(results) {
 
 	let ctx = id('pie-chart').getContext('2d');
 	ctx.clearRect(0, 0, id('pie-chart').width, id('pie-chart').height);
@@ -3467,7 +4059,10 @@ function drawPieChart (results) {
 		results[a].total = 0;
 }
 
-function uploadAmountToPieChart () {
+/**
+ * Uploads the total amount to the pie chart based on the selected history type.
+ */
+function uploadAmountToPieChart() {
 
 	let type = id('history-type-nav').getAttribute('data-history-type');
 	if (type === 'all') type = '-';
@@ -3487,7 +4082,10 @@ function uploadAmountToPieChart () {
 
 
 
-function placeDateFilterMenu () {
+/**
+ * Places the date filter menu to the right side of the screen.
+ */
+function placeDateFilterMenu() {
 	let x = window.innerWidth - id('date-filter-menu-cont').getBoundingClientRect().left;
 	id('date-filter-menu-cont').style.transform = `translateX(calc(${x}px + 10vw))`;
 }
@@ -3495,7 +4093,10 @@ function placeDateFilterMenu () {
 
 
 
-function fixCurrentWidthOfElements () {
+/**
+ * Fixes the current width of elements after a short delay.
+ */
+function fixCurrentWidthOfElements() {
 	setTimeout(() => {
 		let holding_el = freezeWidthOfEl(id('enable-history-scroll-button'));
 		updateWidthOfEl(id('enable-history-scroll-button'), holding_el);
@@ -3509,14 +4110,34 @@ function fixCurrentWidthOfElements () {
 
 
 
-function calculateScaleX (clickEl, windowEl_cont) {
-	return ( clickEl.offsetWidth / ( windowEl_cont.lastElementChild.offsetWidth ) );
+/**
+ * Calculates the scaleX value for a floating window based on the click element and the window container.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ *
+ * @returns {number} The calculated scaleX value.
+ */
+function calculateScaleX(clickEl, windowElCont) {
+	return ( clickEl.offsetWidth / ( windowElCont.lastElementChild.offsetWidth ) );
 }
 
-function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
+/**
+ * Opens a floating window with a scaling animation.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ * @param {number} scaleX - The scaleX value for the scaling transformation.
+ *
+ * @returns {object} The top position coordinates.
+ */
+function openFloatingWindow(
+	clickEl, windowElCont, windowEl, scaleX
+) {
 	let transition = `opacity .4s, transform .4s .03s`;
 	
-	windowEl_cont.classList.add('floating-window-cont-visible');
+	windowElCont.classList.add('floating-window-cont-visible');
 	
 	clickEl.style.transition = transition;
 	let windowEl_full_height = windowEl.clientHeight;
@@ -3536,7 +4157,7 @@ function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
 
 	setTimeout(() => {
 		windowEl.style.transition = transition;
-		windowEl_cont.classList.add('floating-window-cont-darker');
+		windowElCont.classList.add('floating-window-cont-darker');
 
 		clickEl.style.opacity = '0';
 		clickEl.style.transform = `scale(${Math.min(1 / scaleX, 1 / scaleY)}) translate(${clickEl_position_X}px, ${clickEl_position_Y}px)`;
@@ -3545,17 +4166,24 @@ function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
 	return top_position;
 }
 
-function closeFloatingWindow (clickEl, windowEl_cont, windowEl) {
+/**
+ * Closes a floating window with a scaling animation.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeFloatingWindow(clickEl, windowElCont, windowEl) {
 	
 	clickEl.style.transition = `opacity .5s, transform .4s`;
 	clickEl.style.opacity = '1';
 	clickEl.style.transform = 'scale(1) translateY(0px)';
 
 	windowEl.style.transition = `opacity .35s .15s, transform .4s`;
-	windowEl_cont.classList.remove('floating-window-cont-darker');
+	windowElCont.classList.remove('floating-window-cont-darker');
 	
 	setTimeout(() => {
-		windowEl_cont.classList.remove('floating-window-cont-visible');
+		windowElCont.classList.remove('floating-window-cont-visible');
 		windowEl.style.transform = 'translateY(0px) scale(1)';
 		windowEl.style.transition = 'all 0s';
 
@@ -3565,13 +4193,22 @@ function closeFloatingWindow (clickEl, windowEl_cont, windowEl) {
 	}, 390);
 }
 
-function changeFloatingWindowTransformation (clickEl, windowEl_cont, windowEl) {
+/**
+ * Changes the transformation of a floating window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ *
+ * @returns {string} The transition property value of the clicked element.
+ */
+function changeFloatingWindowTransformation(clickEl, windowElCont, windowEl) {
 
 	let clickEL_transition = clickEl.style.transition;
 	clickEl.style.transition = 'transform 0s';
 	clickEl.style.transform = 'scale(1) translateY(0px)';
 	
-	let scaleX = calculateScaleX(clickEl, windowEl_cont);
+	let scaleX = calculateScaleX(clickEl, windowElCont);
 	let scaleY = scaleX / ((windowEl.clientHeight * scaleX) / clickEl.clientHeight);
 	let top_position_X = windowEl.getAttribute('data-top-position-x');
 	let top_position_Y = windowEl.getAttribute('data-top-position-y');
@@ -3591,10 +4228,18 @@ function changeFloatingWindowTransformation (clickEl, windowEl_cont, windowEl) {
 	return clickEL_transition;
 }
 
-function reconnectFloatingWindow (previous_clickEl, clickEl, windowEl_cont, windowEl) {
+/**
+ * Reconnects a floating window by hiding the previous clicked element and updating the transformation.
+ *
+ * @param {HTMLElement} previousClickEl - The previously clicked element.
+ * @param {HTMLElement} clickEl - The current clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function reconnectFloatingWindow(previousClickEl, clickEl, windowElCont, windowEl) {
 
-	previous_clickEl.style.display = 'none';
-	let scaleX = calculateScaleX(clickEl, windowEl_cont);
+	previousClickEl.style.display = 'none';
+	let scaleX = calculateScaleX(clickEl, windowElCont);
 	let scaleY = scaleX / ((windowEl.clientHeight * scaleX) / clickEl.clientHeight);
 
 	let width_difference = windowEl.clientWidth - (windowEl.clientWidth * scaleX);
@@ -3605,29 +4250,42 @@ function reconnectFloatingWindow (previous_clickEl, clickEl, windowEl_cont, wind
 	windowEl.style.transform = `translate(${top_position_X}px, ${top_position_Y}px) scale(${scaleX}, ${scaleY})`;
 }
 
-function closeReconnectedFloatingWindow (windowEl_cont, windowEl) {
+/**
+ * Closes a reconnected floating window with a scaling animation.
+ *
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeReconnectedFloatingWindow(windowElCont, windowEl) {
 
   windowEl.style.transition = `opacity .35s .15s, transform .4s`;
-  windowEl_cont.classList.remove('floating-window-cont-darker');
+  windowElCont.classList.remove('floating-window-cont-darker');
   
   setTimeout(() => {
-    windowEl_cont.classList.remove('floating-window-cont-visible');
+    windowElCont.classList.remove('floating-window-cont-visible');
     windowEl.style.transform = 'translateY(0px) scale(1)';
     windowEl.style.transition = 'all 0s';
   }, 390);
 }
 
-function closeFloatingWindowByDisappearMethod (clickEl, windowEl_cont, windowEl) {
+/**
+ * Closes a floating window using the disappear method.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeFloatingWindowByDisappearMethod(clickEl, windowElCont, windowEl) {
 
 	clickEl.style.display = `none`;
 
 	windowEl.style.transition = `opacity .4s, transform .4s`;
 	windowEl.style.transform = `translateY(0px) scale(0.5)`;
 	windowEl.style.opacity = `0`;
-	windowEl_cont.classList.remove('floating-window-cont-darker');
+	windowElCont.classList.remove('floating-window-cont-darker');
 	
 	setTimeout(() => {
-		windowEl_cont.classList.remove('floating-window-cont-visible');
+		windowElCont.classList.remove('floating-window-cont-visible');
 		windowEl.style.transition = 'all 0s';
 
 		clickEl.style.transition = null;
@@ -3640,16 +4298,25 @@ function closeFloatingWindowByDisappearMethod (clickEl, windowEl_cont, windowEl)
 
 
 
-function showPopUpConnectedNotification (notification_command, notification_contEl, connected_window) {
+/**
+ * Displays a popup notification for a connected action.
+ *
+ * @param {string} notificationCommand - The notification command.
+ * @param {HTMLElement} notificationContEl - The container element for the notification.
+ * @param {HTMLElement} connectedWindow - The connected window element.
+ *
+ * @returns {number} The timeout ID for hiding the notification.
+ */
+function showPopUpConnectedNotification(notificationCommand, notificationContEl, connectedWindow) {
 
-	let notificationEl = notification_contEl.firstElementChild,
+	let notificationEl = notificationContEl.firstElementChild,
 		hide_popup_notification;
 
 	notificationEl.lastElementChild.firstElementChild.innerText =
 		getStrings(localStorage.getItem('L')).account_removing_message;
 
-	notification_contEl.style.top = (connected_window.getBoundingClientRect().top + 20) + 'px';
-	notification_contEl.classList.add('show');
+	notificationContEl.style.top = (connectedWindow.getBoundingClientRect().top + 20) + 'px';
+	notificationContEl.classList.add('show');
 
 	notificationEl.style.transform = `scale(1.02) translateY(calc(${-(notificationEl.clientHeight)}px - 46px))`;
 	
@@ -3658,37 +4325,48 @@ function showPopUpConnectedNotification (notification_command, notification_cont
 	}, 400);
 	
 	hide_popup_notification = setTimeout(() => {
-		hidePopUpConnectedNotificationAfterTimer (notification_contEl);
+		hidePopUpConnectedNotificationAfterTimer (notificationContEl);
 	}, 5000);
 
 	notificationEl.onclick = () => {
 		clearTimeout(hide_popup_notification);
-		hidePopUpConnectedNotificationAfterTimer(notification_contEl);
+		hidePopUpConnectedNotificationAfterTimer(notificationContEl);
 	}
 
 	return hide_popup_notification;
 }
 
-function hidePopUpConnectedNotificationAfterTimer (notification_contEl) {
-	let notificationEl = notification_contEl.firstElementChild;
+/**
+ * Hides the popup notification after a timer.
+ *
+ * @param {HTMLElement} notificationContEl - The container element for the notification.
+ */
+function hidePopUpConnectedNotificationAfterTimer(notificationContEl) {
+	let notificationEl = notificationContEl.firstElementChild;
 
 	notificationEl.style.transform = null;
 	
 	setTimeout(() => {
-		notification_contEl.classList.remove('show');
+		notificationContEl.classList.remove('show');
 		notificationEl.lastElementChild.firstElementChild.innerHTML = null;
 	}, 400);
 }
 
-function hidePopUpConnectedNotification (notification_contEl, hide_popup_notification) {
-	let notificationEl = notification_contEl.firstElementChild;
+/**
+ * Hides the popup notification.
+ *
+ * @param {HTMLElement} notificationContEl - The container element for the notification.
+ * @param {number} hidePopupNotification - The timeout ID for hiding the notification.
+ */
+function hidePopUpConnectedNotification(notificationContEl, hidePopupNotification) {
+	let notificationEl = notificationContEl.firstElementChild;
 
-	clearTimeout(hide_popup_notification);
+	clearTimeout(hidePopupNotification);
 	
 	notificationEl.style.opacity = 0;
 	
 	setTimeout(() => {
-		notification_contEl.classList.remove('show');
+		notificationContEl.classList.remove('show');
 		notificationEl.style = null;
 		notificationEl.lastElementChild.firstElementChild.innerHTML = null;
 	}, 400);
@@ -3698,12 +4376,18 @@ function hidePopUpConnectedNotification (notification_contEl, hide_popup_notific
 
 
 
-function openWindowBlock (windowEl_cont, windowEl) {
+/**
+ * Opens a window block with a dark overlay.
+ *
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function openWindowBlock(windowElCont, windowEl) {
 
-  windowEl_cont.classList.add('window-block-cont-visible');
+  windowElCont.classList.add('window-block-cont-visible');
 
   setTimeout(() => {
-    windowEl_cont.classList.add('window-block-cont-darker');
+    windowElCont.classList.add('window-block-cont-darker');
     
     setTimeout(() => {
       windowEl.classList.add('window-block-transform');
@@ -3711,14 +4395,20 @@ function openWindowBlock (windowEl_cont, windowEl) {
   }, 1);
 }
 
-function closeWindowBlock (windowEl_cont, windowEl) {
+/**
+ * Closes a window block.
+ *
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeWindowBlock(windowElCont, windowEl) {
 
 	windowEl.style = null;
 	windowEl.classList.remove('window-block-transform');
-	windowEl_cont.classList.remove('window-block-cont-darker');
+	windowElCont.classList.remove('window-block-cont-darker');
 
 	setTimeout(() => {
-		windowEl_cont.classList.remove('window-block-cont-visible');
+		windowElCont.classList.remove('window-block-cont-visible');
 	}, 300);
 }
 
@@ -3726,52 +4416,72 @@ function closeWindowBlock (windowEl_cont, windowEl) {
 
 
 
-function openWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, bubble_els_array) {
+/**
+ * Opens a window using a bubble queue method.
+ *
+ * @param {HTMLElement} clickEl - The click element.
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} closeButton - The close button element.
+ * @param {HTMLCollectionOf<HTMLElementTagNameMap[string]>} bubbleElsArray - The array of elements to show.
+ */
+function openWindowByBubbleQueueMethod(
+	clickEl, windowElCont, closeButton, bubbleElsArray
+) {
 
 	// hide click element
 	clickEl.style.transition = '.5s transform, .5s opacity';
 	clickEl.classList.add('bubble-hide');
 
 	// show elements' container 
-	windowEl_cont.classList.add('visible');
+	windowElCont.classList.add('visible');
 	
-	let len = bubble_els_array.length,
+	let len = bubbleElsArray.length,
 		delay = 80;
 	
 	// show elements one by one
 	for (let a = len; a > 0; a--) {
 		
 		setTimeout(() => {
-			bubble_els_array[a - 1].style.transition = '.15s transform, .15s opacity';
-			bubble_els_array[a - 1].classList.add('show');
+			bubbleElsArray[a - 1].style.transition = '.15s transform, .15s opacity';
+			bubbleElsArray[a - 1].classList.add('show');
 		}, delay * (len - a));
 
 		if (a === 1)
 			setTimeout(() => {
-				close_button.style.transition = '.15s transform, .15s opacity';
-				close_button.classList.add('show');
+				closeButton.style.transition = '.15s transform, .15s opacity';
+				closeButton.classList.add('show');
 			}, delay * len);
 	}
 }
 
-function closeWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, bubble_els_array) {
+/**
+ * Closes a window using a bubble queue method.
+ *
+ * @param {HTMLElement} clickEl - The click element.
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} closeButton - The close button element.
+ * @param {HTMLCollectionOf<HTMLElementTagNameMap[string]>} bubbleElsArray - The array of elements to hide.
+ */
+function closeWindowByBubbleQueueMethod(
+	clickEl, windowElCont, closeButton, bubbleElsArray
+) {
 
 	clickEl.style.transition = '.15s transform, .15s opacity';
 
-	let len = bubble_els_array.length,
+	let len = bubbleElsArray.length,
 		delay = 40;
 
 	// hide elements one by one
 	for (let a = len - 1; a >= 0; a--) {
 
 		if (a === len - 1) {
-			close_button.style.transition = '.15s transform, .15s opacity';
-			close_button.classList.remove('show');
+			closeButton.style.transition = '.15s transform, .15s opacity';
+			closeButton.classList.remove('show');
 		}
 		
 		setTimeout(() => {
-			bubble_els_array[a].style.transition = '.15s transform, .15s opacity';
-			bubble_els_array[a].classList.remove('show');
+			bubbleElsArray[a].style.transition = '.15s transform, .15s opacity';
+			bubbleElsArray[a].classList.remove('show');
 		}, delay * (len - a + 1));
 
 		if (a === 0) {
@@ -3781,7 +4491,7 @@ function closeWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, b
 			}, delay * len);
 			setTimeout(() => {
 				// hide elements' container 
-				windowEl_cont.classList.remove('visible');
+				windowElCont.classList.remove('visible');
 			}, delay * len);
 		}
 	}
@@ -3791,9 +4501,11 @@ function closeWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, b
 
 
 
-// set up clicks on accounts on top-bar
-let account_tap_time = (new Date()).getTime();
-function setUpClickOnAccountsInTopBar () {
+let accountTapTime = (new Date()).getTime();
+/**
+ * Sets up click event handling on accounts in the top bar.
+ */
+function setUpClickOnAccountsInTopBar() {
 
 	for (let account of id('accounts').getElementsByClassName('account')) {
 		account.onclick = function(e) {
@@ -3824,8 +4536,14 @@ function setUpClickOnAccountsInTopBar () {
 	updateWidgetsData(1, 0, 0, [1, 0], 0);
 }
 
-function listenDoubleClickOnAccount (account, event) {
-	let account_num = account.getAttribute('data-accountnum');
+/**
+ * Listens for double-clicks on an account.
+ *
+ * @param {HTMLElement} account - The account element.
+ * @param {Event} event - The click event.
+ */
+function listenDoubleClickOnAccount(account, event) {
+	let account_num = Number(account.getAttribute('data-accountnum'));
 
 	// prevent zoom by double tap
 	event.preventDefault();
@@ -3833,7 +4551,7 @@ function listenDoubleClickOnAccount (account, event) {
 	let tap_time = (new Date()).getTime();
 	
 	// if it was double tap
-	if (tap_time - account_tap_time < 400 && localStorage.getItem(`AWB${account_num}`) === "false") {
+	if (tap_time - accountTapTime < 400 && localStorage.getItem(`AWB${account_num}`) === "false") {
 		localStorage.setItem(
 			`AHB${account_num}`,
 			localStorage.getItem(`AHB${account_num}`) === "true" ? "false" : "true"
@@ -3841,18 +4559,19 @@ function listenDoubleClickOnAccount (account, event) {
 		updateAccountInfo(account, account_num, 'Balance');
 	}
 
-	account_tap_time = tap_time;
+	accountTapTime = tap_time;
 }
 
-// set up clicks on history period nav buttons
-const history_period_nav_buttons = id('history-period-nav').getElementsByTagName('div');
-
-for (let button of history_period_nav_buttons) {
+const HISTORY_PERIOD_NAV_BUTTONS = id('history-period-nav').getElementsByTagName('div');
+/**
+ * Handles the click event on history period navigation buttons.
+ */
+for (let button of HISTORY_PERIOD_NAV_BUTTONS) {
 	button.onclick = function() {
 
 		if ( !(button.classList.contains('active-input-cont')) ) {
 			// change active button
-			for (let button of history_period_nav_buttons)
+			for (let button of HISTORY_PERIOD_NAV_BUTTONS)
 				if (button === this) {
 					button.classList.add('active-input-cont');
 					uiState.date_range = getDateRangeEnumByNavPeriodButtonId(button.id);
@@ -3878,6 +4597,12 @@ for (let button of history_period_nav_buttons) {
 	}
 }
 
+/**
+ * Gets the date range enumeration based on the ID of the history period button.
+ *
+ * @param {string} id - The ID of the history period button.
+ * @returns {DATE_RANGE_ENUM} - The corresponding date range enumeration.
+ */
 function getDateRangeEnumByNavPeriodButtonId(id) {
 	if (id === "this-month-period") {
 		return DATE_RANGE_ENUM.this_month
@@ -3898,7 +4623,12 @@ for (let button of id('date-filter-other').getElementsByTagName('button')) {
 	}
 }
 
-function applyOtherDateToDateFieldsOfDateFilterMenu (button) {
+/**
+ * Applies other date filters to the date fields of the date filter menu.
+ *
+ * @param {HTMLElement} button - The button element representing the selected date filter.
+ */
+function applyOtherDateToDateFieldsOfDateFilterMenu(button) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	let border1 = new Date(), border2 = new Date();
@@ -3937,7 +4667,14 @@ function applyOtherDateToDateFieldsOfDateFilterMenu (button) {
 	inputs[1].value = getDateFormat(border2);
 }
 
-function getDateByMonday (date) {
+/**
+ * Gets the date by Monday for the given date.
+ *
+ * @param {Date} date - The input date.
+ *
+ * @returns {Date} - The date adjusted to the nearest Monday.
+ */
+function getDateByMonday(date) {
 
 	while (date.getDay() !== 1)
 		date.setDate(Number(date.getDate()) - 1);
@@ -3945,7 +4682,14 @@ function getDateByMonday (date) {
 	return date;
 }
 
-function getDateBySunday (date) {
+/**
+ * Gets the date by Sunday for the given date.
+ *
+ * @param {Date} date - The input date.
+ *
+ * @returns {Date} - The date adjusted to the nearest Sunday.
+ */
+function getDateBySunday(date) {
 
 	while (date.getDay() !== 0)
 		date.setDate(Number(date.getDate()) + 1);
@@ -3953,14 +4697,23 @@ function getDateBySunday (date) {
 	return date;
 }
 
+/**
+ * Handles the click event on month selection buttons in the date filter menu.
+ */
 for (let button of id('date-filter-months').getElementsByTagName('button')) {
 	button.onclick = function() {
 
 		let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
 		let border_year = (new Date(inputs[0].value)).getFullYear();
-		let border1 = getDateBorderByInput(59, 59, 23, 0, Number(button.getAttribute('data-num')) + 1, border_year);
-		let border2 = getDateBorderByInput(0, 0, 0, 1, button.getAttribute('data-num'), border_year);
+		let border1 = getDateBorderByInput(
+			59, 59, 23, 0,
+			Number(button.getAttribute('data-num')) + 1, border_year
+		);
+		let border2 = getDateBorderByInput(
+			0, 0, 0, 1,
+			Number(button.getAttribute('data-num')), border_year
+		);
 		
 		inputs[0].value = getDateFormat(border1);
 		inputs[1].value = getDateFormat(border2);
@@ -3968,7 +4721,21 @@ for (let button of id('date-filter-months').getElementsByTagName('button')) {
 	}
 }
 
-function getDateBorderByInput (seconds, minutes, hours, day, month, year) {
+/**
+ * Gets the date border based on input parameters.
+ *
+ * @param {number} seconds - The seconds component.
+ * @param {number} minutes - The minutes component.
+ * @param {number} hours - The hours component.
+ * @param {number} day - The day component.
+ * @param {number} month - The month component.
+ * @param {number} year - The year component.
+ *
+ * @returns {Date} - The constructed date object.
+ */
+function getDateBorderByInput(
+	seconds, minutes, hours, day, month, year
+) {
 	let date = new Date();
 	
 	date.setSeconds(seconds);
@@ -3982,7 +4749,9 @@ function getDateBorderByInput (seconds, minutes, hours, day, month, year) {
 
 // set up clicks on history type nav buttons
 const history_type_nav_buttons = id('history-type-nav').getElementsByTagName('div');
-
+/**
+ * Handles click events on history type navigation buttons.
+ */
 for (let button of history_type_nav_buttons) {
 	button.onclick = function() {
 
@@ -4008,7 +4777,9 @@ for (let button of history_type_nav_buttons) {
 
 
 const MAKE_RECORD_TYPE_BUTTONS = id('record-types').getElementsByTagName('div');
-
+/**
+ * Handles the click event on the "Make Record" button.
+ */
 id('make-record-button').onclick = () => {
 
 	let windowEl_cont = id('make-record-window-cont'),
@@ -4028,7 +4799,10 @@ id('make-record-button').onclick = () => {
 	}
 }
 
-function prepareMakeRecordWindow () {
+/**
+ * Prepares the "Make Record" window for opening by uploading data to fields.
+ */
+function prepareMakeRecordWindow() {
 	let account_num = id('accounts').getAttribute('data-accountnum');
 
 	// hide fields for transfer window and edit record window
@@ -4062,7 +4836,15 @@ function prepareMakeRecordWindow () {
 	id('make-record-save-button').value = getStrings(localStorage.getItem('L')).save_record;
 }
 
-function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field_name) {
+/**
+ * Uploads the category to the "Make Record" category field.
+ *
+ * @param {string} type - The type of the record.
+ * @param {HTMLElement} field - The category field.
+ * @param {HTMLElement} fieldIcon - The icon element in the category field.
+ * @param {HTMLElement} fieldName - The name element in the category field.
+ */
+function uploadCategoryToMakeRecordCategoryField(type, field, fieldIcon, fieldName) {
 
 	let category_num, subcategory_num,
 		record_num = Number(localStorage.getItem('RCount'));
@@ -4079,8 +4861,8 @@ function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field
 			field.setAttribute('data-categorynum', category_num);
 			field.setAttribute('data-subcategorynum', subcategory_num);
 
-			field_icon.innerHTML = SUBCATEGORY_ICONS[category_num][subcategory_num];
-			field_name.value = subcategories_titles[category_num][subcategory_num];
+			fieldIcon.innerHTML = SUBCATEGORY_ICONS[category_num][subcategory_num];
+			fieldName.value = subcategories_titles[category_num][subcategory_num];
 
 			return;
 
@@ -4092,8 +4874,8 @@ function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field
 			category_num = localStorage.getItem(`RC${num}`);
 			field.setAttribute('data-categorynum', category_num);
 
-			field_icon.innerHTML = CATEGORY_INCOME_ICONS[category_num];
-			field_name.value = categories_income_titles[category_num];
+			fieldIcon.innerHTML = CATEGORY_INCOME_ICONS[category_num];
+			fieldName.value = categories_income_titles[category_num];
 
 			return;
 		}
@@ -4106,21 +4888,24 @@ function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field
 		field.setAttribute('data-categorynum', category_num);
 		field.setAttribute('data-subcategorynum', subcategory_num);
 
-		field_icon.innerHTML = SUBCATEGORY_ICONS[category_num][subcategory_num];
-		field_name.value = subcategories_titles[category_num][subcategory_num];
+		fieldIcon.innerHTML = SUBCATEGORY_ICONS[category_num][subcategory_num];
+		fieldName.value = subcategories_titles[category_num][subcategory_num];
 
 	} else if (type === '+') {
 		
 		category_num = CATEGORY_INCOME_ICONS.length - 1;
 		field.setAttribute('data-categorynum', category_num);
 
-		field_icon.innerHTML = CATEGORY_INCOME_ICONS[category_num];
-		field_name.value = categories_income_titles[category_num];
+		fieldIcon.innerHTML = CATEGORY_INCOME_ICONS[category_num];
+		fieldName.value = categories_income_titles[category_num];
 
 	}
 }
 
-function resetMakeRecordWindowData () {
+/**
+ * Resets the data in the "Make Record" window data.
+ */
+function resetMakeRecordWindowData() {
 
 	// remove class to hide fields for transfer window and edit record window
 	if (id('make-record-window').classList.contains('make-record-status'))
@@ -4152,7 +4937,9 @@ function resetMakeRecordWindowData () {
 
 
 
-// set up clicks on make record types buttons
+/**
+ * Handles click events on record type buttons.
+ */
 for (let button of MAKE_RECORD_TYPE_BUTTONS) {
 	button.onclick = function() {
 		if (!button.classList.contains('active-input-cont')) {
@@ -4166,7 +4953,7 @@ for (let button of MAKE_RECORD_TYPE_BUTTONS) {
 					if (button.id !== 'record-type-transfer')
 						changeMakeRecordCategoryType_ExpenseOrIncome().then();
 					else if (button.id === 'record-type-transfer')
-						uploadDataDuringHidingWindow(prepareMakeTransferWindow, 0);
+						uploadDataDuringHidingWindow(prepareMakeTransferWindow, function(){});
 			
 				} else if (button.classList.contains('active-input-cont'))
 					button.classList.remove('active-input-cont');	
@@ -4176,7 +4963,10 @@ for (let button of MAKE_RECORD_TYPE_BUTTONS) {
   	}
 }
 
-async function changeMakeRecordCategoryType_ExpenseOrIncome () {
+/**
+ * Changes the category type for the "Make Record" window between Expense and Income.
+ */
+async function changeMakeRecordCategoryType_ExpenseOrIncome() {
 	let field = id('make-record-category');
 
 	// reset 'make transfer' window data and upload 'make record' window data
@@ -4195,7 +4985,13 @@ async function changeMakeRecordCategoryType_ExpenseOrIncome () {
 	await showFieldByHideSlideMethod(field);
 }
 
-function uploadDataDuringHidingWindow (passedFunction1, passedFunction2) {
+/**
+ * Uploads data while hiding the window.
+ *
+ * @param {function} passedFunction1 - The function to be executed before uploading.
+ * @param {function} passedFunction2 - The function to be executed after uploading.
+ */
+function uploadDataDuringHidingWindow(passedFunction1, passedFunction2) {
 	let window = id('make-record-window'),
 		el_transition = window.style.transition;
 
@@ -4213,7 +5009,12 @@ function uploadDataDuringHidingWindow (passedFunction1, passedFunction2) {
 	}, 200);
 }
 
-async function hideFieldByHideSlideMethod (field) {
+/**
+ * Hides a field using the hide slide method animation.
+ *
+ * @param {HTMLElement} field - The field to be hidden.
+ */
+async function hideFieldByHideSlideMethod(field) {
 
 	field.style.transition = '.2s transform, .2s opacity';
 	field.classList.add('category-button-changing-hide');
@@ -4221,7 +5022,12 @@ async function hideFieldByHideSlideMethod (field) {
 	await makeDelay(300);
 }
 
-async function showFieldByHideSlideMethod (field) {
+/**
+ * Shows a field using the hide slide method animation.
+ *
+ * @param {HTMLElement} field - The field to be shown.
+ */
+async function showFieldByHideSlideMethod(field) {
 
 	field.style.transition = 'transform 0s';
 	field.classList.remove('category-button-changing-hide');
@@ -4233,7 +5039,12 @@ async function showFieldByHideSlideMethod (field) {
 	field.classList.remove('category-type-changed-hide');
 }
 
-function getRecordTypeAsSing () {
+/**
+ * Gets the record type as a single character.
+ *
+ * @returns {string} - The record type as a single character: "-" for expense, "+" for income, "t" for transfer.
+ */
+function getRecordTypeAsSing() {
 
 	if (id('record-type-expense').classList.contains('active-input-cont'))
 		return ('-');
@@ -4245,10 +5056,13 @@ function getRecordTypeAsSing () {
 
 
 
-function prepareMakeTransferWindow () {
+/**
+ * Prepares the "Make Transfer" window data for opening.
+ */
+function prepareMakeTransferWindow() {
 
 	// upload account to 'transfer to account' field
-	uploadAnotherAccountToExactlyField(id('make-transfer-to-account'));
+	uploadAnotherAccountToExactlyField(id('make-transfer-to-account'), undefined);
 	
 	// hide fields of make record window and edit record window
 	id('make-record-window').classList.remove('make-record-status');
@@ -4265,7 +5079,10 @@ function prepareMakeTransferWindow () {
 	id('make-transfer-button').value = getStrings(localStorage.getItem('L')).make_transfer;
 }
 
-function setUpListenerToAdaptFinalAmountByRate () {
+/**
+ * Sets up listeners to adapt the final amount by rate.
+ */
+function setUpListenerToAdaptFinalAmountByRate() {
 	
 	id('make-record-amount').addEventListener('input', adaptFinalAmountByRate);
 	id('make-transfer-start-rate').addEventListener('input', adaptFinalAmountByRate);
@@ -4273,7 +5090,10 @@ function setUpListenerToAdaptFinalAmountByRate () {
 	id('make-transfer-final-amount').addEventListener('input', adaptStartRateByAmount);
 }
 
-function adaptFinalAmountByRate () {
+/**
+ * Adapts the final amount based on the rates.
+ */
+function adaptFinalAmountByRate() {
 
 	if (id('make-transfer-start-rate').value === 0 || id('make-transfer-final-rate').value === 0) {
 		id('make-transfer-final-amount').value = 0;	
@@ -4289,7 +5109,10 @@ function adaptFinalAmountByRate () {
 	adaptInputLengthExplicitly(id('make-transfer-final-amount'));
 }
 
-function adaptStartRateByAmount () {
+/**
+ * Adapts the start rate based on the amount.
+ */
+function adaptStartRateByAmount() {
 
 	if (
 		id('make-transfer-start-rate').value === 0 ||
@@ -4309,7 +5132,10 @@ function adaptStartRateByAmount () {
 	adaptInputLengthExplicitly(id('make-transfer-final-amount'));
 }
 
-function resetMakeTransferWindowData () {
+/**
+ * Resets the data in the "Make Transfer" window.
+ */
+function resetMakeTransferWindowData() {
 
 	// remove class to hide fields of make record window and edit record window
 	if (id('make-record-window').classList.contains('make-transfer-status'))
@@ -4328,14 +5154,28 @@ function resetMakeTransferWindowData () {
 
 
 
+/**
+ * Sets up a click event on the 'Make Record' account field.
+ * Initiates the process of changing the account or opening the account selection window.
+ */
 id('make-record-account').onclick = function() {
 	changeAccountOrOpenWindowToChoose(this).then();
 }
+/**
+ * Sets up a click event on the 'Transfer To Account' field in the 'Make Transfer' window.
+ * Initiates the process of changing the account or opening the account selection window.
+ */
 id('make-transfer-to-account').onclick = function() {
 	changeAccountOrOpenWindowToChoose(this).then();
 }
 
-async function changeAccountOrOpenWindowToChoose (clickEl) {
+/**
+ * Determines whether to change the account or open the account selection window based on the number of accounts.
+ * If there are only two accounts, directly changes the account; otherwise, opens the account selection window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the account change or selection.
+ */
+async function changeAccountOrOpenWindowToChoose(clickEl) {
 	let accounts_count = Number(localStorage.getItem('ACount'));
 
 	if (accounts_count === 2) {
@@ -4345,7 +5185,15 @@ async function changeAccountOrOpenWindowToChoose (clickEl) {
 		openChooseAccountWindow(clickEl);
 }
 
-async function uploadAnotherAccountToSameField (field, accounts_count) {
+/**
+ * Uploads another account to the same field and animates the change.
+ *
+ * @param {HTMLElement} field - The field to change the account.
+ * @param {number} accounts_count - The total number of accounts.
+ *
+ * @returns {Promise<number>} - A promise with the new account number.
+ */
+async function uploadAnotherAccountToSameField(field, accounts_count) {
 	
 	let account_num = Number(field.getAttribute('data-accountnum'));
 	account_num = account_num % accounts_count + 1;
@@ -4357,7 +5205,12 @@ async function uploadAnotherAccountToSameField (field, accounts_count) {
 	return account_num;
 }
 
-function openChooseAccountWindow (clickEl) {
+/**
+ * Opens the window for choosing an account.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the account selection window.
+ */
+function openChooseAccountWindow(clickEl) {
 
 	let windowEl_cont = id('accounts-window-cont'),
 		windowEl = id('accounts-window');
@@ -4384,38 +5237,51 @@ function openChooseAccountWindow (clickEl) {
 	}
 }
 
-function setUpChoosingAccount (clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up click events on account selection in the 'Choose Account' window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the account selection.
+ * @param {HTMLElement} windowElCont - The container of the account selection window.
+ * @param {HTMLElement} windowEl - The account selection window.
+ */
+function setUpChoosingAccount(clickEl, windowElCont, windowEl) {
 
 	for (let account of windowEl.getElementsByClassName('account')) {
 		account.onclick = function() {
 
-			let account_num = Number(account.getAttribute('data-accountnum')),
-				account_clickEl = clickEl.firstElementChild;
-			clickEl.setAttribute('data-accountnum', account_num);
+			let accountNum = Number(account.getAttribute('data-accountnum')),
+				accountClickEl = clickEl.firstElementChild;
+			clickEl.setAttribute('data-accountnum', accountNum.toString());
 
 			// upload chosen accounts data to change account button
-			account_clickEl.classList.add('account-block-animation');
-			account_clickEl.style.background = '#' + localStorage.getItem(`AColor${account_num}`);
-			checkAccountColor(account_clickEl);
-			account_clickEl.firstElementChild.innerText = localStorage.getItem(`ACurrency${account_num}`);
-			account_clickEl.lastElementChild.innerText = getAccountBalance(account_num);
+			accountClickEl.classList.add('account-block-animation');
+			accountClickEl.style.background = '#' + localStorage.getItem(`AColor${accountNum}`);
+			checkAccountColor(accountClickEl);
+			accountClickEl.firstElementChild.innerText = localStorage.getItem(`ACurrency${accountNum}`);
+			accountClickEl.lastElementChild.innerText = getAccountBalance(accountNum);
 
 			// animate closing 'choose account' window
-			let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);
+			let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 			setTimeout(() => {
 				clickEl.classList.remove('account-block-animation');
 				clickEl.style.transition = clickEL_transition;
-				closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+				closeFloatingWindow(clickEl, windowElCont, windowEl);
 			}, 1);
 			
 			// upload account to 'transfer to account' field other than chosen 'from account'
-			checkAccountInOtherFieldThanThisForRepeating(clickEl, account_num).then();
+			checkAccountInOtherFieldThanThisForRepeating(clickEl, accountNum).then();
 			
 		}
 	}
 }
 
-async function checkAccountInOtherFieldThanThisForRepeating (clickEl, chosenAccountNum) {
+/**
+ * Checks if the chosen account is already used in the other field, if so, updates the other field.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the check.
+ * @param {number} chosenAccountNum - The chosen account number.
+ */
+async function checkAccountInOtherFieldThanThisForRepeating(clickEl, chosenAccountNum) {
 
 	let fromAccountEl = id('make-record-account'),
 		toAccountEl = id('make-transfer-to-account');
@@ -4426,47 +5292,59 @@ async function checkAccountInOtherFieldThanThisForRepeating (clickEl, chosenAcco
 	) {
 		if (
 			clickEl === fromAccountEl &&
-			chosenAccountNum === toAccountEl.getAttribute('data-accountnum')
+			chosenAccountNum === Number(toAccountEl.getAttribute('data-accountnum'))
 		) {
 			await hideFieldByHideSlideMethod(toAccountEl);
-			uploadAnotherAccountToExactlyField(toAccountEl);
+			uploadAnotherAccountToExactlyField(toAccountEl, undefined);
 			await showFieldByHideSlideMethod(toAccountEl);
 		}
 			
 		else if (
 			clickEl === toAccountEl &&
-			chosenAccountNum === fromAccountEl.getAttribute('data-accountnum')
+			chosenAccountNum === Number(fromAccountEl.getAttribute('data-accountnum'))
 		) {
 			await hideFieldByHideSlideMethod(fromAccountEl);
-			uploadAnotherAccountToExactlyField(fromAccountEl);
+			uploadAnotherAccountToExactlyField(fromAccountEl, undefined);
 			await showFieldByHideSlideMethod(fromAccountEl);
 		}
 	}
 }
 
-function uploadAnotherAccountToExactlyField (field, accountNum) {
+/**
+ * Uploads another account to the specified field.
+ *
+ * @param {HTMLElement} field - The field to upload the new account.
+ * @param {number} accountNum - The new account number to upload.
+ */
+function uploadAnotherAccountToExactlyField(field, accountNum) {
 
 	// get chosen 'from account' number
 	if (!accountNum) {
-		if (field === id('make-record-account'))
+		if (field === id('make-record-account')) {
 			accountNum = Number(id('make-transfer-to-account').getAttribute('data-accountnum'));
-		else if (field === id('make-transfer-to-account'))
+		} else if (field === id('make-transfer-to-account')) {
 			accountNum = Number(id('make-record-account').getAttribute('data-accountnum'));
+		}
 
 		// define another account number
-		if ( accountNum + 1 <= Number(localStorage.getItem('ACount')) )
+		if ( accountNum + 1 <= Number(localStorage.getItem('ACount')) ) {
 			accountNum += 1;
-		else accountNum -= 1;
+		} else {
+			accountNum -= 1;
+		}
 	}
 
 	// upload account to passed field
 	field.innerHTML = constructAccountEl(accountNum);
-	field.setAttribute('data-accountnum', accountNum);
+	field.setAttribute('data-accountnum', accountNum.toString());
 }
 
 
 
 
+/**
+ * Sets up a click event on the 'Make Record' category field to open the category selection window.
+ */
 id('make-record-category').onclick = () => {
 	
 	let clickEl = id('make-record-category'),
@@ -4490,14 +5368,21 @@ id('make-record-category').onclick = () => {
 	setUpClickOnSubcategory(clickEl, windowElCont, windowEl, categories);
 }
 
-function openCategoryWindow (clickEl, windowEl_cont, windowEl) {
+/**
+ * Opens the category selection window and sets up the click event to close the window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the category selection window.
+ * @param {HTMLElement} windowElCont - The container of the category selection window.
+ * @param {HTMLElement} windowEl - The category selection window.
+ */
+function openCategoryWindow(clickEl, windowElCont, windowEl) {
 	
-	let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-	windowEl.setAttribute('data-top-position-x', top_position.x);
-	windowEl.setAttribute('data-top-position-y', top_position.y);
+	let topPosition = openFloatingWindow(clickEl, windowElCont, windowEl, calculateScaleX(clickEl, windowElCont));
+	windowEl.setAttribute('data-top-position-x', topPosition.x.toString());
+	windowEl.setAttribute('data-top-position-y', topPosition.y.toString());
 	
-	windowEl_cont.firstElementChild.onclick = () => {
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+	windowElCont.firstElementChild.onclick = () => {
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
 
 		if (id('subcategories-cont').classList.contains('subcategories-cont-visible'))
 			setTimeout(() => {
@@ -4506,18 +5391,27 @@ function openCategoryWindow (clickEl, windowEl_cont, windowEl) {
 	}
 }
 
-function resetCategoryWindowData (subcategories_els_arr) {
+/**
+ * Resets the data and visibility of the category selection window.
+ *
+ * @param {HTMLCollection} subcategoriesElsArr - The collection of subcategory elements.
+ */
+function resetCategoryWindowData(subcategoriesElsArr) {
 
 	id('categories-expense').classList.remove('categories-overflow');
 	id('subcategories-title').innerHTML = null;
 	id('subcategories-cont').classList.remove('subcategories-cont-visible');
-	subcategories_els_arr[id('subcategories').getAttribute('data-categorynum')].classList.remove('subcategory-cont-visible');
+	subcategoriesElsArr[id('subcategories').getAttribute('data-categorynum')].classList.remove('subcategory-cont-visible');
 }
 
 /**
+ * Sets up the click events on category selection to open the subcategory list.
  *
+ * @param {HTMLElement} categoriesBlock - The block containing category elements.
+ * @param {HTMLCollection} categories - The collection of category elements.
+ * @param {HTMLCollection} subcategories - The collection of subcategory elements.
  */
-function setUpOpeningSubcategoryList (categoriesBlock, categories, subcategories) {
+function setUpOpeningSubcategoryList(categoriesBlock, categories, subcategories) {
 	
 	for (let category of categories) {
 		category.onclick = function() {
@@ -4539,7 +5433,14 @@ function setUpOpeningSubcategoryList (categoriesBlock, categories, subcategories
 	}
 }
 
-function closeSubcategoriesWindow (categoriesBlock, subcategories, categoryId) {
+/**
+ * Closes the subcategories window, resets data, and hides the window.
+ *
+ * @param {HTMLElement} categoriesBlock - The block containing category elements.
+ * @param {HTMLCollection} subcategories - The collection of subcategory elements.
+ * @param {number} categoryId - The ID of the selected category.
+ */
+function closeSubcategoriesWindow(categoriesBlock, subcategories, categoryId) {
 
 	categoriesBlock.classList.remove('categories-overflow');
 	id('subcategories-cont').classList.remove('subcategories-cont-visible');
@@ -4558,7 +5459,7 @@ function closeSubcategoriesWindow (categoriesBlock, subcategories, categoryId) {
  * @param {HTMLElement} windowEl - Categories window html element.
  * @param {HTMLElement} categories - Categories in the categories window.
  */
-function setUpClickOnSubcategory (
+function setUpClickOnSubcategory(
 	clickEl, windowElCont, windowEl, categories
 ) {
   	for (let category of categories) {
@@ -4591,13 +5492,13 @@ function setUpClickOnSubcategory (
 
 /**
  * Change categories window target transformation and close it with animation. Then call resetCategoryWindowData()
- * function to reset subcategories window data.
+ * function toreset subcategories window data.
  *
  * @param {HTMLElement} clickEl - Category button field.
  * @param {HTMLElement} windowElCont - Categories window container.
  * @param {HTMLElement} windowEl - Categories window.
  */
-function closeCategoriesWindow (clickEl, windowElCont, windowEl) {
+function closeCategoriesWindow(clickEl, windowElCont, windowEl) {
 	
 	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 	
@@ -4616,6 +5517,10 @@ function closeCategoriesWindow (clickEl, windowElCont, windowEl) {
 
 
 
+/**
+ * Sets up a click event on the 'Save' button for making a record.
+ * Checks if the 'make-record-amount' field is not empty before saving the record.
+ */
 id('make-record-save-button').onclick = () => {
 	if (id('make-record-amount').value !== 0) {
 		onSaveRecordButton(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
@@ -4651,6 +5556,11 @@ function onSaveRecordButton(clickEl, windowEl_cont, windowEl) {
 	updateDataAfterClosingMakeRecordWindow();
 }
 
+/**
+ * Sets up a click event on the 'Transfer' button for making a transfer record.
+ * Checks if both 'make-record-amount' and 'make-transfer-final-amount' fields are not empty before saving the transfer.
+ * Animates an empty field error for each empty field.
+ */
 id('make-transfer-button').onclick = () => {
 	
 	if (id('make-record-amount').value !== 0 && id('make-transfer-final-amount').value !== 0) {
@@ -4672,7 +5582,7 @@ id('make-transfer-button').onclick = () => {
  * @param {HTMLElement} windowEl_cont - Make record window container HtmlElement.
  * @param {HTMLElement} windowEl - Make record window HtmlElement.
  */
-function saveTransfer (clickEl, windowEl_cont, windowEl) {
+function saveTransfer(clickEl, windowEl_cont, windowEl) {
 	let transfer = getStorageTransferRecordObject(),
 		accounts_cont = id('accounts'),
 		record_status = id('make-record-window').getAttribute('data-status');
@@ -4731,7 +5641,7 @@ class StorageDefaultRecord {
  *
  * @return {StorageDefaultRecord} - StorageDefaultRecord object with fill out data from the make record window.
  */
-function getStorageDefaultRecordObject () {
+function getStorageDefaultRecordObject() {
 
 	let record = new StorageDefaultRecord(
 		Number(id('make-record-window').getAttribute('data-recordnum')),
@@ -4787,7 +5697,7 @@ class StorageTransferRecord {
  *
  * @return {StorageTransferRecord} - StorageTransferRecord object with fill out data from the make record window.
  */
-function getStorageTransferRecordObject () {
+function getStorageTransferRecordObject() {
 
 	let transfer = new StorageTransferRecord(
 		Number(id('make-record-window').getAttribute('data-recordnum')),
@@ -4814,7 +5724,7 @@ function getStorageTransferRecordObject () {
  *
  * @param {StorageDefaultRecord} record - Record, to save data in the local storage.
  */
-function saveDefaultRecordToStorage (record) {
+function saveDefaultRecordToStorage(record) {
 
 	// save or delete note
 	if ((record.note).length !== 0) {
@@ -4837,7 +5747,7 @@ function saveDefaultRecordToStorage (record) {
  *
  * @param {StorageTransferRecord} transfer - Record, to save data in the local storage.
  */
-function saveTransferRecordToStorage (transfer) {
+function saveTransferRecordToStorage(transfer) {
 
 	// account, amount, rate, category (and subcategory)
 	localStorage.setItem(`RP${transfer.num}`, '-');
@@ -4865,7 +5775,7 @@ function saveTransferRecordToStorage (transfer) {
  *
  * @param {number} recordNum - Number of a record so the date of this record can be found in the local storage.
  */
-function saveRecordDateToStorage (recordNum) {
+function saveRecordDateToStorage(recordNum) {
 	let inputDate = id('make-record-date').value + '';
 	let storageDate =
 		inputDate.charAt(0) + inputDate.charAt(1) + inputDate.charAt(2) + inputDate.charAt(3) +
@@ -4891,7 +5801,7 @@ function saveRecordDateToStorage (recordNum) {
  * @param {number} recordAmount - New amount of this record.
  * @param {string} recordStatus - Status of this record - "new", "repeat" or "edit".
  */
-function updateStorageAccountBalance (
+function updateStorageAccountBalance(
 	recordNum, recordType, accountId, recordAmount, recordStatus
 ) {
 	let signNumber = Number(recordType + '1');
@@ -4919,7 +5829,7 @@ function updateStorageAccountBalance (
  * @param {number} accountId - ID of an account.
  * @param {number} amount - Amount of this record.
  */
-function updateStorageAccountBalance_EditedRecord (
+function updateStorageAccountBalance_EditedRecord(
 	recordNum, signNumber, accountId, amount
 ) {
 	let storageAccountId = Number(localStorage.getItem(`RA${recordNum}`));
@@ -4954,7 +5864,7 @@ function updateStorageAccountBalance_EditedRecord (
  * @param {number} accountId - ID of an account.
  * @param {number} amount - Amount of this record.
  */
-function updateStorageAccountBalance_EditedTransfer (
+function updateStorageAccountBalance_EditedTransfer(
 	recordNum, signNumber, accountId, amount
 ) {
 	let storageAccountId = Number(localStorage.getItem(`RA${recordNum}`));
@@ -4985,24 +5895,24 @@ function updateStorageAccountBalance_EditedTransfer (
 
 
 /**
- * Calls updateAllAccountInfo() function with passed accountId and for every data (color, balance and currency).
+ * Calls updateAllAccountInfo() function withpassed accountId and for every data (color, balance and currency).
  *
  * @param {number} accountId - Account ID.
  */
-function updateUIDataOfAccount (accountId) {
+function updateUIDataOfAccount(accountId) {
 	updateAllAccountInfo(accountId, ACCOUNT_INFO.currency);
 	updateAllAccountInfo(accountId, ACCOUNT_INFO.balance);
 	updateAllAccountInfo(accountId, ACCOUNT_INFO.color);
 }
 
 /**
- * Calls updateAccountInfoInCont() function with passed account info and accountId for all containers that contains
+ * Calls updateAccountInfoInCont() function withpassed account info and accountId for all containers that contains
  * accounts (top-bar container and container in settings).
  *
  * @param {number} accountId - Account ID.
  * @param {string} info - Account info (in ACCOUNT_INFO) that has to be changed.
  */
-function updateAllAccountInfo (accountId, info) {
+function updateAllAccountInfo(accountId, info) {
 	updateAccountInfoInCont(accountId, info, id('accounts'));
 	updateAccountInfoInCont(accountId, info, id('settings-category-window-content'));
 }
@@ -5014,7 +5924,7 @@ function updateAllAccountInfo (accountId, info) {
  * @param {string} info - Account info (in ACCOUNT_INFO) that has to be changed.
  * @param {HTMLElement} cont - Html container in which account info has to be changed.
  */
-function updateAccountInfoInCont (accountId, info, cont) {
+function updateAccountInfoInCont(accountId, info, cont) {
 	let accounts = cont.getElementsByClassName('account');
 
 	for (let account of accounts) {
@@ -5031,7 +5941,7 @@ function updateAccountInfoInCont (accountId, info, cont) {
  * @param {number} accountId - Account ID.
  * @param {string} info - Account information (in ACCOUNT_INFO) that has to be updated.
  */
-function updateAccountInfo (account, accountId, info) {
+function updateAccountInfo(account, accountId, info) {
 
 	if (info === ACCOUNT_INFO.currency) {
 
@@ -5060,7 +5970,7 @@ function updateAccountInfo (account, accountId, info) {
  * If passed account html element has black color, add account-dark-color class to it so if dark theme is applied,
  * its color will be inverted to the white one.
  */
-function checkAccountColor (account) {
+function checkAccountColor(account) {
 	let color = account.style.background;
 
 	if (color === 'rgb(5, 5, 5)' && !account.classList.contains('account-dark-color')) {
@@ -5080,7 +5990,9 @@ function checkAccountColor (account) {
  * @param {HTMLElement} windowElCont - Make record window container HtmlElement.
  * @param {HTMLElement} windowEl - Make record window HtmlElement.
  */
-function operateWidgetsAfterRecord (record, recordStatus, clickEl, windowElCont, windowEl) {
+function operateWidgetsAfterRecord(
+	record, recordStatus, clickEl, windowElCont, windowEl
+) {
 
 	if (recordStatus === 'new') {
 
@@ -5114,7 +6026,7 @@ function operateWidgetsAfterRecord (record, recordStatus, clickEl, windowElCont,
  * @param {HTMLElement} windowElCont - Make record window container HtmlElement.
  * @param {HTMLElement} windowEl - Make record window HtmlElement.
  */
-function operateWidgetsAfterTransfer (
+function operateWidgetsAfterTransfer(
 	record, recordStatus, clickEl, windowElCont, windowEl
 ) {
 	if (recordStatus === 'new') {
@@ -5152,7 +6064,7 @@ function operateWidgetsAfterTransfer (
 /**
  * Update data in every widget and reset data in make record fields.
  */
-function updateDataAfterClosingMakeRecordWindow () {
+function updateDataAfterClosingMakeRecordWindow() {
 
 	// update data in every widget
 	updateWidgetsData(0, 1, 1, [0, 0], 1);
@@ -5173,7 +6085,7 @@ function updateDataAfterClosingMakeRecordWindow () {
  * @param record_type - Type of record.
  * @param record_account - Account number saved in this record.
  */
-function updateHistoryForNewRecord (record_num, record_type, record_account) {
+function updateHistoryForNewRecord(record_num, record_type, record_account) {
 
 	// increase records count in storage
 	localStorage.setItem('RCount', record_num);
@@ -5183,7 +6095,9 @@ function updateHistoryForNewRecord (record_num, record_type, record_account) {
 	if (
 		(
 			id('history').firstElementChild &&
-			getRecordDateFormat( id('history').firstElementChild.getAttribute('data-recordnum') ) > getRecordDateFormat(record_num)
+			getRecordDateFormat(
+				 Number(id('history').firstElementChild.getAttribute('data-recordnum'))
+			) > getRecordDateFormat(record_num)
 		) ||
 		(history_type !== 'all' && record_type !== history_type) ||
 		id('accounts').getAttribute('data-accountnum') !== record_account
@@ -5212,9 +6126,9 @@ function updateHistoryForNewRecord (record_num, record_type, record_account) {
  *
  * @param record_num - Number of a record in local storage.
  * @param record_account - Account number saved in this record.
- * @param place - String to pass to insertAdjacentHtml function to define where to place new record.
+ * @param place - String to pass to insertAdjacentHtml function todefine where to place new record.
  */
-function addRecordToHistory (record_num, record_account, place) {
+function addRecordToHistory(record_num, record_account, place) {
 
 	let history_cont = id('history');
 	let recordEl = constructRecordEl(record_num, record_account);
@@ -5234,7 +6148,7 @@ function addRecordToHistory (record_num, record_account, place) {
  *
  * @return string - Returns record HtmlDomElement as string.
  */
-function constructRecordEl (record_num, record_account) {
+function constructRecordEl(record_num, record_account) {
 	
 	if ( !(localStorage.getItem(`RB${record_num}`)) || Number(localStorage.getItem(`RB${record_num}`)) !== 0 )
 		return getDefaultRecordEl(record_num, record_account);
@@ -5249,7 +6163,7 @@ function constructRecordEl (record_num, record_account) {
  *
  * @return string - Returns record HtmlDomElement as string.
  */
-function getDefaultRecordEl (record_num, record_account) {
+function getDefaultRecordEl(record_num, record_account) {
 	
 	let record_date = getRecordDate_DayMonth(record_num),
 		category_num = localStorage.getItem(`RC${record_num}`),
@@ -5278,7 +6192,11 @@ function getDefaultRecordEl (record_num, record_account) {
 			</div>
 			<div class="amount">
 				<h3>${localStorage.getItem('RP' + record_num)}</h3>
-				<h3>${getReadableNumber( Number(localStorage.getItem('RU' + record_num)).toFixed(2) )}</h3>
+				<h3>${getReadableNumber(
+					Number(
+						Number(localStorage.getItem('RU' + record_num)).toFixed(2)
+					)
+				)}</h3>
 				<h3>${localStorage.getItem('ACurrency' + record_account)}</h3>
 			</div>
 		</div>
@@ -5293,7 +6211,7 @@ function getDefaultRecordEl (record_num, record_account) {
  *
  * @return string - Returns record HtmlDomElement as string.
  */
-function getTransferRecordEl (record_num, record_account) {
+function getTransferRecordEl(record_num, record_account) {
 
 	let transfer_pair = getTransfersPairNums(record_num);
 	let record_date = getRecordDate_DayMonth(record_num),
@@ -5335,7 +6253,7 @@ function getTransferRecordEl (record_num, record_account) {
 			</div>
 			<div class="amount">
 				<h3>${localStorage.getItem('RP' + record_num)}</h3>
-				<h3>${getReadableNumber( Number(localStorage.getItem('RU' + record_num)).toFixed(2) )}</h3>
+				<h3>${getReadableNumber( Number(Number(localStorage.getItem('RU' + record_num)).toFixed(2)) )}</h3>
 				<h3>${localStorage.getItem('ACurrency' + record_account)}</h3>
 			</div>
 		</div>
@@ -5349,7 +6267,7 @@ function getTransferRecordEl (record_num, record_account) {
  *
  * @return string - Returns record HtmlDomElement as string.
  */
-function getRecordDate_DayMonth (record_num) {
+function getRecordDate_DayMonth(record_num) {
 	let storage_date = localStorage.getItem(`RD${record_num}`);
 
 	let day = storage_date.charAt(6) + storage_date.charAt(7),
@@ -5363,7 +6281,7 @@ function getRecordDate_DayMonth (record_num) {
  *
  * @param record - Record HtmlDomElement to run animation on.
  */
-function animateAddingRecord (record) {
+function animateAddingRecord(record) {
 
 	// .history has padding-block and gap set up on 15px, and small-hr has height 3px: 15 * 2 - 3 = 27
 	let margin_top = 27 + record.clientHeight;
@@ -5373,7 +6291,7 @@ function animateAddingRecord (record) {
 	setTimeout(() => {
 		record.style.transition = 'margin-top .4s .4s';
 		record.style.marginTop = '0px';
-		
+
 		setTimeout(() => {
 			record.style.transition = null;
 		}, 800);
@@ -5387,7 +6305,7 @@ function animateAddingRecord (record) {
  * @param record_num - Number of a record in local storage.
  * @param record - Record HtmlDomElement.
  */
-function updateHistoryForEditedRecord (record_num, record) {
+function updateHistoryForEditedRecord(record_num, record) {
 
 	updateRecordInHistory(record_num, record);
 
@@ -5418,7 +6336,7 @@ function updateHistoryForEditedRecord (record_num, record) {
  * @param record_num - Number of a record in local storage.
  * @param recordEl - Record HtmlDomElement.
  */
-function updateRecordInHistory (record_num, recordEl) {
+function updateRecordInHistory(record_num, recordEl) {
 
 	let record_date = getRecordDate_DayMonth(record_num),
 		category_num = localStorage.getItem(`RC${record_num}`),
@@ -5440,7 +6358,11 @@ function updateRecordInHistory (record_num, recordEl) {
 	// update category
 	updateRecordCategoryInHistory(record_num, recordEl, record_noteEl, icon, title);
 	// update amount
-	recordEl.lastElementChild.firstElementChild.nextElementSibling.innerHTML = getReadableNumber( Number(localStorage.getItem(`RU${record_num}`)).toFixed(2) );
+	recordEl.lastElementChild.firstElementChild.nextElementSibling.innerHTML = getReadableNumber(
+		Number(
+			Number(localStorage.getItem(`RU${record_num}`)).toFixed(2)
+		)
+	);
 	// update currency
 	recordEl.lastElementChild.lastElementChild.innerHTML = localStorage.getItem(`ACurrency${ localStorage.getItem('RA' + record_num) }`);
 }
@@ -5453,7 +6375,7 @@ function updateRecordInHistory (record_num, recordEl) {
  *
  * @return HtmlElement - Note html element of a record html element.
  */
-function updateRecordNoteInHistory (record_num, recordEl) {
+function updateRecordNoteInHistory(record_num, recordEl) {
 	let record_noteEl = null;
 		
 	if (recordEl.firstElementChild.nextElementSibling.className === 'note')
@@ -5475,7 +6397,7 @@ function updateRecordNoteInHistory (record_num, recordEl) {
  * @param icon - Category svg icon.
  * @param name - Category name.
  */
-function updateRecordCategoryInHistory (record_num, recordEl, record_noteEl, icon, name) {
+function updateRecordCategoryInHistory(record_num, recordEl, record_noteEl, icon, name) {
 	
 	let categoryEl;
 	if (record_noteEl != null) categoryEl = record_noteEl.nextElementSibling;
@@ -5492,10 +6414,10 @@ function updateRecordCategoryInHistory (record_num, recordEl, record_noteEl, ico
  *
  * @param record_num - Number of a record in local storage.
  *
- * @return number - Based on a record order number passed to this function return new number if the order was changed
+ * @return number - Based on a record order number passed to this function returnnew number if the order was changed
  * and the same number if the order was kept.
  */
-function checkRecordsOrderByDate (record_num) {
+function checkRecordsOrderByDate(record_num) {
 
 	for (;
 		localStorage.getItem(`RD${record_num - 1}`) &&
@@ -5520,7 +6442,7 @@ function checkRecordsOrderByDate (record_num) {
  * @param a - Number of the first record.
  * @param b - Number of the second record.
  */
-function swapRecords (a, b) {
+function swapRecords(a, b) {
 
 	let arr = [
 		// tyPe, amoUnt, Account, Category
@@ -5550,7 +6472,7 @@ function swapRecords (a, b) {
  * @param a - Number of the first record.
  * @param b - Number of the second record.
  */
-function swapRecordsPartsByArray (arr, a, b) {
+function swapRecordsPartsByArray(arr, a, b) {
 
 	for (let i = 0; i < arr.length; i++) {
 		if (localStorage.getItem(`R${arr[i]}${a}`) && localStorage.getItem(`R${arr[i]}${b}`)) {
@@ -5579,7 +6501,7 @@ function swapRecordsPartsByArray (arr, a, b) {
 
 
 
-const settings_categories = id('settings-categories').getElementsByTagName('div');
+const SETTINGS_CATEGORIES = id('settings-categories').getElementsByTagName('div');
 
 id('settings-button-cont-mobile').onclick = function() {
 	openSettings(this);
@@ -5588,7 +6510,12 @@ id('settings-button-desktop').onclick = function() {
 	openSettings(this);
 }
 
-function openSettings (clickEl) {
+/**
+ * Open the settings modal for user configuration triggered by a click event on the specified element.
+ *
+ * @param {HTMLElement} clickEl - The HTML element triggering the settings modal.
+ */
+function openSettings(clickEl) {
 
 	let windowEl_cont = id('settings-cont'),
 		close_button = windowEl_cont.lastElementChild.lastElementChild;
@@ -5610,7 +6537,7 @@ function openSettings (clickEl) {
 }
 
 // set up click on settings categories
-for (let category of settings_categories) {
+for (let category of SETTINGS_CATEGORIES) {
 	category.onclick = function() {
 		
 		// open settings category window
@@ -5633,11 +6560,18 @@ for (let category of settings_categories) {
 	}
 }
 
-function prepareSettingsCategoryWindow (windowEl_cont, category, clickEl) {
+/**
+ * Prepares the settings category window with content based on the selected category.
+ *
+ * @param {HTMLElement} windowElCont - The container for the settings category window.
+ * @param {string} category - The selected category.
+ * @param {HTMLElement} clickEl - The HTML element triggering the settings category window.
+ */
+function prepareSettingsCategoryWindow(windowElCont, category, clickEl) {
 	let content_cont = id('settings-category-window-content');
 	let button_cont = id('settings-category-window-button');
 
-	windowEl_cont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.lastElementChild.innerText;
+	windowElCont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.lastElementChild.innerText;
 
 	if (category === 'Links') uploadSettingsCategoryData_Links(content_cont, button_cont);
 	else if (category === 'Reset data') uploadSettingsCategoryData_Reset(content_cont, button_cont);
@@ -5647,7 +6581,10 @@ function prepareSettingsCategoryWindow (windowEl_cont, category, clickEl) {
 	else if (category === 'Accounts') uploadSettingsCategoryData_Accounts(content_cont, button_cont);
 }
 
-function closeSettingsCategoryWindow () {
+/**
+ * Closes the settings category window, clearing its content.
+ */
+function closeSettingsCategoryWindow() {
 
 	closeWindowBlock(id('settings-category-window-cont'), id('settings-category-window-cont').lastElementChild);
 
@@ -5660,27 +6597,40 @@ function closeSettingsCategoryWindow () {
 
 
 
+/* Links */
+/**
+ * Uploads content for the 'Links' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Links' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Links' category.
+ */
+function uploadSettingsCategoryData_Links(contentCont, buttonCont) {
 
-// links - settings category content
-function uploadSettingsCategoryData_Links (content_cont, button_cont) {
-
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 	`erwineldermail@gmail.com`
 	);
-	button_cont.classList.add('button-block-hide');
+	buttonCont.classList.add('button-block-hide');
 }
 
-// reset data - settings category content
-function uploadSettingsCategoryData_Reset (content_cont, button_cont) {
+
+
+/* Reset data */
+/**
+ * Uploads content for the 'Reset data' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Reset data' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Reset data' category.
+ */
+function uploadSettingsCategoryData_Reset(contentCont, buttonCont) {
 	let lang = localStorage.getItem('L');
 	
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 		`<p class="description">
 			${getStrings(lang).reset_data_message}
 		</p>
 		<input type="button" value="" class="clickable-button" id="reset-data-button">`
 	);
-	button_cont.classList.add('button-block-hide');
+	buttonCont.classList.add('button-block-hide');
 	id('reset-data-button').value = getStrings(lang).reset_data;
 
 	id('reset-data-button').onclick = () => {
@@ -5693,11 +6643,17 @@ function uploadSettingsCategoryData_Reset (content_cont, button_cont) {
 
 
 
-// language - settings category content
-function uploadSettingsCategoryData_Language (content_cont, button_cont) {
+/* Language */
+/**
+ * Uploads content for the 'Language' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Language' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Language' category.
+ */
+function uploadSettingsCategoryData_Language(contentCont, buttonCont) {
 	let lang = localStorage.getItem('L');
 
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 		`<p class="description">
 			${getStrings(lang).language_setting_description}
 		</p>
@@ -5717,29 +6673,39 @@ function uploadSettingsCategoryData_Language (content_cont, button_cont) {
 			<input type="radio" name="radio-language" lang="ua">
 		</label>`
 	);
-	button_cont.insertAdjacentHTML('afterbegin',
+	buttonCont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
 		<input type="button" value="Save" class="clickable-button" id="save-language-button">`	
 	);
 
-	uploadChosenLanguageToChangeLanguageWindow(content_cont);
+	uploadSelectedLanguageToChangeLanguageWindow(contentCont);
 	id('save-language-button').setAttribute('lang', lang);
 	
 	setUpButtonsValue_Language(id('settings-category-window-cont'), lang);
-	setClickOnLanguageButtons(content_cont);
+	setClickOnLanguageButtons(contentCont);
 
-	setUpClickOnSaveLanguageButton(content_cont);
+	setUpClickOnSaveLanguageButton(contentCont);
 }
 
-function uploadChosenLanguageToChangeLanguageWindow (content_cont) {
+/**
+ * Uploads the selected language to the 'Change Language' window.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Language' category.
+ */
+function uploadSelectedLanguageToChangeLanguageWindow(contentCont) {
 	let lang = localStorage.getItem('L');
 
-	for (let el of content_cont.getElementsByTagName('input'))
+	for (let el of contentCont.getElementsByTagName('input'))
 		if (el.getAttribute('lang') === lang)
 			el.setAttribute('checked', '');
 }
 
-function setClickOnLanguageButtons (container) {
+/**
+ * Sets up click events on language buttons to update the selected language for saving.
+ *
+ * @param {HTMLElement} container - The container for the content in the 'Language' category.
+ */
+function setClickOnLanguageButtons(container) {
 
 	for (let button of container.getElementsByClassName('language-button'))
 		button.onclick = function() {
@@ -5747,7 +6713,13 @@ function setClickOnLanguageButtons (container) {
 		}
 }
 
-function setUpButtonsValue_Language (container, lang) {
+/**
+ * Sets up the text content for language buttons and the 'Save' button.
+ *
+ * @param {HTMLElement} container - The container for the content in the 'Language' category.
+ * @param {string} lang - The current language.
+ */
+function setUpButtonsValue_Language(container, lang) {
 	let els = container.getElementsByTagName('label');
 	els[0].insertAdjacentText('beforeend', getStrings(lang).english);
 	els[1].insertAdjacentText('beforeend', getStrings(lang).czech);
@@ -5758,14 +6730,19 @@ function setUpButtonsValue_Language (container, lang) {
 	id('save-language-button').value = getStrings(lang).save;
 }
 
-function setUpClickOnSaveLanguageButton (content_cont) {
+/**
+ * Sets up the click event for the 'Save' button in the 'Language' category.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Language' category.
+ */
+function setUpClickOnSaveLanguageButton(contentCont) {
 	let save_button = id('save-language-button'),
 		lang = localStorage.getItem('L'),
 		chosenLang = lang;
 
 	save_button.onclick = function() {
 
-		for (let el of content_cont.getElementsByTagName('input'))
+		for (let el of contentCont.getElementsByTagName('input'))
 			if (el.checked) chosenLang = el.getAttribute('lang');
 
 		if (chosenLang !== lang) {
@@ -5778,14 +6755,20 @@ function setUpClickOnSaveLanguageButton (content_cont) {
 
 
 
-// appearance - settings category content
-function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
+/* Appearance */
+/**
+ * Uploads content for the 'Appearance' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Appearance' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Appearance' category.
+ */
+function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 
 	let lang = localStorage.getItem('L'),
 		off_word = getStrings(lang).off_turn_off_meaning,
 		on_word = getStrings(lang).on_turn_on_meaning;
 	
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 		`<div class="switch-button-block">
 			<p class="description">
 				${getStrings(lang).enable_blurring}
@@ -5844,13 +6827,13 @@ function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
 			</div>
 		</div>`
 	);
-	button_cont.classList.add('button-block-hide');
+	buttonCont.classList.add('button-block-hide');
 	
-	let switch_buttons = content_cont.getElementsByClassName('switch');
+	let switch_buttons = contentCont.getElementsByClassName('switch');
 	// blurring
 	switch_buttons[0].firstElementChild.onclick = function() {
 		localStorage.setItem('B', Number(this.checked).toString());
-		reapplyBlur(Number(localStorage.getItem('B')));
+		reapplyBlur(localStorage.getItem('B') === "true");
 	}
 	// start animation
 	switch_buttons[1].firstElementChild.onclick = function() {
@@ -5862,23 +6845,36 @@ function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
 		applyTheme(localStorage.getItem('T'));
 	}
 	// set up click on themes
-	setUpClickOnThemes(content_cont, switch_buttons[2].firstElementChild);
+	setUpClickOnThemes(contentCont, switch_buttons[2].firstElementChild);
 }
 
-function getSwitchInput (checked) {
+/**
+ * Gets the HTML input element for the switch, either checked or unchecked.
+ *
+ * @param {number} checked - The value indicating whether the switch is checked.
+ *
+ * @returns {string} - The HTML code for the switch input.
+ */
+function getSwitchInput(checked) {
 	if (checked) return (`<input type="checkbox" checked>`);
 	else return (`<input type="checkbox">`);
 }
 
-function setUpClickOnThemes (container, switch_button) {
+/**
+ * Sets up the click event on theme elements within the 'Appearance' category.
+ *
+ * @param {HTMLElement} container - The container for the content in the 'Appearance' category.
+ * @param {HTMLInputElement} switchButton - The switch button for the 'Auto Adjust Theme' option.
+ */
+function setUpClickOnThemes(container, switchButton) {
 
 	for ( let el of container.lastElementChild.getElementsByClassName('theme-cont') )
 		el.onclick = () => {
 			if (el.getAttribute('theme') !== localStorage.getItem('T')) {
 
-				if (switch_button.checked) {
-					switch_button.checked = false;
-					changeAutomaticThemeStatusInStorage(switch_button);
+				if (switchButton.checked) {
+					switchButton.checked = false;
+					changeAutomaticThemeStatusInStorage(switchButton);
 				}
 
 				id('settings-category-window-cont').classList.add('dark');
@@ -5896,26 +6892,42 @@ function setUpClickOnThemes (container, switch_button) {
 		}
 }
 
-function changeAutomaticThemeStatusInStorage (switch_button) {
-	localStorage.setItem('TA', Number(switch_button.checked).toString());
+/**
+ * Changes the automatic theme status in the storage based on the switch button.
+ *
+ * @param {HTMLInputElement} switchButton - The switch button for the 'Auto Adjust Theme' option.
+ */
+function changeAutomaticThemeStatusInStorage(switchButton) {
+	localStorage.setItem('TA', Number(switchButton.checked).toString());
 }
 
-function changeTheme (theme) {
+/**
+ * Changes the theme in the storage and applies the theme.
+ *
+ * @param {string} theme - The theme identifier.
+ */
+function changeTheme(theme) {
 	localStorage.setItem('T', theme);
 	applyTheme(theme);
 }
 
 
 
-// top margin - settings category content
-function uploadSettingsCategoryData_Margin (content_cont, button_cont) {
+/* Top margin */
+/**
+ * Uploads content for the 'Top Margin' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Top Margin' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Top Margin' category.
+ */
+function uploadSettingsCategoryData_Margin(contentCont, buttonCont) {
 	let lang = localStorage.getItem('L');
 	
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 		`<p class="description">${getStrings(lang).top_margin_setting_description}</p>
 		<input topmargin="" type="range" class="top-margin-range interactive-field" id="top-margin-range" value="0" min="0" max="25" step="1">`
 	);
-	button_cont.insertAdjacentHTML('afterbegin',
+	buttonCont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
 		<input type="button" value="Save" class="clickable-button" id="top-margin-save-button">`
 	);
@@ -5933,7 +6945,10 @@ function uploadSettingsCategoryData_Margin (content_cont, button_cont) {
 	openTopMarginPreviewWindow();
 }
 
-function prepareTopMarginSettingsCategory () {
+/**
+ * Prepares the top margin settings category, including the preview window and range slider.
+ */
+function prepareTopMarginSettingsCategory() {
 	let preview_window = id('top-margin-preview-window');
 
 	// upload account to preview top margin window
@@ -5949,7 +6964,10 @@ function prepareTopMarginSettingsCategory () {
 	preview_window.firstElementChild.style.transform = `translateY(${Number(localStorage.getItem('TM'))}px)`;
 }
 
-function openTopMarginPreviewWindow () {
+/**
+ * Opens the top margin preview window with animation.
+ */
+function openTopMarginPreviewWindow() {
 
   id('top-margin-preview-window').classList.add('top-margin-preview-window-visible');
 
@@ -5958,51 +6976,77 @@ function openTopMarginPreviewWindow () {
   }, 300);
 }
 
-function closeTopMarginPreviewWindow () {
+/**
+ * Closes the top margin preview window with animation.
+ */
+function closeTopMarginPreviewWindow() {
   id('top-margin-preview-window').classList.remove('top-margin-preview-window-visible');
   id('top-margin-preview-window').classList.remove('top-margin-preview-window-transform');
 }
 
-function setUpListenerOnTopMarginRange () {
+/**
+ * Sets up an event listener on the top margin range slider.
+ */
+function setUpListenerOnTopMarginRange() {
   id('top-margin-range').addEventListener('input', readTopMarginRange);
   readTopMarginRange.call(id('top-margin-range'));
 }
-function readTopMarginRange () {
+
+/**
+ * Reads the value from the top margin range slider and updates the preview window accordingly.
+ */
+function readTopMarginRange() {
   id('top-margin-preview-window').firstElementChild.style.transform = `translateY(${Number(id('top-margin-range').value) * 2}px)`;
 }
 
 
 
-// accounts - settings category content
-function uploadSettingsCategoryData_Accounts (content_cont, button_cont) {
+/* Accounts */
+/**
+ * Uploads content for the 'Accounts' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Accounts' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Accounts' category.
+ */
+function uploadSettingsCategoryData_Accounts(contentCont, buttonCont) {
 
-	button_cont.insertAdjacentHTML('afterbegin',
+	buttonCont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
 		<input type="button" value="Add account" class="clickable-button" id="add-account">`	
 	);
 	id('add-account').value = getStrings(localStorage.getItem('L')).add_account;
 
-	uploadAccountsToSettingsWindow(content_cont);
+	uploadAccountsToSettingsWindow(contentCont);
 
-	for (let account of content_cont.getElementsByClassName('account'))
+	for (let account of contentCont.getElementsByClassName('account'))
 		setUpClickOnAccount(account);
 
-	setUpClickOnAddAccountButton(content_cont);
+	setUpClickOnAddAccountButton(contentCont);
 }
 
-function uploadAccountsToSettingsWindow (windowEl_cont) {
+/**
+ * Uploads accounts to the settings window.
+ *
+ * @param {HTMLElement} windowElCont - The container for the accounts in the settings window.
+ */
+function uploadAccountsToSettingsWindow(windowElCont) {
 
 	for (let account_num = 1; account_num <= localStorage.getItem('ACount'); account_num++)
-  		windowEl_cont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_num) );
+  		windowElCont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_num) );
 }
 
-function setUpClickOnAccount (account) {
+/**
+ * Sets up click events on account elements.
+ *
+ * @param {HTMLElement} account - The account element to set up click events for.
+ */
+function setUpClickOnAccount(account) {
 	account.onclick = function() {
 
 		let clickEl = this,
 			windowEl_cont = id('edit-account-cont'),
 			windowEl = id('edit-account');
-		let hide_popup_notification;
+		let hidePopupNotification;
 		
 		enableScrolling();
 
@@ -6021,7 +7065,7 @@ function setUpClickOnAccount (account) {
 			
 			// hide remove notification if needed
 			if (notification_cont.classList.contains('show'))
-				hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
+				hidePopUpConnectedNotification(notification_cont, hidePopupNotification);
 
 			disableScrolling();
 			closeFloatingWindow(clickEl, windowEl_cont, windowEl);
@@ -6029,16 +7073,21 @@ function setUpClickOnAccount (account) {
 		}
 
 		// set up click on remove account button
-		hide_popup_notification = setUpClickOnRemoveAccountButton(null, clickEl, windowEl_cont, windowEl);
+		hidePopupNotification = setUpClickOnRemoveAccountButton(clickEl, windowEl_cont, windowEl);
 
 		// set up click on save account button
-		setUpClickOnSaveAccountButton(hide_popup_notification, clickEl, windowEl_cont, windowEl);
+		setUpClickOnSaveAccountButton(hidePopupNotification, clickEl, windowEl_cont, windowEl);
 	}
 }
 
-function prepareEditAccountWindow (account_num) {
+/**
+ * Prepares the edit account window with data based on the account number.
+ *
+ * @param {number} accountNum - The account number.
+ */
+function prepareEditAccountWindow(accountNum) {
 
-	id('edit-account').setAttribute('data-accountnum', account_num);
+	id('edit-account').setAttribute('data-accountnum', accountNum.toString());
 
 	if (id('settings-category-window-cont').getElementsByClassName('account').length === 1) {
 		id('edit-account').classList.add('top-padding');
@@ -6046,38 +7095,46 @@ function prepareEditAccountWindow (account_num) {
 	}
 
 	// upload currency
-	id('edit-account-currency').value = localStorage.getItem(`ACurrency${account_num}`);
+	id('edit-account-currency').value = localStorage.getItem(`ACurrency${accountNum}`);
 	adaptInputLengthExplicitly(id('edit-account-currency'));
 	// upload balance
-	id('edit-account-balance').value = Number(localStorage.getItem(`ABalance${account_num}`)).toFixed(2);
+	id('edit-account-balance').value = Number(localStorage.getItem(`ABalance${accountNum}`)).toFixed(2);
 	adaptInputLengthExplicitly(id('edit-account-balance'));
 	// upload color
-	id('edit-account-color-button').style.background = '#' + localStorage.getItem(`AColor${account_num}`);
-	id('edit-account-color-button').setAttribute('color', localStorage.getItem(`AColor${account_num}`));
+	id('edit-account-color-button').style.background = '#' + localStorage.getItem(`AColor${accountNum}`);
+	id('edit-account-color-button').setAttribute('color', localStorage.getItem(`AColor${accountNum}`));
 	// check color if dark theme is on
 	checkColorOfEditAccountColorButton();
 
 	// upload status of 'hide account from top-bar'
-	if (localStorage.getItem(`AHT${account_num}`) === "true")
+	if (localStorage.getItem(`AHT${accountNum}`) === "true")
 		id('hide-account-from-top-bar-switch').checked = true;
 	// upload status of 'without account balance'
-	if (localStorage.getItem(`AWB${account_num}`) === "true")
+	if (localStorage.getItem(`AWB${accountNum}`) === "true")
 		id('without-account-balance-switch').checked = true;
 	// upload status of 'hide account balance'
-	if (localStorage.getItem(`AHB${account_num}`) === "true")
+	if (localStorage.getItem(`AHB${accountNum}`) === "true")
 		id('hide-account-balance-switch').checked = true;
 }
 
-id('without-account-balance-switch').onclick = function () {
-	if (this.checked)
+/**
+ * Sets up click events on the 'without account balance' and 'hide account balance' switch buttons.
+ */
+id('without-account-balance-switch').onclick = function() {
+	if (this.checked) {
 		id('hide-account-balance-switch').checked = false;
+	}
 }
-id('hide-account-balance-switch').onclick = function () {
-	if (this.checked)
+id('hide-account-balance-switch').onclick = function() {
+	if (this.checked) {
 		id('without-account-balance-switch').checked = false;
+	}
 }
 
-function checkColorOfEditAccountColorButton () {
+/**
+ * Checks the color of the edit account color button and adds or removes the 'invert-color' class accordingly.
+ */
+function checkColorOfEditAccountColorButton() {
 
 	if (
 		(localStorage.getItem('T') === 'b' || localStorage.getItem('T') === 'd') &&
@@ -6088,43 +7145,68 @@ function checkColorOfEditAccountColorButton () {
 		id('edit-account-color-button').classList.remove('invert-color');
 }
 
-function setUpClickOnRemoveAccountButton (hide_popup_notification, clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up click events on the 'remove account' button.
+ *
+ * @param {HTMLElement} clickEl - The element that was clicked.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ *
+ * @returns {number} - SetTimeout process id for hiding account deleting warning.
+ */
+function setUpClickOnRemoveAccountButton(
+	clickEl, windowElCont, windowEl
+) {
+	let hidePopupNotification;
+
 	id('remove-account').onclick = () => {
 		let notification_cont = id('popup-connected-notification-cont');
 
 		if (notification_cont.classList.contains('show')) {
-			// hide remove account notification
-			hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
-			// remove account
-			removeAccount(clickEl.getAttribute('data-accountnum'), clickEl, windowEl_cont, windowEl);
-			// reset edit account window data
+			hidePopUpConnectedNotification(notification_cont, hidePopupNotification);
+			removeAccount(
+				Number(clickEl.getAttribute('data-accountnum')), clickEl, windowElCont, windowEl
+			);
 			setTimeout(resetEditAccountWindow, 390);
-		} else
-			// show remove account notification
-			hide_popup_notification = showPopUpConnectedNotification(
+		} else {
+			hidePopupNotification = showPopUpConnectedNotification(
 				'remove account', notification_cont, windowEl
 			);
+		}
 
 	}
 
-	return hide_popup_notification;
+	return hidePopupNotification;
 }
 
-function setUpClickOnSaveAccountButton (hide_popup_notification, clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up click events on the 'save account' button.
+ *
+ * @param {number} hidePopupNotification - SetTimeout process id for hiding account deleting warning.
+ * @param {HTMLElement} clickEl - The element that was clicked.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ */
+function setUpClickOnSaveAccountButton(
+	hidePopupNotification, clickEl, windowElCont, windowEl
+) {
 	id('save-account').onclick = () => {
 		let notification_cont = id('popup-connected-notification-cont');
 
 		// hide remove notification if needed
 		if (notification_cont.classList.contains('show'))
-			hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
+			hidePopUpConnectedNotification(notification_cont, hidePopupNotification);
 		// save account data
-		saveEditedAccount(clickEl.getAttribute('data-accountnum'), clickEl, windowEl_cont, windowEl);
+		saveEditedAccount(Number(clickEl.getAttribute('data-accountnum')), clickEl, windowElCont, windowEl);
 		// reset edit account window data
 		setTimeout(resetEditAccountWindow, 390);
 	}
 }
 
-function resetEditAccountWindow () {
+/**
+ * Resets the edit account window to its initial state.
+ */
+function resetEditAccountWindow() {
 
 	// show 'remove account' button
 	if (id('edit-account').classList.contains('top-padding')) {
@@ -6139,7 +7221,12 @@ function resetEditAccountWindow () {
 	id('hide-account-balance-switch').checked = false;
 }
 
-function setUpClickOnAddAccountButton (content_cont) {
+/**
+ * Sets up click events on the 'Add account' button.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Accounts' category.
+ */
+function setUpClickOnAddAccountButton(contentCont) {
 
 	id('add-account').onclick = () => {
 
@@ -6149,20 +7236,27 @@ function setUpClickOnAddAccountButton (content_cont) {
 		uploadAccount(account_count, id('accounts'));
 		setUpClickOnAccountsInTopBar();
 
-		content_cont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_count) );
+		contentCont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_count) );
 
-		setUpClickOnAccount(content_cont.lastElementChild);
+		setUpClickOnAccount(contentCont.lastElementChild);
 
 		animateAddingAccount(
 			id('settings-category-window-cont').lastElementChild,
-			content_cont.lastElementChild,
+			contentCont.lastElementChild,
 			id('settings-category-window-cont').lastElementChild.lastElementChild
 		);
 
 	}
 }
 
-function animateAddingAccount (container, account, button_block) {
+/**
+ * Animates the addition of an account to the settings category window.
+ *
+ * @param {HTMLElement} container - The container for the accounts in the settings category window.
+ * @param {HTMLElement} account - The newly added account element.
+ * @param {HTMLElement} buttonBlock - The container for buttons in the settings category window.
+ */
+function animateAddingAccount(container, account, buttonBlock) {
 	let gap = account.getBoundingClientRect().top - account.previousElementSibling.getBoundingClientRect().top;
 	
 	container.style.transition = 'transform 0s';
@@ -6171,8 +7265,8 @@ function animateAddingAccount (container, account, button_block) {
 	account.style.transition = 'transform 0s';
 	account.style.transform = `translateY(${gap}px) scale(0)`;
 	
-	button_block.style.transition = 'transform 0s';
-	button_block.style.transform = `translateY(-${gap}px)`;
+	buttonBlock.style.transition = 'transform 0s';
+	buttonBlock.style.transform = `translateY(-${gap}px)`;
 	
 	setTimeout(() => {
 		container.style.transition = 'transform .3s';
@@ -6181,52 +7275,69 @@ function animateAddingAccount (container, account, button_block) {
 		account.style.transition = 'transform .3s';
 		account.style.transform = `translateY(0px) scale(1)`;
 		
-		button_block.style.transition = 'transform .3s';
-		button_block.style.transform = `translateY(0px)`;
+		buttonBlock.style.transition = 'transform .3s';
+		buttonBlock.style.transform = `translateY(0px)`;
 		
 		setTimeout(() => {
 			container.style = null;
 			account.style.transition = null;
-			button_block.style = null;
+			buttonBlock.style = null;
 		}, 300);
 	}, 1);
 }
 
-function getAccountInContByNum (cont, num) {
+/**
+ * Gets the account element in the container by its account number.
+ *
+ * @param {HTMLElement} cont - The container containing account elements.
+ * @param {number} num - The account number.
+ * @returns {HTMLElement} - The found account element.
+ */
+function getAccountInContByNum(cont, num) {
 	let searched_account;
 
 	for (let potential_account of cont.getElementsByClassName('account'))
-		if (potential_account.getAttribute('data-accountnum') === num) searched_account = potential_account;
+		if (Number(potential_account.getAttribute('data-accountnum')) === num) {
+			searched_account = potential_account;
+		}
 
 	return searched_account;
 }
 
-function removeAccount (account_num, clickEl, windowEl_cont, windowEl) {
+/**
+ * Removes an account from the settings and updates associated data.
+ *
+ * @param {number} accountNum - The account number to be removed.
+ * @param {HTMLElement} clickEl - The clicked account element.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ */
+function removeAccount(accountNum, clickEl, windowElCont, windowEl) {
 
 	// remove all storage records connected with this account
-	removeStorageRecordsOfAccount(account_num);
-	changeAccountNumInStorageRecords(account_num);
+	removeStorageRecordsOfAccount(accountNum);
+	decreaseAccountNumInStorageRecords(accountNum);
 		
 	// get this accounts
-	let account = getAccountInContByNum(id('settings-category-window-cont'), account_num);
+	let account = getAccountInContByNum(id('settings-category-window-cont'), accountNum);
 	
-	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);
+	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 	
 	setTimeout(() => {
 
 		// close edit account window
 		clickEl.classList.remove('account-block-animation');
 		clickEl.style.transition = clickEL_transition;
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
 		
 		// remove account
 		setTimeout(() => {
 			animateRemovingAccount(
 				id('settings-category-window-cont').lastElementChild,
-				account, account_num,
+				account, accountNum,
 				id('settings-category-window-cont').lastElementChild.lastElementChild
 			);
-			removeAccountFromStorage(account_num);
+			removeAccountFromStorage(accountNum);
 			
 			id('accounts').innerHTML = null;
 			for (let a = 1; a <= Number(localStorage.getItem('ACount')); a++) uploadAccount(a, id('accounts'));
@@ -6239,13 +7350,18 @@ function removeAccount (account_num, clickEl, windowEl_cont, windowEl) {
 	}, 1);
 }
 
-function removeStorageRecordsOfAccount (account_num) {
+/**
+ * Removes storage records associated with an account.
+ *
+ * @param {number} accountNum - The account number.
+ */
+function removeStorageRecordsOfAccount(accountNum) {
 
 	for (let a = 1; a <= Number(localStorage.getItem('RCount')); a++) {
-		if (localStorage.getItem(`RA${a}`) === account_num) {
+		if (Number(localStorage.getItem(`RA${a}`)) === accountNum) {
 
 			if (!localStorage.getItem(`RR${a}`))
-				removeRecord(a, 0);
+				removeRecord(a, false);
 			else removeTransfer(a);
 
 			a--;
@@ -6254,7 +7370,12 @@ function removeStorageRecordsOfAccount (account_num) {
 	}
 }
 
-function removeRecordFromStorage (record_num) {
+/**
+ * Removes a record from storage.
+ *
+ * @param {number} recordNum - The record number.
+ */
+function removeRecordFromStorage(recordNum) {
 	let arr = [
 		// tyPe, amoUnt, Account, Category
 		'P', 'U', 'A', 'C',
@@ -6263,19 +7384,24 @@ function removeRecordFromStorage (record_num) {
 	];
 
 	for (let i = 0; i < arr.length; i++)
-		localStorage.removeItem(`R${arr[i]}${record_num}`);
+		localStorage.removeItem(`R${arr[i]}${recordNum}`);
 
 	// Subcategory and noTe (if exist)
 	arr = ['S', 'T'];
 
 	for (let i = 0; i < arr.length; i++)
-		if (localStorage.getItem(`R${arr[i]}${record_num}`))
-			localStorage.removeItem(`R${arr[i]}${record_num}`);
+		if (localStorage.getItem(`R${arr[i]}${recordNum}`))
+			localStorage.removeItem(`R${arr[i]}${recordNum}`);
 
 	localStorage.setItem('RCount', (Number(localStorage.getItem('RCount')) - 1).toString());
 }
 
-function removeTransferFromStorage (record_num) {
+/**
+ * Removes a transfer record from storage.
+ *
+ * @param {number} recordNum - The record number.
+ */
+function removeTransferFromStorage(recordNum) {
 	
 	let arr = [
 		// tyPe, amoUnt, Rate, Account, Category, aBove category
@@ -6285,16 +7411,22 @@ function removeTransferFromStorage (record_num) {
 	];
 
 	for (let i = 0; i < arr.length; i++)
-		localStorage.removeItem(`R${arr[i]}${record_num}`);
+		localStorage.removeItem(`R${arr[i]}${recordNum}`);
 
 	// subcategory (if exist)
-	if (localStorage.getItem(`RS${record_num}`))
-		localStorage.removeItem(`RS${record_num}`);
+	if (localStorage.getItem(`RS${recordNum}`))
+		localStorage.removeItem(`RS${recordNum}`);
 
 	localStorage.setItem('RCount', (Number(localStorage.getItem('RCount')) - 1).toString());
 }
 
-function moveRecord (from, to) {
+/**
+ * Moves a record in the local storage from one position to another.
+ *
+ * @param {number} from - The original position.
+ * @param {number} to - The target position.
+ */
+function moveRecord(from, to) {
 
 	let arr = [
 		// tyPe, amoUnt, Account, Category
@@ -6334,15 +7466,28 @@ function moveRecord (from, to) {
 			
 }
 
-function changeAccountNumInStorageRecords (account_num) {
-// change account's number in storage records to (account_num - 1) from account_num
+/**
+ * Changes the account number in storage records to (accountNum - 1) from accountNum.
+ *
+ * @param {number} accountNum - The account number.
+ */
+function decreaseAccountNumInStorageRecords(accountNum) {
+// change account's number in storage records to (accountNum - 1) from accountNum
 
 	for (let a = 1; a <= localStorage.getItem('RCount'); a++)
-		if (localStorage.getItem(`RA${a}`) > account_num)
+		if (localStorage.getItem(`RA${a}`) > accountNum)
 			localStorage.setItem(`RA${a}`, (Number(localStorage.getItem(`RA${a}`)) - 1).toString());
 }
 
-function animateRemovingAccount (container, account, account_num, button_block) {
+/**
+ * Animates the removal of an account from the settings category window.
+ *
+ * @param {HTMLElement} container - The container for the accounts in the settings category window.
+ * @param {HTMLElement} account - The account element to be removed.
+ * @param {number} accountNum - The account number.
+ * @param {HTMLElement} buttonBlock - The container for buttons in the settings category window.
+ */
+function animateRemovingAccount(container, account, accountNum, buttonBlock) {
 	let gap;
 
 	if (account.previousElementSibling)
@@ -6356,22 +7501,22 @@ function animateRemovingAccount (container, account, account_num, button_block) 
 	account.style.transform = `scale(0)`;
 	
 	let accounts = container.getElementsByClassName('account');
-	for (let a = Number(account_num); a < accounts.length; a++) {
+	for (let a = Number(accountNum); a < accounts.length; a++) {
 		accounts[a].style.transition = 'transform .3s';
 		accounts[a].style.transform = `translateY(${-(gap)}px)`;
 	}
 	
-	button_block.style.transition = 'transform .3s';
-	button_block.style.transform = `translateY(-${gap}px)`;
+	buttonBlock.style.transition = 'transform .3s';
+	buttonBlock.style.transform = `translateY(-${gap}px)`;
 
 	setTimeout(() => {
 		container.style.transition = 'transform 0s';
 		container.style.transform = `translateY(1vh)`;
 		
-		button_block.style.transition = 'transform 0s';
-		button_block.style.transform = `translateY(0px)`;
+		buttonBlock.style.transition = 'transform 0s';
+		buttonBlock.style.transform = `translateY(0px)`;
 
-		for (let a = Number(account_num); a < accounts.length; a++) {
+		for (let a = Number(accountNum); a < accounts.length; a++) {
 			accounts[a].style.transition = 'transform 0s';
 			accounts[a].style.transform = `translateY(0px)`;
 		}
@@ -6392,9 +7537,14 @@ function animateRemovingAccount (container, account, account_num, button_block) 
 	// }, 402);
 }
 
-function removeAccountFromStorage (account_num) {
+/**
+ * Removes an account from storage and updates the account numbers.
+ *
+ * @param {number} accountNum - The account number to be removed.
+ */
+function removeAccountFromStorage(accountNum) {
 	
-	for (let a = Number(account_num); a <= localStorage.getItem('ACount'); a++) {
+	for (let a = Number(accountNum); a <= localStorage.getItem('ACount'); a++) {
 		if ( a < Number(localStorage.getItem('ACount')) ) moveAccount(a + 1, a);
 		else if ( a === Number(localStorage.getItem('ACount')) ) {
 			localStorage.removeItem(`AColor${a}`);
@@ -6405,19 +7555,31 @@ function removeAccountFromStorage (account_num) {
 	}
 }
 
-function moveAccount (from, to) {
+/**
+ * Moves account data in the local storage from one position to another.
+ *
+ * @param {number} from - The original position.
+ * @param {number} to - The target position.
+ */
+function moveAccount(from, to) {
 	
 	localStorage.setItem(`AColor${to}`, localStorage.getItem(`AColor${from}`));
 	localStorage.setItem(`ACurrency${to}`, localStorage.getItem(`ACurrency${from}`));
 	localStorage.setItem(`ABalance${to}`, localStorage.getItem(`ABalance${from}`));
 }
 
-function updateAccountsNumbers () {
+/**
+ * Updates the account numbers attribute on accounts in the settings.
+ */
+function updateAccountsNumbers() {
 	let accounts = id('settings-category-window-cont').getElementsByClassName('account');
 
 	for (let a = 1; a <= accounts.length; a++) accounts[a - 1].setAttribute('data-accountnum', a);
 }
 
+/**
+ * Handles the click event on the account color button in the edit account window.
+ */
 id('edit-account-color-button').onclick = function() {
 
 	let clickEl = this,
@@ -6440,7 +7602,14 @@ id('edit-account-color-button').onclick = function() {
 	
 }
 
-function setUpChoosingAccountColor (clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up the click event for choosing an account color in the edit account window.
+ *
+ * @param {HTMLElement} clickEl - The clicked account color button.
+ * @param {HTMLElement} windowElCont - The container for the edit account color window.
+ * @param {HTMLElement} windowEl - The edit account color window.
+ */
+function setUpChoosingAccountColor(clickEl, windowElCont, windowEl) {
 
 	for (let button of windowEl.getElementsByClassName('color'))
 		button.onclick = function() {
@@ -6452,11 +7621,18 @@ function setUpChoosingAccountColor (clickEl, windowEl_cont, windowEl) {
 			// check color if dark theme is on
 			checkColorOfEditAccountColorButton();
 			
-			closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+			closeFloatingWindow(clickEl, windowElCont, windowEl);
 			
 		}
 }
 
+/**
+ * Gets the account color based on the account color button ID.
+ *
+ * @param {string} id - The ID of the account color button.
+ *
+ * @returns {string} The corresponding account color.
+ */
 function getAccountColorByAccountColorButtonId(id) {
 	if (id === "account-color-1") {
 		return "cc4343";
@@ -6501,51 +7677,69 @@ function getAccountColorByAccountColorButtonId(id) {
 	}
 }
 
-function saveEditedAccount (account_num, clickEl, windowEl_cont, windowEl) {
+/**
+ * Saves the edited account data to storage and updates UI elements.
+ *
+ * @param {number} accountNum - The account number.
+ * @param {HTMLElement} clickEl - The clicked account element.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ */
+function saveEditedAccount(accountNum, clickEl, windowElCont, windowEl) {
 
-	let prev_color = localStorage.getItem(`AColor${account_num}`),
-		prev_currency = localStorage.getItem(`ACurrency${account_num}`),
-		prev_HT_status = Number(localStorage.getItem(`AHT${account_num}`)),
-		prev_WB_status = Number(localStorage.getItem(`AWB${account_num}`)),
-		prev_HB_status = Number(localStorage.getItem(`AHB${account_num}`));
+	let prev_color = localStorage.getItem(`AColor${accountNum}`),
+		prev_currency = localStorage.getItem(`ACurrency${accountNum}`),
+		prev_HT_status = Number(localStorage.getItem(`AHT${accountNum}`)),
+		prev_WB_status = Number(localStorage.getItem(`AWB${accountNum}`)),
+		prev_HB_status = Number(localStorage.getItem(`AHB${accountNum}`));
 	
 	// save new account's data to storage
-	localStorage.setItem( `AColor${account_num}`, id('edit-account-color-button').getAttribute('color') );
-	localStorage.setItem( `ACurrency${account_num}`, id('edit-account-currency').value );
-	localStorage.setItem( `ABalance${account_num}`, Number(id('edit-account-balance').value).toFixed(2) );
-	localStorage.setItem( `AHT${account_num}`, id('hide-account-from-top-bar-switch').checked );
-	localStorage.setItem( `AWB${account_num}`, id('without-account-balance-switch').checked );
-	localStorage.setItem( `AHB${account_num}`, id('hide-account-balance-switch').checked );
+	localStorage.setItem( `AColor${accountNum}`, id('edit-account-color-button').getAttribute('color') );
+	localStorage.setItem( `ACurrency${accountNum}`, id('edit-account-currency').value );
+	localStorage.setItem( `ABalance${accountNum}`, Number(id('edit-account-balance').value).toFixed(2) );
+	localStorage.setItem( `AHT${accountNum}`, id('hide-account-from-top-bar-switch').checked );
+	localStorage.setItem( `AWB${accountNum}`, id('without-account-balance-switch').checked );
+	localStorage.setItem( `AHB${accountNum}`, id('hide-account-balance-switch').checked );
 
 	// update account color, currency and balance everywhere
 	clickEl.classList.add('account-block-animation');
-	updateUIDataOfAccount(account_num);
+	updateUIDataOfAccount(accountNum);
 
 	// update widgets' data if needed
-	updateWidgetsDataAfterEditingAccount(account_num, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status);
+	updateWidgetsDataAfterEditingAccount(accountNum, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status);
 
 	// close edit account window
-	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);
+	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 	setTimeout(() => {
 		clickEl.classList.remove('account-block-animation');
 		clickEl.style.transition = clickEL_transition;
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
 	}, 1);
 }
 
-function updateWidgetsDataAfterEditingAccount (
-	account_num, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status
+/**
+ * Updates widgets' data after editing an account.
+ *
+ * @param {number} accountNum - The account number.
+ * @param {string} prevColor - The previous account color.
+ * @param {string} prevCurrency - The previous account currency.
+ * @param {number} prev_HT_status - The previous hide from top-bar status.
+ * @param {number} prev_WB_status - The previous without account balance status.
+ * @param {number} prev_HB_status - The previous hide account balance status.
+ */
+function updateWidgetsDataAfterEditingAccount(
+	accountNum, prevColor, prevCurrency, prev_HT_status, prev_WB_status, prev_HB_status
 ) {
 
 	// update data of all widgets because of new account currency
 	if (
-		prev_currency !== id('edit-account-currency').value &&
-		id('accounts').getAttribute('data-accountnum') === account_num
+		prevCurrency !== id('edit-account-currency').value &&
+		Number(id('accounts').getAttribute('data-accountnum')) === accountNum
 	)
 		updateWidgetsData(1, 0, 0, [1, 0], 0);
 	// reupload records in history because of new account color
 	// (transfers records have field 'from/to account' colored with appropriate account color)
-	if (prev_color !== id('edit-account-color-button').getAttribute('color'))
+	if (prevColor !== id('edit-account-color-button').getAttribute('color'))
 		uploadRecordsToHistory();
 	// reupload accounts to top-bar if account now is hidden in top-bar
 	if (
@@ -6564,20 +7758,32 @@ function updateWidgetsDataAfterEditingAccount (
 
 
 
-function disableScrolling () {
+/**
+ * Disables scrolling by locking the current scroll position.
+ */
+function disableScrolling() {
 	let x = window.scrollX;
 	let y = window.scrollY;
 	window.onscroll = function() {
 		window.scrollTo(x, y);
 	};
 }
-function enableScrolling () {
+
+/**
+ * Enables scrolling by removing the scroll lock.
+ */
+function enableScrolling() {
 	window.onscroll = function(){};
 }
 
 
 
-function animateEmptyFieldError (el) {
+/**
+ * Animates an error for an empty field.
+ *
+ * @param {HTMLElement} el - The element to animate.
+ */
+function animateEmptyFieldError(el) {
 	el.classList.add('empty-field-transform1');
 
   setTimeout(() => {
@@ -6591,20 +7797,33 @@ function animateEmptyFieldError (el) {
 }
 
 
-// change width of all active inputs while typing
 
 setTypingListenerForAllInputs(id('root').getElementsByClassName('active-input'));
-function setTypingListenerForAllInputs (inputs_arr) {
 
-	for (let input of inputs_arr) setTypingListenerForInput(input);
+/**
+ * Sets typing listener for all inputs in the given array.
+ *
+ * @param {HTMLCollectionOf<Element>} inputsArr - The array of input elements.
+ */
+function setTypingListenerForAllInputs(inputsArr) {
+
+	for (let input of inputsArr) setTypingListenerForInput(input);
 }
 
-function setTypingListenerForInput (input) {
+/**
+ * Sets typing listener for the input element.
+ *
+ * @param {HTMLElement} input - The input element.
+ */
+function setTypingListenerForInput(input) {
 	input.addEventListener('input', adaptInputLength);
 	adaptInputLength.call(input);
 }
 
-function adaptInputLength () {
+/**
+ * Adapts the input length based on its value and placeholder.
+ */
+function adaptInputLength() {
 	let less_length, bigger_length;
 	let lang = localStorage.getItem('L');
 
@@ -6626,8 +7845,12 @@ function adaptInputLength () {
 		this.style.width = this.value.length * bigger_length + 'ch';
 }
 
-// change width of input by its characters count
-function adaptInputLengthExplicitly (el) {
+/**
+ * Adapts the input length explicitly based on its value and placeholder.
+ *
+ * @param {HTMLInputElement} el - The input element.
+ */
+function adaptInputLengthExplicitly(el) {
 	let less_length, bigger_length;
 	let lang = localStorage.getItem('L');
 
