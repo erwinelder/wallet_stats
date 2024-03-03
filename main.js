@@ -1,12 +1,14 @@
-const id = function (id) {
+const id = function(id) {
 	return document.getElementById(id);
 }
 
 
 
-var categories_expense_titles = [];
 
-const categories_expense_icons = [
+
+let categories_expense_titles = [];
+
+const CATEGORY_EXPENSE_ICONS = [
 	/* 1 */ 
 	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 		<path d="M 64.718 294.71 C 21.635 305.658 1.317 354.368 12.825 404.515 C 22.187 445.309 50.427 466.598 70.822 476.317 C 105.585 492.068 161.955 489.324 199.072 474.932 C 237.565 460.328 260.896 423.962 265.897 395.598 C 271.77 332.371 242.875 295.329 191.188 291.704"></path>
@@ -78,9 +80,9 @@ const categories_expense_icons = [
 
 ];
 
-var subcategories_titles = [];
+let subcategories_titles = [];
 
-const subcategories_icons = [
+const SUBCATEGORY_ICONS = [
   /* 1 */
 	[
 		`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
@@ -468,7 +470,7 @@ const subcategories_icons = [
 			<path id="path-0" d="M 196.561 234.585 C 206.182 234.585 211.03 235.007 215.894 235.007 C 223.657 235.35 233.576 241.092 238.334 244.524"></path>
 			</defs>
 			<path d="M 221.093 357.937 C 217.31 354.221 218.141 340.293 218.141 340.293 C 218.141 340.293 223.754 303.234 229.648 288.113 C 233.954 276.728 240.923 265.239 250.557 253.643 C 257.633 245.196 270.353 232.864 288.716 216.653 C 307.081 200.443 319.019 187.534 324.535 177.924 C 330.025 168.292 332.771 157.775 332.771 146.369 C 332.771 125.753 324.712 107.638 308.595 92.02 C 292.503 76.4 272.765 68.591 249.383 68.591 C 226.783 68.591 207.922 75.667 192.801 89.817 C 177.677 103.946 171.87 123.353 152.607 140.164 C 138.818 152.198 112.384 135.879 112.708 121.793 C 113.338 94.481 139.419 70.121 152.297 57.089 C 175.033 34.084 208.622 25 248.497 25 C 290.74 25 324.43 36.488 349.56 59.468 C 374.718 82.446 387.295 110.242 387.295 142.853 C 387.295 161.713 382.871 179.096 374.021 195 C 365.191 210.905 347.902 230.251 322.156 253.039 C 304.881 268.375 293.591 279.675 288.29 286.94 C 282.965 294.206 279.038 302.547 276.504 311.966 C 273.948 321.409 281.706 347.007 272.068 357.937 C 260.83 370.681 233.214 369.844 221.093 357.937 Z M 217.863 464.326 C 203.622 450.085 203.622 418.146 217.863 403.905 C 232.095 389.673 264.012 389.673 278.244 403.905 C 292.485 418.146 292.485 450.085 278.244 464.326 C 264.012 478.558 232.095 478.558 217.863 464.326 Z" style="white-space: pre;"></path>
-			<path style="white-space: pre;"></path>
+			<path style="white-space: pre;" d=""></path>
 	  	</svg>`,
 	
 		`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
@@ -484,9 +486,9 @@ const subcategories_icons = [
 	]
 ];
 
-var categories_income_titles = [];
+let categories_income_titles = [];
 
-const categories_income_icons = [
+const CATEGORY_INCOME_ICONS = [
   /* 1 */
   `<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
 		<ellipse cx="250" cy="250" rx="225" ry="225"></ellipse>
@@ -556,9 +558,9 @@ const categories_income_icons = [
 	</svg>`
 ];
 
-var above_categories_titles = [];
+let above_categories_titles = [];
 
-const above_categories_icons = [
+const ABOVE_CATEGORY_ICONS = [
 
 	/* 1 transfer */
 	`<svg class="category-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
@@ -571,65 +573,105 @@ const above_categories_icons = [
 ];
 
 
-var expense_subcategories_results = [];
+const DATE_RANGE_ENUM = {
+	this_month: "this_month",
+	last_month: "last_month",
+	custom: "custom"
+}
+
+const ACCOUNT_INFO = {
+	currency: "currency",
+	balance: "balance",
+	color: "color"
+}
+
+let uiState = {
+	date_range: DATE_RANGE_ENUM.this_month
+}
 
 
 
-
-
+/**
+ * Constructs account element based on the given account number. Account data will be taken from the local storage.
+ *
+ * @param {number} num - Account number.
+ *
+ * @return {string} - Account html element as a string.
+ */
 const constructAccountEl = (num) => {
 
 	let color = localStorage.getItem('AColor' + num),
 		account_dark_class = '';
 
 	// if account has dark color give to it class for inverting color with dark themes
-	if (color == '050505')
+	if (color === '050505') {
 		account_dark_class = 'account-dark-color';
+	}
 	
 	return (`
-		<div accountnum="${num}" style="color: #ddd; background: #${color};" class="account ${account_dark_class}">
+		<div data-accountnum="${num}" style="color: #ddd; background: #${color};" class="account ${account_dark_class}">
 			<p class="account-currency">${localStorage.getItem('ACurrency' + num)}</p>
 			<p class="account-balance" style="background: rgba(255, 255, 255, 0.1);">${getAccountBalance(num)}</p>
 		</div>
 	`);
 }
 
-function getAccountBalance (num) {
+/**
+ * Get balance for an account based on the given account number and account settings.
+ *
+ * @param {number} num - Account number.
+ *
+ * @return {string} - Account balance based on the account settings. If this account has "without balance" setting, it
+ * returns '∞' character instead of the actual account balance. If it has "hide balance setting", it returns "???"
+ * string instead of the actual account balance. Else it returns actual account balance stored in the local storage.
+ */
+function getAccountBalance(num) {
 
-	if (Number(localStorage.getItem(`AWB${num}`)))
+	if (localStorage.getItem(`AWB${num}`) === "true") {
 		return ('∞');
-	else if (!Number(localStorage.getItem(`AHB${num}`)))
-		return getReadableNumber( Number(localStorage.getItem('ABalance' + num)).toFixed(2) );
-	else return ('???');
+	} else if (localStorage.getItem(`AHB${num}`) === "false") {
+		return getReadableNumber(
+			Number(localStorage.getItem('ABalance' + num))
+		);
+	} else {
+		return ('???');
+	}
 }
 
-function getReadableNumber (number) {
+/**
+ * Format a number for readability by adding commas as a thousand separators.
+ *
+ * @param {number} number - The number to be formatted.
+ *
+ * @return {string} - Returns the formatted number as a string with commas as a thousand separators.
+ */
+function getReadableNumber(number) {
+	let formattedNumber = number.toFixed(2);
 
-	number = number + '';
-	let number_len = number.length - 3;
-	number = number.split('');
-	number = number.reverse();
+	let number_len = formattedNumber.length - 3;
+	formattedNumber = formattedNumber.split('');
+	formattedNumber = formattedNumber.reverse();
 	
-	let readable_number = '';
+	let readable_number = "";
 	readable_number = readable_number.split('');
-	readable_number[0] = number[0];
-	readable_number[1] = number[1];
-	readable_number[2] = number[2];
+	readable_number[0] = formattedNumber[0];
+	readable_number[1] = formattedNumber[1];
+	readable_number[2] = formattedNumber[2];
 	
 	let step = 2;
 
 	for (let a = 1; a <= number_len; a++) {
 
-		if (number[a + 2] == '-' || number[a + 2] == '+') {
+		if (formattedNumber[a + 2] === '-' || formattedNumber[a + 2] === '+') {
 			readable_number[a + step] = ' ';
-			readable_number[a + step + 1] = number[a + 2];
+			readable_number[a + step + 1] = formattedNumber[a + 2];
 			break;
 		}
 
-		readable_number[a + step] = number[a + 2];
+		readable_number[a + step] = formattedNumber[a + 2];
 		if (
-			a % 3 == 0 && a != number_len &&
-			number[a + 3] != '-' && number[a + 3] != '+'
+			a % 3 === 0 && a !== number_len &&
+			formattedNumber[a + 3] !== '-' && formattedNumber[a + 3] !== '+'
 		) {
 			step++;
 			readable_number[a + step] = ' ';
@@ -643,22 +685,46 @@ function getReadableNumber (number) {
 
 
 
-const category_list_el = (category_num, icons_array, titles_array) => {
+/**
+ * Generate HTML for a category element based on provided parameters.
+ *
+ * @param {number} categoryNum - Category number.
+ * @param {Array} iconsArray - Array of category icons.
+ * @param {Array} titlesArray - Array of category titles.
+ *
+ * @return {string} - Returns HTML string for a category element.
+ */
+const category_list_el = (categoryNum, iconsArray, titlesArray) => {
 	return (`
-		<div class="category" categorynum="${category_num}">
-			<div class="category-svg-cont">${icons_array[category_num]}</div>
-			<h3 class="category-title">${titles_array[category_num]}</h3>
+		<div class="category" data-categorynum="${categoryNum}">
+			<div class="category-svg-cont">${iconsArray[categoryNum]}</div>
+			<h3 class="category-title">${titlesArray[categoryNum]}</h3>
 		</div>
 	`);
 }
-const subcategory_list_el = (subcategory_num, icons_array, titles_array, array_num, nested_array_num) => {
+
+/**
+ * Generate HTML for a subcategory element based on provided parameters.
+ *
+ * @param {number} subcategoryNum - Subcategory number.
+ * @param {Array} iconsArray - Array of subcategory icons.
+ * @param {Array} titlesArray - Array of subcategory titles.
+ * @param {number} arrayNum - Index in the outer array.
+ * @param {number} nestedArrayNum - Index in the nested array.
+ *
+ * @return {string} - Returns HTML string for a subcategory element.
+ */
+const subcategory_list_el = (
+	subcategoryNum, iconsArray, titlesArray, arrayNum, nestedArrayNum
+) => {
 	return (`
-		<div class="subcategory" subcategorynum="${subcategory_num}">
-			<div class="subcategory-svg-cont">${icons_array[array_num][nested_array_num]}</div>
-			<h3 class="subcategory-title">${titles_array[array_num][nested_array_num]}</h3>
+		<div class="subcategory" data-subcategorynum="${subcategoryNum}">
+			<div class="subcategory-svg-cont">${iconsArray[arrayNum][nestedArrayNum]}</div>
+			<h3 class="subcategory-title">${titlesArray[arrayNum][nestedArrayNum]}</h3>
 		</div>
 	`);
 }
+
 const category_list_hr = `<hr class="categories-hr">`;
 
 
@@ -676,15 +742,22 @@ window.addEventListener('load', async () => {
 		}
 	}
 	
-	await startApp();
+	startApp();
 });
 
-async function startApp () {
+/**
+ * Start the application by checking if data exists in local storage.
+ * If data exists, upload the application data, otherwise, open the hello screen.
+ */
+function startApp() {
 	if (localStorage.getItem('L')) uploadAppData();
 	else openHelloScreen();
 }
 
-function openHelloScreen () {
+/**
+ * Open the hello screen by hiding the scroll, showing the hello screen, and initializing language selection.
+ */
+function openHelloScreen() {
 
 	disableScrolling();
 
@@ -692,7 +765,7 @@ function openHelloScreen () {
 
 	uploadHelloTitle(0);
 
-	id('hello-language').setAttribute('langnum', 0);
+	id('hello-language').setAttribute('data-langnum', (0).toString());
 	setTimeout(() => {
 		uploadHelloLanguageName(0);
 		id('hello-language').style.opacity = '1';
@@ -707,41 +780,50 @@ function openHelloScreen () {
 	}, 1800);
 }
 
-function uploadHelloTitle (lang) {
-
+/**
+ * Upload the hello title based on the selected language.
+ *
+ * @param {number} langNumber - Language number.
+ */
+function uploadHelloTitle(langNumber) {
 	let el = id('hello-screen').firstElementChild;
 
 	el.style.transition = 'opacity .5s';
 	el.style.opacity = '0';
 	
 	setTimeout(() => {
-		if (lang == 0) el.innerHTML = 'Hello!';
-		else if (lang == 1) el.innerHTML = 'Hallo!';
-		else if (lang == 2) el.innerHTML = 'Ahoj!';
-		else if (lang == 3) el.innerHTML = 'Привет!';
-		else if (lang == 4) el.innerHTML = 'Привіт!';
-		
+		el.innerHTML = getStrings(getLanguageByNumber(langNumber)).hello;
 		el.style.opacity = '1';
 	}, 500);
 }
 
-function uploadHelloLanguageName (lang_num) {
+/**
+ * Upload the hello language name based on the selected language.
+ *
+ * @param {number} langNumber - Language number.
+ *
+ * @return {number} - Returns the updated language number.
+ */
+function uploadHelloLanguageName(langNumber) {
 
-	if (lang_num == -1) lang_num = 4;
-	else if (lang_num == 5) lang_num = 0;
+	if (langNumber < 0) langNumber = 4;
+	else if (langNumber > 4) langNumber = 0;
 
-	let el = id('hello-language');
-	
-	if (lang_num == 0) el.innerHTML = 'English';
-	else if (lang_num == 1) el.innerHTML = 'Deutsch';
-	else if (lang_num == 2) el.innerHTML = 'Čeština';
-	else if (lang_num == 3) el.innerHTML = 'Русский';
-	else if (lang_num == 4) el.innerHTML = 'Українська';
+	if (langNumber === 0) id('hello-language').innerHTML = getStrings(LANG_ENUM.en).english;
+	else if (langNumber === 1) id('hello-language').innerHTML = getStrings(LANG_ENUM.cz).czech;
+	else if (langNumber === 2) id('hello-language').innerHTML = getStrings(LANG_ENUM.de).german;
+	else if (langNumber === 3) id('hello-language').innerHTML = getStrings(LANG_ENUM.ru).russian;
+	else if (langNumber === 4) id('hello-language').innerHTML = getStrings(LANG_ENUM.ua).ukrainian;
 
-	return lang_num;
+	return langNumber;
 }
 
-function hideHelloLanguageName (direction) {
+/**
+ * Hide the hello language name with a specified direction.
+ *
+ * @param {number} direction - Direction for hiding (1 for right, -1 for left).
+ */
+function hideHelloLanguageName(direction) {
 	let el = id('hello-language');
 	let x = 50 * direction;
 
@@ -750,7 +832,12 @@ function hideHelloLanguageName (direction) {
 	el.style.opacity = '0';
 }
 
-function showHelloLanguage (direction) {
+/**
+ * Show the hello language name with a specified direction.
+ *
+ * @param {number} direction - Direction for showing (1 for right, -1 for left).
+ */
+function showHelloLanguage(direction) {
 	let el = id('hello-language');
 	let x = 50 * direction;
 
@@ -764,62 +851,74 @@ function showHelloLanguage (direction) {
 	}, 50);
 }
 
-function setUpClickOnHelloSliderButtons () {
+/**
+ * Set up click events on hello screen slider buttons.
+ */
+function setUpClickOnHelloSliderButtons() {
 
 	id('button-slider').firstElementChild.style.opacity = '1';
 
 	id('button-slider').firstElementChild.onclick = function() {
-		if (id('hello-screen').getAttribute('animstatus') == 'done')
+		if (id('hello-screen').getAttribute('data-animstatus') === 'done')
 			clickOnHelloScreenLeftButton();
 	}
 	
 	id('button-slider').lastElementChild.style.opacity = '1';
 
 	id('button-slider').lastElementChild.onclick = function() {
-		if (id('hello-screen').getAttribute('animstatus') == 'done')
+		if (id('hello-screen').getAttribute('data-animstatus') === 'done')
 			clickOnHelloScreenRightButton();
 	}
 }
 
-function clickOnHelloScreenLeftButton () {
+/**
+ * Handle the click event on the left button of the hello screen slider.
+ */
+function clickOnHelloScreenLeftButton() {
 
-	id('hello-screen').setAttribute('animstatus', 'processing');
+	id('hello-screen').setAttribute('data-animstatus', 'processing');
 	hideHelloLanguageName(1);
 
-	let lang_num = id('hello-language').getAttribute('langnum');
+	let langNumber = id('hello-language').getAttribute('data-langnum');
 	
 	setTimeout(() => {
-		lang_num = uploadHelloLanguageName(Number(lang_num) - 1);
-		uploadHelloTitle(lang_num);
-		id('hello-language').setAttribute('langnum', lang_num);
+		langNumber = uploadHelloLanguageName(Number(langNumber) - 1);
+		uploadHelloTitle(langNumber);
+		id('hello-language').setAttribute('data-langnum', langNumber);
 		showHelloLanguage(-1);
 
 		setTimeout(() => {
-			id('hello-screen').setAttribute('animstatus', 'done');
+			id('hello-screen').setAttribute('data-animstatus', 'done');
 		}, 500);
 	}, 500);
 }
 
-function clickOnHelloScreenRightButton () {
+/**
+ * Handle the click event on the right button of the hello screen slider.
+ */
+function clickOnHelloScreenRightButton() {
 
-	id('hello-screen').setAttribute('animstatus', 'processing');
+	id('hello-screen').setAttribute('data-animstatus', 'processing');
 	hideHelloLanguageName(-1);
 	
-	let lang_num = id('hello-language').getAttribute('langnum');
+	let langNumber = id('hello-language').getAttribute('data-langnum');
 	
 	setTimeout(() => {
-		lang_num = uploadHelloLanguageName(Number(lang_num) + 1);
-		uploadHelloTitle(lang_num);
-		id('hello-language').setAttribute('langnum', lang_num);
+		langNumber = uploadHelloLanguageName(Number(langNumber) + 1);
+		uploadHelloTitle(langNumber);
+		id('hello-language').setAttribute('data-langnum', langNumber);
 		showHelloLanguage(1);
 
 		setTimeout(() => {
-			id('hello-screen').setAttribute('animstatus', 'done');
+			id('hello-screen').setAttribute('data-animstatus', 'done');
 		}, 500);
 	}, 500);
 }
 
-function setUpClickOnHelloSubmitLanguageButton () {
+/**
+ * Set up click events on the hello screen submit language button.
+ */
+function setUpClickOnHelloSubmitLanguageButton() {
 
 	id('hello-submit-language').style.opacity = '1';
 
@@ -848,7 +947,7 @@ function setUpClickOnHelloSubmitLanguageButton () {
 			id('hello-language').style.opacity = '0';
 
 			setTimeout(() => {
-				localStorage.setItem( 'L', getLanguageByNumber(id('hello-language').getAttribute('langnum')) );
+				localStorage.setItem( 'L', getLanguageByNumber( Number(id('hello-language').getAttribute('data-langnum')) ) );
 				closeHelloScreen();
 			}, 1000);
 		}, 1200);
@@ -856,25 +955,37 @@ function setUpClickOnHelloSubmitLanguageButton () {
 	}
 }
 
-function getLanguageByNumber (lang_num) {
-
-	if (lang_num == 0) return 'en';
-	else if (lang_num == 1) return 'de';
-	else if (lang_num == 2) return 'cz';
-	else if (lang_num == 3) return 'ru';
-	else if (lang_num == 4) return 'ua';
-	return lang_num;
+/**
+ * Get language enum value based on the provided number.
+ *
+ * @param {number} n - Language number.
+ *
+ * @return {string} - Returns the language enum value.
+ */
+function getLanguageByNumber(n) {
+	if (n === 0) return LANG_ENUM.en;
+	else if (n === 1) return LANG_ENUM.cz;
+	else if (n === 2) return LANG_ENUM.de;
+	else if (n === 3) return LANG_ENUM.ru;
+	else if (n === 4) return LANG_ENUM.ua;
+	return LANG_ENUM.en;
 }
 
-function closeHelloScreen () {
+/**
+ * Close the hello screen by adding the 'hide' class and initiating the upload of application data.
+ */
+function closeHelloScreen() {
 	id('hello-screen').classList.add('hide');
 	uploadAppData();
-	startPreloaderAnimation();
+	startPreloaderAnimation().then();
 }
 
 
 
-function uploadAppData () {
+/**
+ * Uploads various app data on window load.
+ */
+function uploadAppData() {
 
 	// upload version update
 	uploadVersionUpdate();
@@ -884,14 +995,20 @@ function uploadAppData () {
 	uploadLanguage(lang);
 
 	// upload blur
-	if (!(localStorage.getItem('B')))
-		localStorage.setItem('B', '1');
-	reapplyBlur(Number(localStorage.getItem('B')));
+	if (!localStorage.getItem('B')) {
+		localStorage.setItem('B', "true");
+	}
+	reapplyBlur(localStorage.getItem('B') === "true");
+
+	// upload notification sound
+	if (!localStorage.getItem('NS')) {
+		localStorage.setItem('NS', "0");
+	}
 
 	// upload categories to its windows
 
-	uploadCategoriesToItsWindow(id('categories-expense'), categories_expense_titles, categories_expense_icons);
-	uploadCategoriesToItsWindow(id('categories-income'), categories_income_titles, categories_income_icons);
+	uploadCategoriesToItsWindow(id('categories-expense'), categories_expense_titles, CATEGORY_EXPENSE_ICONS);
+	uploadCategoriesToItsWindow(id('categories-income'), categories_income_titles, CATEGORY_INCOME_ICONS);
 	uploadSubcategoriesToItsWindow();
 
 	setUpOpeningSubcategoryList(
@@ -911,21 +1028,20 @@ function uploadAppData () {
 	if (!localStorage.getItem('SA'))
 		localStorage.setItem('SA', '1');
 
-
 	// apply top margin
-	if (!(localStorage.getItem('TM'))) localStorage.setItem('TM', 0);
-		applyTopmargin();
+	if (!(localStorage.getItem('TM'))) localStorage.setItem('TM', (0).toString());
+		applyTopMargin();
 
-	// add the new one on first run of the app
+	// add new account on first run of the app
 	if (!localStorage.getItem('ACount')) {
-		localStorage.setItem('ACount', 0);
+		localStorage.setItem('ACount', (0).toString());
 		addAccount();
 	}
 
 	// add variable "records' count" into storage on the first run of the app
-	if (!localStorage.getItem('RCount')) localStorage.setItem('RCount', 0);
+	if (!localStorage.getItem('RCount')) localStorage.setItem('RCount', (0).toString());
 	
-	// upload accounts into topbar
+	// upload accounts into top-bar
 	for (let a = 1; a <= localStorage.getItem('ACount'); a++)
 		uploadAccount(a, id('accounts'));
 
@@ -933,19 +1049,22 @@ function uploadAppData () {
 	fitPieChartSize();
 
 	// apply period to custom date menu
-	changeDatePeriodInCustomDateMenu(id('history-period-nav').getAttribute('period'));
-	// set up clicks on accounts in topbar, after that widgets will be reloaded
-	setUpClickOnAccountsInTopbar();
+	changeDatePeriodInCustomDateMenu(uiState.date_range);
+	// set up clicks on accounts in top-bar, after that widgets will be reloaded
+	setUpClickOnAccountsInTopBar();
 	
 	// upload date filter menu
-	setTimeout(positionateDateFilterMenu, 101);
+	setTimeout(placeDateFilterMenu, 101);
 
 	// give fix width to elements
 	setTimeout(fixCurrentWidthOfElements, 1);
 }
 
-function uploadVersionUpdate () {
-	let version = '3.1.3';
+/**
+ * Checks and displays version update notifications.
+ */
+function uploadVersionUpdate() {
+	let version = '3.2.0';
 
 	if (!localStorage.getItem('V')) {
 
@@ -954,7 +1073,7 @@ function uploadVersionUpdate () {
 			showNotification('update 3.0.0', 6500);
 		}, 3000);
 
-	} else if (localStorage.getItem('V') != version) {
+	} else if (localStorage.getItem('V') !== version) {
 
 		checkVersionForNeededStorageUpdates(localStorage.getItem('V'));
 		
@@ -967,23 +1086,31 @@ function uploadVersionUpdate () {
 
 
 
-function checkVersionForNeededStorageUpdates (version) {
+/**
+ * Checks if storage data needs updates based on the app version.
+ *
+ * @param {string} version - Current app version.
+ */
+function checkVersionForNeededStorageUpdates(version) {
 	
-	// if current version is oldest than 3.1.0
+	// if current version is older than 3.1.0
 	if (
 		(Number(version[0]) < 3) ||
-		(Number(version[0]) == 3 && Number(version[2]) < 1) ||
-		(Number(version[0]) == 3 && Number(version[2]) == 1 && Number(version[4]) < 0)
+		(Number(version[0]) === 3 && Number(version[2]) < 1) ||
+		(Number(version[0]) === 3 && Number(version[2]) === 1 && Number(version[4]) < 0)
 	)
 	updateStorageDataToV3_1_0();
 }
 
-function updateStorageDataToV3_1_0 () {
+/**
+ * Updates storage data to version 3.1.0 format.
+ */
+function updateStorageDataToV3_1_0() {
 	console.log('storage has been updated');
 	// change name of variable in storage from 'Auto Theme' to 'Theme Auto'
 	localStorage.setItem('TA', localStorage.getItem('AT'));
 	localStorage.removeItem('AT');
-	// add status 'Hide from Topbar', 'WithoutBalance' and 'Hide Balance' to accounts
+	// add status 'Hide from Top-bar', 'WithoutBalance' and 'Hide Balance' to accounts
 	for (let a = 1; a <= Number(localStorage.getItem('ACount')); a++) {
 		localStorage.setItem(`AHT${a}`, '0');
 		localStorage.setItem(`AWB${a}`, '0');
@@ -1056,67 +1183,87 @@ function updateStorageDataToV3_1_0 () {
 
 
 
-function showNotification (type, timer) {
+/**
+ * Shows a notification with the given type and timer.
+ *
+ * @param {string} type - Type of notification.
+ * @param {number} timer - Duration of the notification display.
+ */
+function showNotification(type, timer) {
 
-	let notification_contEl = id('notification-cont'),
-		notificationEl = id('notification')
-		timer_line = id('notification-timer-line');
-	var hide_notification;
+	let notificationContEl = id('notification-cont'),
+		notificationEl = id('notification'),
+		timerLine = id('notification-timer-line');
+	let hideNotificationTimeout;
 
-	// upload message
 	uploadNotificationMessage(type, id('notification-title'), id('notification-details'));
 	// show or hide buttons block
 	uploadNotificationButtons(type, notificationEl);
-	
+
+	playNotificationSound();
 	// start show notification animation
-	notification_contEl.style.visibility = 'visible';
-	notification_contEl.classList.add('show');
+	notificationContEl.style.visibility = 'visible';
+	notificationContEl.classList.add('show');
 	// show timer line
-	if (timer > 0) timer_line.style.transition = `${timer / 1000}s width linear`;
-	else timer_line.style.width = '0%';
+	if (timer > 0) timerLine.style.transition = `${timer / 1000}s width linear`;
+	else timerLine.style.width = '0%';
 	
 	setTimeout(() => {
 		// end show notification animation
-		notification_contEl.classList.add('animate-end');
-		notification_contEl.classList.remove('show');
+		notificationContEl.classList.add('animate-end');
+		notificationContEl.classList.remove('show');
 		// start timer to hide notification
 		if (timer > 0) {
-			timer_line.style.width = '0%';
-			hide_notification = setTimeout(() => {
-				hideNotification(notification_contEl);
+			timerLine.style.width = '0%';
+			hideNotificationTimeout = setTimeout(() => {
+				hideNotification(notificationContEl);
 			}, timer);
 		}
 	}, 400);
 	
 	// hide notification by click on it
 	notificationEl.onclick = e => {
-		if (e.target.id != 'notification-show-details-button') {
-			clearTimeout(hide_notification);
-			hideNotification(notification_contEl);
+		if (e.target.id !== 'notification-show-details-button') {
+			clearTimeout(hideNotificationTimeout);
+			hideNotification(notificationContEl);
 		}
 	}
 }
 
-function uploadNotificationMessage (type, titleEl, detailsEl) {
+/**
+ * Uploads notification messages based on the type and language.
+ *
+ * @param {string} type - Type of notification.
+ * @param {HTMLElement} titleEl - Element to display the title.
+ * @param {HTMLElement} detailsEl - Element to display details.
+ */
+function uploadNotificationMessage(type, titleEl, detailsEl) {
 	let lang = localStorage.getItem('L');
+	titleEl.innerText = "";
 
-	if (type == `update ${localStorage.getItem('V')}` || type == 'update 3.0.0') {
-		if (lang == 'en')
+	if (type === `update ${localStorage.getItem('V')}` || type === 'update 3.0.0') {
+		if (lang === LANG_ENUM.en)
 			detailsEl.innerText = `WalletStats got new update version ${localStorage.getItem('V')}!`;
-		else if (lang == 'de')
-			detailsEl.innerText = `WalletStats hat ein neues Update auf Version ${localStorage.getItem('V')}!`;
-		else if (lang == 'cz')
+		else if (lang === LANG_ENUM.cz)
 			detailsEl.innerText = `WalletStats dostal novou aktualizaci verze ${localStorage.getItem('V')}!`;
-		else if (lang == 'ru')
+		else if (lang === LANG_ENUM.de)
+			detailsEl.innerText = `WalletStats hat ein neues Update auf Version ${localStorage.getItem('V')}!`;
+		else if (lang === LANG_ENUM.ru)
 			detailsEl.innerText = `WalletStats получил новое обновление версии ${localStorage.getItem('V')}!`;
-		else if (lang == 'ua')
+		else
 			detailsEl.innerText = `WalletStats отримав нове оновлення версії ${localStorage.getItem('V')}!`;
 	}
 }
 
-function uploadNotificationButtons (type, notificationEl) {
+/**
+ * Uploads and handles notification buttons based on the type.
+ *
+ * @param {string} type - Type of notification.
+ * @param {HTMLElement} notificationEl - Notification element.
+ */
+function uploadNotificationButtons(type, notificationEl) {
 
-	if (type == `update ${localStorage.getItem('V')}` || type == 'update 3.0.0') {
+	if (type === `update ${localStorage.getItem('V')}` || type === 'update 3.0.0') {
 
 		let windowEl_cont = id('update-details-cont'),
 			windowEl = id('update-details-cont').lastElementChild;
@@ -1139,34 +1286,66 @@ function uploadNotificationButtons (type, notificationEl) {
 	}
 }
 
-function hideNotification (notification_contEl) {
+/**
+ * Hides the notification container.
+ *
+ * @param {HTMLElement} notificationContEl - Notification container element.
+ */
+function hideNotification(notificationContEl) {
 
-	notification_contEl.classList.remove('animate-end');
+	notificationContEl.classList.remove('animate-end');
 	
 	setTimeout(() => {
-		notification_contEl.style.visibility = 'hidden';
+		notificationContEl.style.visibility = 'hidden';
 	}, 400);
+}
+
+/**
+ * Plays notification sound based on the saved setting in the local storage.
+ */
+function playNotificationSound() {
+	if (localStorage.getItem("NS") === "0") {
+		return;
+	}
+
+	let audio = new Audio(`Main/sounds/notification_${localStorage.getItem("NS")}.mp3`);
+	audio.play()
+		.then(() => {})
+		.catch(() => {});
 }
 
 
 
-function uploadUpdateDetailsToItsWindow (type) {
+/**
+ * Uploads update details content to the update details window.
+ *
+ * @param {string} type - Type of update.
+ */
+function uploadUpdateDetailsToItsWindow(type) {
 	let container = id('update-details-paragraphs');
 
 	let paragraphs = getUpdateDetailsArrayByLang(type);
-	
+
+	id('update-details-paragraphs').innerText = null;
 	for (let a = 0; a < paragraphs.length; a++)
 		container.insertAdjacentHTML('beforeend', paragraphs[a]);
 }
 
-function getUpdateDetailsArrayByLang (type) {
+/**
+ * Gets an array of update details based on the language.
+ *
+ * @param {string} type - Type of update.
+ *
+ * @returns {Array} - Array of update details paragraphs.
+ */
+function getUpdateDetailsArrayByLang(type) {
 	let lang = localStorage.getItem('L');
 
-	if (type == 'update 3.0.0') {
+	if (type === 'update 3.0.0') {
 
-		if (lang == 'en')
+		if (lang === LANG_ENUM.en)
 			return [
-				`<h3>Desktop optimazing</h3>
+				`<h3>Desktop optimizing</h3>
 				<p>
 					Now WalletStats is optimized for using on desktop.
 				</p>`,
@@ -1183,26 +1362,7 @@ function getUpdateDetailsArrayByLang (type) {
 					Other features, bug fixing and visual improvements.
 				</p>`
 			];
-		else if (lang == 'de')
-			return [
-				`<h3>Desktop optimieren</h3>
-				<p>
-					Jetzt ist WalletStats für die Verwendung auf dem Desktop optimiert.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Unterstützung für die deutsche Sprache</h3>
-				<p>
-					Jetzt ist WalletStats auf Deutsch verfügbar. Die Sprache kann in den Einstellungen auf Deutsch oder eine andere Sprache geändert werden.
-				</p>`,
-				`<hr class="small-hr">`,
-
-				`<h3>Sonstiges</h3>
-				<p>
-					Weitere Funktionen, Fehlerbehebungen und visuelle Verbesserungen.
-				</p>`
-			];
-		else if (lang == 'cz')
+		else if (lang === LANG_ENUM.cz)
 			return [
 				`<h3>Optimalizace pro počítač</h3>
 				<p>
@@ -1221,7 +1381,26 @@ function getUpdateDetailsArrayByLang (type) {
 					Další funkce, opravy chyb a vizuální vylepšení.
 				</p>`
 			];
-		else if (lang == 'ru')
+		else if (lang === LANG_ENUM.de)
+			return [
+				`<h3>Desktop optimieren</h3>
+				<p>
+					Jetzt ist WalletStats für die Verwendung auf dem Desktop optimiert.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Unterstützung für die deutsche Sprache</h3>
+				<p>
+					Jetzt ist WalletStats auf Deutsch verfügbar. Die Sprache kann in den Einstellungen auf Deutsch oder eine andere Sprache geändert werden.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Sonstiges</h3>
+				<p>
+					Weitere Funktionen, Fehlerbehebungen und visuelle Verbesserungen.
+				</p>`
+			];
+		else if (lang === LANG_ENUM.ru)
 			return [
 				`<h3>Оптимизация для компьютеров</h3>
 				<p>
@@ -1240,7 +1419,7 @@ function getUpdateDetailsArrayByLang (type) {
 					Другие функции, исправление ошибок и визуальные улучшения.
 				</p>`
 			];
-		else if (lang == 'ua')
+		else if (lang === LANG_ENUM.ua)
 			return [
 				`<h3>Оптимізація для комп'ютера</h3>
 				<p>
@@ -1260,41 +1439,71 @@ function getUpdateDetailsArrayByLang (type) {
 				</p>`
 			];	
 
-	} else if (type == `update ${localStorage.getItem('V')}`) {
+	} else if (type === `update ${localStorage.getItem('V')}`) {
 		
-		if (lang == 'en')
+		if (lang === LANG_ENUM.en)
 			return [
+				`<h3>Sound notifications</h3>
+				<p>
+					Now you can select which sound will play on internal app notifications.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Other</h3>
 				<p>
-					Bug fixing.
+					Code optimization and bug fixing.
 				</p>`
 			];
-		else if (lang == 'de')
+		else if (lang === LANG_ENUM.cz)
 			return [
-				`<h3>Sonstiges</h3>
+				`<h3>Zvuková oznámení</h3>
 				<p>
-					Fehlerbehebungen.
-				</p>`
-			];
-		else if (lang == 'cz')
-			return [
+					Nyní můžete vybrat, který zvuk se přehraje při interních oznámeních aplikace.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Ostatní</h3>
 				<p>
-					Opravy chyb.
+					Optimalizace kódu a opravy chyb.
 				</p>`
 			];
-		else if (lang == 'ru')
+		else if (lang === LANG_ENUM.de)
 			return [
+				`<h3>Töne für Benachrichtigungen</h3>
+				<p>
+					Jetzt können Sie auswählen, welcher Ton bei internen App-Benachrichtigungen abgespielt wird.
+				</p>`,
+				`<hr class="small-hr">`,
+
+				`<h3>Sonstiges</h3>
+				<p>
+					Codeoptimierung und Fehlerbehebung.
+				</p>`
+			];
+		else if (lang === LANG_ENUM.ru)
+			return [
+				`<h3>Звуковые уведомления</h3>
+				<p>
+					Теперь вы можете выбрать, какой звук будет воспроизводиться при внутренних уведомлениях приложения.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Другое</h3>
 				<p>
-					Исправление ошибок.
+					Оптимизация кода и исправление ошибок.
 				</p>`
 			];
-		else if (lang == 'ua')
+		else if (lang === LANG_ENUM.ua)
 			return [
+				`<h3>Звукові сповіщення</h3>
+				<p>
+					Тепер ви можете вибрати, який звук буде відтворюватися при внутрішніх сповіщеннях програми.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Інше</h3>
 				<p>
-					Виправлення помилок.
+					Оптимізація коду та виправлення помилок.
 				</p>`
 			];
 	}
@@ -1306,7 +1515,15 @@ function getUpdateDetailsArrayByLang (type) {
 
 const makeDelay = (delay) => new Promise (resolve => setTimeout(resolve, delay));
 
-async function startPreloaderAnimation () {
+/**
+ * Starts the preloader animation based on app settings.
+ * If animation is enabled, shows the preloader animation and hides it when finished.
+ * If animation is disabled, hides the preloader immediately.
+ * Enables scrolling after animation or hiding.
+ *
+ * @returns {Promise<void>} - A Promise that resolves when the animation/hiding is completed.
+ */
+async function startPreloaderAnimation() {
 
 	disableScrolling();
 
@@ -1362,37 +1579,57 @@ async function startPreloaderAnimation () {
 
 
 
-function uploadLanguage (lang) {
+/**
+ * Uploads language-specific settings and content to various parts of the app based on the given language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguage(lang) {
 
 	uploadFontFamilyByLanguage(lang);
 	uploadLanguageToRecordCategories(lang);
-	uploadLanguageToHistoryNavbars(lang);
+	uploadLanguageToHistoryNavBars(lang);
 	uploadLanguageToWidgets(lang);
 	uploadLanguageToTitles(lang);
 	uploadLanguageToButtons(lang);
 }
 
-
-function uploadFontFamilyByLanguage (lang) {
-
-	if (lang == 'en' || lang == 'de' || lang == 'cz')
-		id('body').classList.add('font1');
-	else if (lang == 'ru' || lang == 'ua')
+/**
+ * Uploads the appropriate font family to the body element based on the selected language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadFontFamilyByLanguage(lang) {
+	if (lang === LANG_ENUM.ru || lang === LANG_ENUM.ua) {
 		id('body').classList.add('font2');
+	} else {
+		id('body').classList.add('font1');
+	}
 }
 
 
-function uploadLanguageToRecordCategories (lang) {
-
+/**
+ * Uploads language-specific titles to record categories based on the given language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToRecordCategories(lang) {
 	categories_expense_titles = getCategoriesExpenseTitlesByLanguage(lang);
 	subcategories_titles = getSubcategoriesTitlesByLanguage(lang);
 	categories_income_titles = getCategoriesIncomeTitlesByLanguage(lang);
 	above_categories_titles = getAboveCategoriesExpenseTitlesByLanguage(lang);
 }
 
-function getCategoriesExpenseTitlesByLanguage (lang) {
+/**
+ * Returns an array of expense category titles based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[]} An array of expense category titles.
+ */
+function getCategoriesExpenseTitlesByLanguage(lang) {
 
-	if (lang == 'en')
+	if (lang === LANG_ENUM.en)
 		return [
 			/* 1 */ 'Food and drinks',
 			/* 2 */ 'Shopping',
@@ -1405,20 +1642,7 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 			/* 9 */ 'Investments',
 			/* 10 */ 'Other'
 		];
-	else if (lang == 'de')
-		return [
-			/* 1 */ 'Essen und Getränke',
-			/* 2 */ 'Einkaufen',
-			/* 3 */ 'Haus',
-			/* 4 */ 'Verkehrsmittel',
-			/* 5 */ 'Fahrzeug',
-			/* 6 */ 'Leben und Freizeit',
-			/* 7 */ 'Kommunikation',
-			/* 8 */ 'Finanzierungsspesen',
-			/* 9 */ 'Investitionen',
-			/* 10 */ 'Andere'
-		];
-	else if (lang == 'cz')
+	else if (lang === LANG_ENUM.cz)
 		return [
 			/* 1 */ 'Jídlo a pití',
 			/* 2 */ 'Nakupování',
@@ -1431,7 +1655,20 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 			/* 9 */ 'Investice',
 			/* 10 */ 'Ostatní'
 		];
-	else if (lang == 'ru')
+	else if (lang === LANG_ENUM.de)
+		return [
+			/* 1 */ 'Essen und Getränke',
+			/* 2 */ 'Einkaufen',
+			/* 3 */ 'Haus',
+			/* 4 */ 'Verkehrsmittel',
+			/* 5 */ 'Fahrzeug',
+			/* 6 */ 'Leben und Freizeit',
+			/* 7 */ 'Kommunikation',
+			/* 8 */ 'Finanzierungsspesen',
+			/* 9 */ 'Investitionen',
+			/* 10 */ 'Andere'
+		];
+	else if (lang === LANG_ENUM.ru)
 		return [
 			/* 1 */ 'Еда и напитки',
 			/* 2 */ 'Шоппинг',
@@ -1444,7 +1681,7 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 			/* 9 */ 'Вложения',
 			/* 10 */ 'Другое'
 		];
-	else if (lang == 'ua')
+	else if (lang === LANG_ENUM.ua)
 		return [
 			/* 1 */ 'Їжа та напої',
 			/* 2 */ 'Шопінг',
@@ -1459,9 +1696,16 @@ function getCategoriesExpenseTitlesByLanguage (lang) {
 		];
 }
 
-function getSubcategoriesTitlesByLanguage (lang) {
+/**
+ * Returns an array of subcategory titles for each expense category based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[][]} An array of subcategory titles for each expense category.
+ */
+function getSubcategoriesTitlesByLanguage(lang) {
 	
-	if (lang == 'en')
+	if (lang === LANG_ENUM.en)
 		return [
 			/* 1 */
 			[
@@ -1552,98 +1796,7 @@ function getSubcategoriesTitlesByLanguage (lang) {
 				'Transfers'
 			]
 		];
-	else if (lang == 'de')
-		return [
-			/* 1 */
-			[
-				'Lebensmittel',
-				'Restaurant, Fastfood',
-				'Cafe, Bar',
-			],
-			/* 2 */
-			[
-				'Kleidung und Schuhe',
-				'Apotheke',
-				'Elektronik, Zubehör',
-				'Geschäfte, Lust',
-				'Gesundheit, Schönheit',
-				'Haus und Garten',
-				'Schmuck, Zubehör',
-				'Kinder',
-				'Haustiere',
-				'Schreibwaren, Werkzeuge',
-			],
-			/* 3 */
-			[
-				'Nebenkosten',
-				'Instandhaltung',
-				'Hypothek',
-				'Versicherung',
-				'Miete',
-				'Dienst',
-			],
-			/* 4 */
-			[
-				'Öffentliche Verkehrsmittel',
-				'Taxi',
-				'Dienstreisen',
-				'Langstrecke',
-			],
-			/* 5 */
-			[
-				'Kraftstoff',
-				'Parken',
-				'Leasing',
-				'Autovermietung',
-				'Autoversicherung',
-				'Service des Autos',
-			],
-			/* 6 */
-			[
-				'Schönheit',
-				'Aktivsport, Fitness',
-				'Alkohol, Tabakwaren',
-				'Bücher, Audio',
-				'Geschenke, Wohltätigkeit',
-				'Kultur, Veranstaltungen',
-				'Ausbildung, Entwicklung',
-				'Gesundheit, Arzt',
-				'Interessen, Hobbys',
-				'Freizeit, Reisen, Hotels',
-				'Lebensereignisse',
-				'Lotterie, Glücksspiel',
-				'Fernsehen',
-			],
-			/* 7 */
-			[
-				'Telefonkommunikation',
-				'Internet',
-				'Abonnements, Software, Apps, Spiele',
-				'Postdienste',
-			],
-			/* 8 */
-			[
-				'Beratungen',
-				'Einziehung',
-				'Abgaben',
-				'Bußgelder',
-				'Versicherung',
-				'Kredit',
-			],
-			/* 9 */
-			[
-				'Finanzielle Investitionen',
-				'Liegenschaft',
-				'Ersparnisse',
-			],
-			/* 10 */
-			[
-				'abwesend',
-				'andere',
-				'Überwisungen'
-			]
-		];
-	else if (lang == 'cz')
+	else if (lang === LANG_ENUM.cz)
 		return [
 			/* 1 */
 			[
@@ -1734,7 +1887,98 @@ function getSubcategoriesTitlesByLanguage (lang) {
 				'Převody'
 			]
 		];
-	else if (lang == 'ru')
+	else if (lang === LANG_ENUM.de)
+		return [
+			/* 1 */
+			[
+				'Lebensmittel',
+				'Restaurant, Fastfood',
+				'Cafe, Bar',
+			],
+			/* 2 */
+			[
+				'Kleidung und Schuhe',
+				'Apotheke',
+				'Elektronik, Zubehör',
+				'Geschäfte, Lust',
+				'Gesundheit, Schönheit',
+				'Haus und Garten',
+				'Schmuck, Zubehör',
+				'Kinder',
+				'Haustiere',
+				'Schreibwaren, Werkzeuge',
+			],
+			/* 3 */
+			[
+				'Nebenkosten',
+				'Instandhaltung',
+				'Hypothek',
+				'Versicherung',
+				'Miete',
+				'Dienst',
+			],
+			/* 4 */
+			[
+				'Öffentliche Verkehrsmittel',
+				'Taxi',
+				'Dienstreisen',
+				'Langstrecke',
+			],
+			/* 5 */
+			[
+				'Kraftstoff',
+				'Parken',
+				'Leasing',
+				'Autovermietung',
+				'Autoversicherung',
+				'Service des Autos',
+			],
+			/* 6 */
+			[
+				'Schönheit',
+				'Aktivsport, Fitness',
+				'Alkohol, Tabakwaren',
+				'Bücher, Audio',
+				'Geschenke, Wohltätigkeit',
+				'Kultur, Veranstaltungen',
+				'Ausbildung, Entwicklung',
+				'Gesundheit, Arzt',
+				'Interessen, Hobbys',
+				'Freizeit, Reisen, Hotels',
+				'Lebensereignisse',
+				'Lotterie, Glücksspiel',
+				'Fernsehen',
+			],
+			/* 7 */
+			[
+				'Telefonkommunikation',
+				'Internet',
+				'Abonnements, Software, Apps, Spiele',
+				'Postdienste',
+			],
+			/* 8 */
+			[
+				'Beratungen',
+				'Einziehung',
+				'Abgaben',
+				'Bußgelder',
+				'Versicherung',
+				'Kredit',
+			],
+			/* 9 */
+			[
+				'Finanzielle Investitionen',
+				'Liegenschaft',
+				'Ersparnisse',
+			],
+			/* 10 */
+			[
+				'abwesend',
+				'andere',
+				'Überwisungen'
+			]
+		];
+	else if (lang === LANG_ENUM.ru)
 		return [
 			/* 1 */
 			[
@@ -1825,7 +2069,7 @@ function getSubcategoriesTitlesByLanguage (lang) {
 				'Переводы'
 			]
 		];
-	else if (lang == 'ua')
+	else if (lang === LANG_ENUM.ua)
 		return [
 			/* 1 */
 			[
@@ -1918,9 +2162,16 @@ function getSubcategoriesTitlesByLanguage (lang) {
 		];
 }
 
-function getCategoriesIncomeTitlesByLanguage (lang) {
+/**
+ * Retrieves income category titles based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[]} An array containing income category titles.
+ */
+function getCategoriesIncomeTitlesByLanguage(lang) {
 
-	if (lang == 'en')
+	if (lang === LANG_ENUM.en)
 		return [
 			/* 1 */ 'Salary',
 			/* 2 */ 'Scholarship',
@@ -1932,19 +2183,7 @@ function getCategoriesIncomeTitlesByLanguage (lang) {
 			/* 8 */ 'Refund',
 			/* 9 */ 'Transfers'
 		  ];
-	else if (lang == 'de')
-		return [
-			/* 1 */ 'Gehalt',
-			/* 2 */ 'Stipendium',
-			/* 3 */ 'Verkauf',
-			/* 4 */ 'Miete',
-			/* 5 */ 'Investitionen',
-			/* 6 */ 'Geschenke',
-			/* 7 */ 'Lotterie',
-			/* 8 */ 'Rückgabe',
-			/* 9 */ 'Überwisungen'
-		];
-	else if (lang == 'cz')
+	else if (lang === LANG_ENUM.cz)
 		return [
 			/* 1 */ 'Plat',
 			/* 2 */ 'Stipendium',
@@ -1956,7 +2195,19 @@ function getCategoriesIncomeTitlesByLanguage (lang) {
 			/* 8 */ 'Vrácení peněz',
 			/* 9 */ 'Převody'
 		];
-	else if (lang == 'ru')
+	else if (lang === LANG_ENUM.de)
+		return [
+			/* 1 */ 'Gehalt',
+			/* 2 */ 'Stipendium',
+			/* 3 */ 'Verkauf',
+			/* 4 */ 'Miete',
+			/* 5 */ 'Investitionen',
+			/* 6 */ 'Geschenke',
+			/* 7 */ 'Lotterie',
+			/* 8 */ 'Rückgabe',
+			/* 9 */ 'Überwisungen'
+		];
+	else if (lang === LANG_ENUM.ru)
 		return [
 			/* 1 */ 'Зарплата',
 			/* 2 */ 'Стипендия',
@@ -1968,7 +2219,7 @@ function getCategoriesIncomeTitlesByLanguage (lang) {
 			/* 8 */ 'Возврат денег',
 			/* 9 */ 'Переводы'
 		  ];
-	else if (lang == 'ua')
+	else if (lang === LANG_ENUM.ua)
 		return [
 			/* 1 */ 'Зарплата',
 			/* 2 */ 'Стипендія',
@@ -1982,683 +2233,202 @@ function getCategoriesIncomeTitlesByLanguage (lang) {
 		  ];
 }
 
-function getAboveCategoriesExpenseTitlesByLanguage (lang) {
+/**
+ * Retrieves titles for categories above expenses based on the specified language.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ *
+ * @returns {string[]} An array containing titles for categories above expenses.
+ */
+function getAboveCategoriesExpenseTitlesByLanguage(lang) {
 
-	if (lang == 'en') {
+	if (lang === LANG_ENUM.en) {
 		return [
 			'Transfer'
 		];
-	} else if (lang == 'de') {
-		return [
-			'Überweisung'
-		];
-	} else if (lang == 'cz') {
+	} else if (lang === LANG_ENUM.cz) {
 		return [
 			'Převod'
 		];
-	} else if (lang == 'ru') {
+	} else if (lang === LANG_ENUM.de) {
+		return [
+			'Überweisung'
+		];
+	} else if (lang === LANG_ENUM.ru) {
 		return [
 			'Перевод'
 		];
-	} else if (lang == 'ua') {
+	} else if (lang === LANG_ENUM.ua) {
 		return [
 			'Переказ'
 		];
 	}
 }
 
+/**
+ * Updates language for navigation bars in the history section.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToHistoryNavBars(lang) {
 
-function uploadLanguageToHistoryNavbars (lang) {
+	let els = id('history-period-nav').getElementsByTagName('button');
+	els[0].innerText = getStrings(lang).this_month;
+	els[1].innerText = getStrings(lang).last_month;
+	els[2].innerText = getStrings(lang).other;
 
-	let array = id('history-period-nav').getElementsByTagName('input');
-
-	if (lang == 'en') {
-		array[0].value = 'This month';
-		array[1].value = 'Prev month';
-		array[2].value = 'Custom';
-	} else if (lang == 'de') {
-		array[0].value = 'Dieser Monat';
-		array[1].value = 'Vormonat';
-		array[2].value = 'Filter';
-	} else if (lang == 'cz') {
-		array[0].value = 'Tento měsíc';
-		array[1].value = 'Před měsíc';
-		array[2].value = 'Vlastní';
-	} else if (lang == 'ru') {
-		array[0].value = 'Этот месяц';
-		array[1].value = 'Предыдущий';
-		array[2].value = 'Фильтр';
-	} else if (lang == 'ua') {
-		array[0].value = 'Цей місяць';
-		array[1].value = 'Попередній';
-		array[2].value = 'Фільтр';
-	}
-
-	array = id('history-type-nav').getElementsByTagName('input');
-
-	if (lang == 'en') {
-		array[0].value = 'Expenses';
-		array[1].value = 'Incomes';
-		array[2].value = 'View all';
-	} else if (lang == 'de') {
-		array[0].value = 'Spesen';
-		array[1].value = 'Einkünfte';
-		array[2].value = 'Alle';
-	} else if (lang == 'cz') {
-		array[0].value = 'Výdaje';
-		array[1].value = 'Příjmy';
-		array[2].value = 'Vše';
-	} else if (lang == 'ru') {
-		array[0].value = 'Расходы';
-		array[1].value = 'Доходы';
-		array[2].value = 'Все';
-	} else if (lang == 'ua') {
-		array[0].value = 'Витрати';
-		array[1].value = 'Доходи';
-		array[2].value = 'Все';
-	}
+	els = id('history-type-nav').getElementsByTagName('button');
+	els[0].innerText = getStrings(lang).expenses;
+	els[1].innerText = getStrings(lang).income_plural;
+	els[2].innerText = getStrings(lang).view_all;
 }
 
+/**
+ * Updates language for widgets.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToWidgets(lang) {
 
-function uploadLanguageToWidgets (lang) {
-
-	let el = id('stats-column').getElementsByClassName('stats-column-title');
-
-	if (lang == 'en') {
-		el[0].firstElementChild.firstElementChild.innerHTML = 'Incomes';
-		el[1].firstElementChild.firstElementChild.innerHTML = 'Expenses';
-	} else if (lang == 'de') {
-		el[0].firstElementChild.firstElementChild.innerHTML = 'Einkünfte';
-		el[1].firstElementChild.firstElementChild.innerHTML = 'Spesen';
-	} else if (lang == 'cz') {
-		el[0].firstElementChild.firstElementChild.innerHTML = 'Příjmy';
-		el[1].firstElementChild.firstElementChild.innerHTML = 'Výdaje';
-	} else if (lang == 'ru') {
-		el[0].firstElementChild.firstElementChild.innerHTML = 'Доходы';
-		el[1].firstElementChild.firstElementChild.innerHTML = 'Расходы';
-	} else if (lang == 'ua') {
-		el[0].firstElementChild.firstElementChild.innerHTML = 'Доходи';
-		el[1].firstElementChild.firstElementChild.innerHTML = 'Витрати';
-	}
+	let els = id('stats-column').getElementsByClassName('stats-column-title');
+	els[0].firstElementChild.firstElementChild.innerHTML = getStrings(lang).income_plural;
+	els[1].firstElementChild.firstElementChild.innerHTML = getStrings(lang).expenses;
 
 	id('today-stats-title').innerText = getTodayStatsTitle(lang);
 
-	el = id('incomes-expenses-total-title');
-	
-	if (lang == 'en')
-		el.innerText = 'Total:';
-	else if (lang == 'de')
-		el.innerText = 'Gesamt:';
-	else if (lang == 'cz')
-		el.innerText = 'Celkem:';
-	else if (lang == 'ru')
-		el.innerText = 'Всего:';
-	else if (lang == 'ua')
-		el.innerText = 'Всього:';
+	id('incomes-expenses-total-title').innerText = getStrings(lang).total;
 }
 
+/**
+ * Updates language for titles across the application.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToTitles(lang) {
 
-function uploadLanguageToTitles (lang) {
+	id('update-details-title').innerText = getStrings(lang).whats_new_message + localStorage.getItem('V');
 
-	let el = id('update-details-title');
+	id('settings-title').innerText = getStrings(lang).settings;
+	id('settings-version-title').innerText = `${getStrings(lang).version} ${localStorage.getItem('V')}`;
 
-	if (lang == 'en')
-		el.innerText = `What's new in V${localStorage.getItem('V')}`;
-	else if (lang == 'de')
-		el.innerText = `Was gibt es Neues in V${localStorage.getItem('V')}`;
-	else if (lang == 'cz')
-		el.innerText = `Co je nové ve V${localStorage.getItem('V')}`;
-	else if (lang == 'ru')
-		el.innerText = `Что нового в В${localStorage.getItem('V')}`;
-	else if (lang == 'ua')
-		el.innerText = `Що нового у В${localStorage.getItem('V')}`;
+	id("date-filter-menu-date-from-label").innerText = getStrings(lang).from;
+	id("date-filter-menu-date-to-label").innerText = getStrings(lang).to_time_meaning;
 
-	el = id('make-record-window').getElementsByClassName('field-title');
+	let els = id('make-record-window').getElementsByClassName('field-label');
+	els[0].innerHTML = getStrings(lang).date;
+	els[1].innerHTML = getStrings(lang).note;
+	els[4].innerHTML = getStrings(lang).rate;
+	els[5].innerHTML = getStrings(lang).amount;
+	els[6].innerHTML = getStrings(lang).rate;
+	els[7].innerHTML = getStrings(lang).final_amount;
+	els[8].innerHTML = getStrings(lang).category;
 
-	if (lang == 'en') {
-		el[0].innerHTML = 'Date';
-		el[1].innerHTML = 'Note';
-		el[4].innerHTML = 'Rate';
-		el[5].innerHTML = 'Amount';
-		el[6].innerHTML = 'Rate';
-		el[7].innerHTML = 'Final amount';
-		el[8].innerHTML = 'Category';
-	} else if (lang == 'de') {
-		el[0].innerHTML = 'Datum';
-		el[1].innerHTML = 'Anmerkung';
-		el[4].innerHTML = 'Anfangsrate';
-		el[5].innerHTML = 'Summe';
-		el[6].innerHTML = 'Schlussrate';
-		el[7].innerHTML = 'Endbetrag';
-		el[8].innerHTML = 'Kategorie';
-	} else if (lang == 'cz') {
-		el[0].innerHTML = 'Datum';
-		el[1].innerHTML = 'Poznámka';
-		el[4].innerHTML = 'Kurz';
-		el[5].innerHTML = 'Částka';
-		el[6].innerHTML = 'Kurz';
-		el[7].innerHTML = 'Konečná částka';
-		el[8].innerHTML = 'Kategorie';
-	} else if (lang == 'ru') {
-		el[0].innerHTML = 'Дата';
-		el[1].innerHTML = 'Примечание';
-		el[4].innerHTML = 'Курс';
-		el[5].innerHTML = 'Сумма';
-		el[6].innerHTML = 'Курс';
-		el[7].innerHTML = 'Итоговая сумма';
-		el[8].innerHTML = 'Категория';
-	} else if (lang == 'ua') {
-		el[0].innerHTML = 'Дата';
-		el[1].innerHTML = 'Примітка';
-		el[4].innerHTML = 'Курс';
-		el[5].innerHTML = 'Сума';
-		el[6].innerHTML = 'Курс';
-		el[7].innerHTML = 'Кінцева сума';
-		el[8].innerHTML = 'Категорія';
+	els = id('make-record-note');
+	els.setAttribute('placeholder', getStrings(lang).note_field_placeholder);
+	adaptInputLengthExplicitly(els);
+
+	els = id('edit-account').getElementsByClassName('field');
+	els[0].firstElementChild.innerText = getStrings(lang).currency;
+	els[1].firstElementChild.innerText = getStrings(lang).balance;
+	els[2].firstElementChild.innerText = getStrings(lang).color;
+
+	els = id('edit-account').getElementsByClassName('switch-button-block');
+	for (let element of els) {
+		element.lastElementChild.firstElementChild.innerText = getStrings(lang).off_turn_off_meaning;
+		element.lastElementChild.lastElementChild.innerText = getStrings(lang).on_turn_on_meaning;
 	}
-
-	el = id('make-record-note');
-
-	if (lang == 'en')
-		el.setAttribute('placeholder', 'Note for more specific');
-	else if (lang == 'de')
-		el.setAttribute('placeholder', 'Hinweis für weitere Einzelheiten');
-	else if (lang == 'cz')
-		el.setAttribute('placeholder', 'Poznámka pro upřesnění');
-	else if (lang == 'ru')
-		el.setAttribute('placeholder', 'Примечание для большей конкретики');
-	else if (lang == 'ua')
-		el.setAttribute('placeholder', 'Примітка для більшої конкретики');
-
-	adaptInputLengthExplicitly(el);
-
-	el = id('edit-account').getElementsByClassName('field-title');
-
-	if (lang == 'en') {
-		el[0].innerHTML = 'Currency';
-		el[1].innerHTML = 'Balance';
-		el[2].innerHTML = 'Color';
-	} else if (lang == 'de') {
-		el[0].innerHTML = 'Währung';
-		el[1].innerHTML = 'Bilanz';
-		el[2].innerHTML = 'Farbe';
-	} else if (lang == 'cz') {
-		el[0].innerHTML = 'Měna';
-		el[1].innerHTML = 'Zůstatek';
-		el[2].innerHTML = 'Barva';
-	} else if (lang == 'ru') {
-		el[0].innerHTML = 'Валюта';
-		el[1].innerHTML = 'Баланс';
-		el[2].innerHTML = 'Цвет';
-	} else if (lang == 'ua') {
-		el[0].innerHTML = 'Валюта';
-		el[1].innerHTML = 'Баланс';
-		el[2].innerHTML = 'Колір';
-	}
-
-	el = id('date-filter-menu').getElementsByClassName('field-title');
-
-	if (lang == 'en') {
-		el[0].innerHTML = 'From';
-		el[1].innerHTML = 'To';
-	} else if (lang == 'de') {
-		el[0].innerHTML = 'Von';
-		el[1].innerHTML = 'Bis';
-	} else if (lang == 'cz') {
-		el[0].innerHTML = 'Od';
-		el[1].innerHTML = 'Do';
-	} else if (lang == 'ru') {
-		el[0].innerHTML = 'От';
-		el[1].innerHTML = 'До';
-	} else if (lang == 'ua') {
-		el[0].innerHTML = 'Від';
-		el[1].innerHTML = 'До';
-	}
-
-	el = id('settings').firstElementChild.firstElementChild.firstElementChild;
-
-	if (lang == 'en')
-		el.innerText = 'Settings';
-	else if (lang == 'de')
-		el.innerText = 'Einstellungen';
-	else if (lang == 'cz')
-		el.innerText = 'Nastavení';
-	else if (lang == 'ru')
-		el.innerText = 'Настройки';
-	else if (lang == 'ua')
-		el.innerText = 'Налаштування';
-
-	el = el.nextElementSibling;
-
-	if (lang == 'en')
-		el.innerText = `Version ${localStorage.getItem('V')}`;
-	else if (lang == 'de')
-		el.innerText = `Version ${localStorage.getItem('V')}`;
-	else if (lang == 'cz')
-		el.innerText = `Verze ${localStorage.getItem('V')}`;
-	else if (lang == 'ru')
-		el.innerText = `Версия ${localStorage.getItem('V')}`;
-	else if (lang == 'ua')
-		el.innerText = `Версія ${localStorage.getItem('V')}`;
-		
-	el = id('edit-account').getElementsByClassName('switch-button-block');
-	
-	for (let element of document.getElementsByClassName('switch-button-block')) {
-		element.lastElementChild.firstElementChild.innerText = getOffWordByLanguage(lang);
-		element.lastElementChild.lastElementChild.innerText = getOnWordByLanguage(lang);
-	}
-
-	if (lang == 'en') {
-		el[0].firstElementChild.innerText = 'Hide account from topbar';
-		el[1].firstElementChild.innerText = 'Account without balance';
-		el[2].firstElementChild.innerText = 'Do not show balance';
-	} else if (lang == 'de') {
-		el[0].firstElementChild.innerText = 'Konto in der Top-Leiste ausblenden';
-		el[1].firstElementChild.innerText = 'Konto ohne Guthaben';
-		el[2].firstElementChild.innerText = 'Guthaben nicht anzeigen';
-	} else if (lang == 'cz') {
-		el[0].firstElementChild.innerText = 'Skrýt účet z horního panelu';
-		el[1].firstElementChild.innerText = 'Účet bez zůstatku';
-		el[2].firstElementChild.innerText = 'Nezobrazovat zůstatek';
-	} else if (lang == 'ru') {
-		el[0].firstElementChild.innerText = 'Скрыть счёт из верхней панели';
-		el[1].firstElementChild.innerText = 'Счёт без баланса';
-		el[2].firstElementChild.innerText = 'Не показывать баланс';
-	} else if (lang == 'ua') {
-		el[0].firstElementChild.innerText = 'Приховати рахунок з верхньої панелі';
-		el[1].firstElementChild.innerText = 'Рахунок без балансу';
-		el[2].firstElementChild.innerText = 'Не відображати баланс';
-	}
+	els[0].firstElementChild.innerText = getStrings(lang).hide_account_from_top_bar;
+	els[1].firstElementChild.innerText = getStrings(lang).account_without_balance;
+	els[2].firstElementChild.innerText = getStrings(lang).do_not_show_balance;
 }
 
+/**
+ * Updates language for buttons across the application.
+ *
+ * @param {string} lang - The language code representing the selected language.
+ */
+function uploadLanguageToButtons(lang) {
 
-function uploadLanguageToButtons (lang) {
+	id('notification-show-details-button').value = getStrings(lang).show_details;
 
-	let el = id('notification-show-details-button');
+	id('make-record-button').value = getStrings(lang).make_record;
 
-	if (lang == 'en')
-		el.value = 'Show details';
-	else if (lang == 'de')
-		el.value = 'Details anzeigen';
-	else if (lang == 'cz')
-		el.value = 'Ukázat podrobnosti';
-	else if (lang == 'ru')
-		el.value = 'Показать детали';
-	else if (lang == 'ua')
-		el.value = 'Показати деталі';
+	id('settings-button-desktop').value = getStrings(lang).settings;
+	id('settings-button-cont-mobile').lastElementChild.innerText = getStrings(lang).settings;
 
-	el = id('make-record-button');
+	id('repeat-record').value = getStrings(lang).repeat;
 
-	if (lang == 'en')
-		el.value = 'Make record';
-	else if (lang == 'de')
-		el.value = 'Eintrag erstellen';
-	else if (lang == 'cz')
-		el.value = 'Udělat záznam';
-	else if (lang == 'ru')
-		el.value = 'Сделать запись';
-	else if (lang == 'ua')
-		el.value = 'Зробити запис';
+	id('remove-record').value = getStrings(lang).remove;
 
-	el[0] = id('settings-button-desktop');
-	el[1] = id('settings-button-cont-mobile').lastElementChild;
+	id('remove-account').value = getStrings(lang).remove_account;
 
-	if (lang == 'en') {
-		el[0].value = 'Settings';
-		el[1].value = 'Settings';
-	} else if (lang == 'de') {
-		el[0].value = 'Einstellungen';
-		el[1].value = 'Einstellungen';
-	} else if (lang == 'cz') {
-		el[0].value = 'Nastavení';
-		el[1].value = 'Nastavení';
-	} else if (lang == 'ru') {
-		el[0].value = 'Настройки';
-		el[1].value = 'Настройки';
-	} else if (lang == 'ua') {
-		el[0].value = 'Налаштування';
-		el[1].value = 'Налаштування';
-	}
+	id('save-account').value = getStrings(lang).save_account;
 
-	el = id('record-types').getElementsByTagName('input');
+	id('submit-date-filter').value = getStrings(lang).confirm;
 
-	if (lang == 'en') {
-		el[0].value = 'Transfer';
-		el[1].value = 'Expense';
-		el[2].value = 'Income';
-	} else if (lang == 'de') {
-		el[0].value = 'Übersetzung';
-		el[1].value = 'Spesen';
-		el[2].value = 'Einkommen';
-	} else if (lang == 'cz') {
-		el[0].value = 'Převod';
-		el[1].value = 'Výdaj';
-		el[2].value = 'Příjem';
-	} else if (lang == 'ru') {
-		el[0].value = 'Перевод';
-		el[1].value = 'Расход';
-		el[2].value = 'Доход';
-	} else if (lang == 'ua') {
-		el[0].value = 'Переказ';
-		el[1].value = 'Витрата';
-		el[2].value = 'Дохід';
-	}
+	let els = id('record-types').getElementsByTagName('input');
+	els[0].value = getStrings(lang).transfer;
+	els[1].value = getStrings(lang).expense;
+	els[2].value = getStrings(lang).income_singular;
 
-	el = id('repeat-record');
+	els = id('root').getElementsByClassName('back-button');
+	for (let a = 0; a < els.length; a++)
+		els[a].value = getStrings(lang).back;
 
-	if (lang == 'en')
-		el.value = 'Repeat';
-	else if (lang == 'de')
-		el.value = 'Wiederholen';
-	else if (lang == 'cz')
-		el.value = 'Zopakovat';
-	else if (lang == 'ru')
-		el.value = 'Повторить';
-	else if (lang == 'ua')
-		el.value = 'Повторити';
+	els = id('settings-categories').getElementsByTagName('button');
+	els[0].innerText = getStrings(lang).other;
+	els[1].innerText = getStrings(lang).reset_data;
+	els[2].innerText = getStrings(lang).language;
+	els[3].innerText = getStrings(lang).appearance;
+	els[4].innerText = getStrings(lang).top_margin;
+	els[5].innerText = getStrings(lang).accounts;
 
-	el = id('remove-record');
+	els = id('root').getElementsByClassName('close-button');
+	for (let a = 0; a < els.length; a++)
+		els[a].innerText = getStrings(lang).close;
 
-	if (lang == 'en')
-		el.value = 'Remove';
-	else if (lang == 'de')
-		el.value = 'Löschen';
-	else if (lang == 'cz')
-		el.value = 'Smazat';
-	else if (lang == 'ru')
-		el.value = 'Удалить';
-	else if (lang == 'ua')
-		el.value = 'Видалити';
+	els = id('date-filter-other').getElementsByTagName('button');
+	els[0].innerText = getStrings(lang).this_week;
+	els[1].innerText = getStrings(lang).seven_days;
+	els[2].innerText = getStrings(lang).this_year;
+	els[3].innerText = getStrings(lang).last_year;
 
-	el = id('root').getElementsByClassName('back-button');
-
-	if (lang == 'en')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Back';
-	else if (lang == 'de')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Zurück';
-	else if (lang == 'cz')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Zpátky';
-	else if (lang == 'ru')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Назад';
-	else if (lang == 'ua')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Назад';
-
-	el = id('settings-categories').getElementsByTagName('input');
-
-	if (lang == 'en') {
-		el[0].value = 'Links';
-		el[1].value = 'Reset data';
-		el[2].value = 'Language';
-		el[3].value = 'Appearance';
-		el[4].value = 'Top margin';
-		el[5].value = 'Accounts';
-	} else if (lang == 'de') {
-		el[0].value = 'Links';
-		el[1].value = 'Daten zurücksetzen';
-		el[2].value = 'Sprachen';
-		el[3].value = 'Aussehen';
-		el[4].value = 'Top-margin';
-		el[5].value = 'Konten';
-	} else if (lang == 'cz') {
-		el[0].value = 'Odkazy';
-		el[1].value = 'Resetovat data';
-		el[2].value = 'Jazyk';
-		el[3].value = 'Vzhled';
-		el[4].value = 'Horní okraj';
-		el[5].value = 'Účty';
-	} else if (lang == 'ru') {
-		el[0].value = 'Ссылки';
-		el[1].value = 'Сбросить данные';
-		el[2].value = 'Язык';
-		el[3].value = 'Внешний вид';
-		el[4].value = 'Верхний отступ';
-		el[5].value = 'Счета';
-	} else if (lang == 'ua') {
-		el[0].value = 'Посилання';
-		el[1].value = 'Скинути дані';
-		el[2].value = 'Мова';
-		el[3].value = 'Зовнішній вигляд';
-		el[4].value = 'Верхній відступ';
-		el[5].value = 'Рахунки';
-	}
-
-	el = id('root').getElementsByClassName('close-button');
-
-	if (lang == 'en')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Close';
-	else if (lang == 'de')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Schließen';
-	else if (lang == 'cz')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Zavřít';
-	else if (lang == 'ru')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Закрыть';
-	else if (lang == 'ua')
-		for (let a = 0; a < el.length; a++)
-			el[a].value = 'Закрити';
-
-	el = id('remove-account');
-
-	if (lang == 'en')
-		el.value = 'Remove account';
-	else if (lang == 'de')
-		el.value = 'Löschen';
-	else if (lang == 'cz')
-		el.value = 'Smazat účet';
-	else if (lang == 'ru')
-		el.value = 'Удалить';
-	else if (lang == 'ua')
-		el.value = 'Видалити';
-
-	el = id('save-account');
-
-	if (lang == 'en')
-		el.value = 'Save account';
-	else if (lang == 'de')
-		el.value = 'Speichern';
-	else if (lang == 'cz')
-		el.value = 'Uložit účet';
-	else if (lang == 'ru')
-		el.value = 'Сохранить';
-	else if (lang == 'ua')
-		el.value = 'Зберегти';
-
-	el = id('submit-date-filter');
-
-	if (lang == 'en')
-		el.value = 'Confirm';
-	else if (lang == 'de')
-		el.value = 'Bestätigen';
-	else if (lang == 'cz')
-		el.value = 'Potvrdit';
-	else if (lang == 'ru')
-		el.value = 'Подтвердить';
-	else if (lang == 'ua')
-		el.value = 'Підтвердити';
-
-	el = id('date-filter-other').getElementsByTagName('input');
-
-	if (lang == 'en') {
-		el[0].value = 'This week';
-		el[1].value = '7 days';
-		el[2].value = 'This year';
-		el[3].value = 'Prev year';
-	} else if (lang == 'de') {
-		el[0].value = 'Diese Woche';
-		el[1].value = '7 Tage';
-		el[2].value = 'Dieses Jahr';
-		el[3].value = 'Vorjahr';
-	} else if (lang == 'cz') {
-		el[0].value = 'Tento týden';
-		el[1].value = '7 dní';
-		el[2].value = 'Tento rok';
-		el[3].value = 'Před rok';
-	} else if (lang == 'ru') {
-		el[0].value = 'Эта неделя';
-		el[1].value = '7 дней';
-		el[2].value = 'Этот год';
-		el[3].value = 'Пред год';
-	} else if (lang == 'ua') {
-		el[0].value = 'Цей тиждень';
-		el[1].value = '7 днів';
-		el[2].value = 'Цей рік';
-		el[3].value = 'Попер рік';
-	}
-
-	for (let input of id('date-filter-other').getElementsByTagName('input'))
+	for (let input of id('date-filter-other').getElementsByTagName('input')) {
 		adaptInputLengthExplicitly(input);
-
-	el = id('date-filter-months').getElementsByTagName('input');
-
-	if (lang == 'en') {
-		el[0].value = 'Jan';
-		el[1].value = 'Feb';
-		el[2].value = 'Mar';
-		el[3].value = 'Apr';
-		el[4].value = 'May';
-		el[5].value = 'June';
-		el[6].value = 'July';
-		el[7].value = 'Aug';
-		el[8].value = 'Sept';
-		el[9].value = 'Oct';
-		el[10].value = 'Nov';
-		el[11].value = 'Dec';
-	} else if (lang == 'de') {
-		el[0].value = 'Jan';
-		el[1].value = 'Feb';
-		el[2].value = 'Mär';
-		el[3].value = 'Apr';
-		el[4].value = 'Mai';
-		el[5].value = 'Jun';
-		el[6].value = 'Jul';
-		el[7].value = 'Aug';
-		el[8].value = 'Sep';
-		el[9].value = 'Okt';
-		el[10].value = 'Nov';
-		el[11].value = 'Dez';
-	} else if (lang == 'cz') {
-		el[0].value = 'Led';
-		el[1].value = 'Ún';
-		el[2].value = 'Brez';
-		el[3].value = 'Dub';
-		el[4].value = 'Kvet';
-		el[5].value = 'Cerv';
-		el[6].value = 'Cerven';
-		el[7].value = 'Srp';
-		el[8].value = 'Září';
-		el[9].value = 'Říj';
-		el[10].value = 'List';
-		el[11].value = 'Pros';
-	} else if (lang == 'ru') {
-		el[0].value = 'Янв';
-		el[1].value = 'Фев';
-		el[2].value = 'Мар';
-		el[3].value = 'Апр';
-		el[4].value = 'Май';
-		el[5].value = 'Июн';
-		el[6].value = 'Июл';
-		el[7].value = 'Авг';
-		el[8].value = 'Сен';
-		el[9].value = 'Окт';
-		el[10].value = 'Ноя';
-		el[11].value = 'Дек';
-	} else if (lang == 'ua') {
-		el[0].value = 'Січ';
-		el[1].value = 'Лют';
-		el[2].value = 'Бер';
-		el[3].value = 'Квіт';
-		el[4].value = 'Трав';
-		el[5].value = 'Черв';
-		el[6].value = 'Лип';
-		el[7].value = 'Серп';
-		el[8].value = 'Вер';
-		el[9].value = 'Жовт';
-		el[10].value = 'Лист';
-		el[11].value = 'Груд';
 	}
 
-	el = id('enable-history-scroll-button');
+	els = id('date-filter-months').getElementsByTagName('button');
+	els[0].innerText = getStrings(lang).jan_month;
+	els[1].innerText = getStrings(lang).feb_month;
+	els[2].innerText = getStrings(lang).mar_month;
+	els[3].innerText = getStrings(lang).apr_month;
+	els[4].innerText = getStrings(lang).may_month;
+	els[5].innerText = getStrings(lang).june_month;
+	els[6].innerText = getStrings(lang).july_month;
+	els[7].innerText = getStrings(lang).aug_month;
+	els[8].innerText = getStrings(lang).sept_month;
+	els[9].innerText = getStrings(lang).oct_month;
+	els[10].innerText = getStrings(lang).nov_month;
+	els[11].innerText = getStrings(lang).dec_month;
 
-	changeChangeScrollButtonTitle(el, 'off', lang);
-	
-	el = id('enable-categories-details-scroll-button');
-	
-	changeChangeScrollButtonTitle(el, 'off', lang);
+	id('enable-history-scroll-button').value = getStrings(lang).disable_scrolling;
+	id('enable-categories-details-scroll-button').value = getStrings(lang).disable_scrolling;
 }
 
-
-function uploadAccountFieldTitle (status) {
-
-	let lang = localStorage.getItem('L');
-	let field;
-	
-	if (status == 'record') {
-		field = id('make-record-account').previousElementSibling;
-
-		if (lang == 'en') field.innerText = 'Account';
-		else if (lang == 'de') field.innerText = 'Konto';
-		else if (lang == 'cz') field.innerText = 'Účet';
-		else if (lang == 'ru') field.innerText = 'Счёт';
-		else if (lang == 'ua') field.innerText = 'Рахунок';
-			
-	} else if (status == 'transfer') {
-
-		let titles = getRecordAccountFieldsTitles();
-		
-		id('make-record-account').previousElementSibling.innerText = titles[0];
-		id('make-transfer-to-account').previousElementSibling.innerText = titles[1];
-	}
-}
-
-
-function uploadSaveButtonTitle (long, el) {
+/**
+ * Updates the account field title at the make record window based on the specified record status
+ * ("record" or "transfer").
+ *
+ * @param {string} status - The status indicating whether it's for a record or transfer.
+ */
+function uploadAccountFieldTitle(status) {
 	let lang = localStorage.getItem('L');
 
-	if (long == 'long') {
-
-		if (el == id('make-record-save-button')) {
-			if (lang == 'en')
-				el.value = 'Save record';
-			else if (lang == 'de')
-				el.value = 'Eintrag speichern';
-			else if (lang == 'cz')
-				el.value = 'Uložit záznam';
-			else if (lang == 'ru')
-				el.value = 'Сохранить запись';
-			else if (lang == 'ua')
-				el.value = 'Зберегти запис';
-		} else if (el == id('make-transfer-button')) {
-			if (lang == 'en')
-				el.value = 'Make transfer';
-			else if (lang == 'de')
-				el.value = 'Überweisen';
-			else if (lang == 'cz')
-				el.value = 'Udělat převod';
-			else if (lang == 'ru')
-				el.value = 'Сделать перевод';
-			else if (lang == 'ua')
-				el.value = 'Зробити переказ';
-		}
-		
-	} else if (long == 'short') {
-		if (lang == 'en')
-			el.value = 'Save';
-		else if (lang == 'de')
-			el.value = 'Speichern';
-		else if (lang == 'cz')
-			el.value = 'Uložit';
-		else if (lang == 'ru')
-			el.value = 'Сохранить';
-		else if (lang == 'ua')
-			el.value = 'Зберегти';
+	if (status === 'record') {
+		id('make-record-account').previousElementSibling.innerText = getStrings(lang).account;
+	} else if (status === 'transfer') {
+		id('make-record-account').previousElementSibling.innerText = getStrings(lang).from_account;
+		id('make-transfer-to-account').previousElementSibling.innerText = getStrings(lang).to_account;
 	}
 }
 
@@ -2666,13 +2436,18 @@ function uploadSaveButtonTitle (long, el) {
 
 
 
-function reapplyBlur (blur_status) {
+/**
+ * Reapplies blur effect to specified elements based on the given blur status.
+ *
+ * @param {boolean} newStatus - Indicates whether to apply or remove the blur effect.
+ */
+function reapplyBlur(newStatus) {
 
-	if (blur_status) {
+	if (newStatus) {
 
 		for (let el of document.getElementsByClassName('solid-background')) {
 
-			if (el.id == 'notification') {
+			if (el.id === 'notification') {
 				el.classList.add('solid-blur');
 				setTimeout(() => {
 					el.classList.remove('solid-background');
@@ -2699,12 +2474,19 @@ function reapplyBlur (blur_status) {
 	}
 }
 
-function operateElementsArrayClass (array, class_to_remove, class_to_add) {
+/**
+ * Operates on an array of elements to add and remove specified classes with a delay.
+ *
+ * @param {HTMLCollection} array - The array of elements to operate on.
+ * @param {string} classToRemove - The class to be removed.
+ * @param {string} classToAdd - The class to be added.
+ */
+function operateElementsArrayClass(array, classToRemove, classToAdd) {
 
 	for (let el of array) {
-		el.classList.add(class_to_add);
+		el.classList.add(classToAdd);
 		setTimeout(() => {
-			el.classList.remove(class_to_remove);
+			el.classList.remove(classToRemove);
 		}, 1);
 	}
 }
@@ -2713,9 +2495,14 @@ function operateElementsArrayClass (array, class_to_remove, class_to_add) {
 
 
 
-function applyTheme (theme) {
+/**
+ * Applies the specified theme to the application and updates the preloader theme accordingly.
+ *
+ * @param {string} theme - The theme code ('l' for light, 'b' for dark blue, 'd' for dark).
+ */
+function applyTheme(theme) {
 
-	if (Number(localStorage.getItem('TA')) == 1) {
+	if (Number(localStorage.getItem('TA')) === 1) {
 		if (window.matchMedia('(prefers-color-scheme: dark)').matches)
 			theme = 'd';
 		else theme = 'l';
@@ -2723,15 +2510,15 @@ function applyTheme (theme) {
 		localStorage.setItem('T', theme);
 	}
 	
-	if (theme == 'l') {
+	if (theme === 'l') {
 		id('root').classList.remove('wallet-darkblue');
 		id('root').classList.remove('wallet-dark');
 		id('root').classList.add('wallet-light');
-	} else if (theme == 'b') {
+	} else if (theme === 'b') {
 		id('root').classList.remove('wallet-light');
 		id('root').classList.remove('wallet-dark');
 		id('root').classList.add('wallet-darkblue');
-	} else if (theme == 'd') {
+	} else if (theme === 'd') {
 		id('root').classList.remove('wallet-darkblue');
 		id('root').classList.remove('wallet-light');
 		id('root').classList.add('wallet-dark');
@@ -2742,18 +2529,26 @@ function applyTheme (theme) {
 	}, 1);
 }
 
-function applyThemeForPreloader (theme) {
+/**
+ * Applies the specified theme to the preloader element.
+ *
+ * @param {string} theme - The theme code ('l' for light, 'b' for dark blue, 'd' for dark).
+ */
+function applyThemeForPreloader(theme) {
 
-	if (theme == 'l') {
+	if (theme === 'l') {
 		id('preloader').classList.add('light');
-	} else if (theme == 'b') {
+	} else if (theme === 'b') {
 		id('preloader').classList.add('darkblue');
-	} else if (theme == 'd') {
+	} else if (theme === 'd') {
 		id('preloader').classList.add('dark');
 	}
 }
 
-function applyTopmargin () {
+/**
+ * Applies the top margin to specified elements based on the value stored in local storage.
+ */
+function applyTopMargin() {
   id('accounts').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('settings').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px)`;
   id('notification-cont').style.paddingTop = `calc(15px + ${localStorage.getItem('TM')}px`;
@@ -2761,44 +2556,64 @@ function applyTopmargin () {
 
 
 
-function addAccount () {
-	localStorage.setItem('ACount', Number(localStorage.getItem('ACount')) + 1);
-	let acc_count = localStorage.getItem('ACount');
+/**
+ * Increments the account count and initializes default values for the new account.
+ */
+function addAccount() {
+	localStorage.setItem("ACount", (Number(localStorage.getItem("ACount")) + 1).toString());
+	let acc_count = localStorage.getItem("ACount");
 
-	localStorage.setItem('AColor' + acc_count, '050505');
-	localStorage.setItem('ACurrency' + acc_count, 'USD');
-	localStorage.setItem('ABalance' + acc_count, (0).toFixed(2));
-	localStorage.setItem('AHT' + acc_count, '0');
-	localStorage.setItem('AWB' + acc_count, '0');
-	localStorage.setItem('AHB' + acc_count, '0');
+	localStorage.setItem("AColor" + acc_count, "050505");
+	localStorage.setItem("ACurrency" + acc_count, "USD");
+	localStorage.setItem("ABalance" + acc_count, (0).toFixed(2));
+	localStorage.setItem("AHT" + acc_count, "false");
+	localStorage.setItem("AWB" + acc_count, "false");
+	localStorage.setItem("AHB" + acc_count, "false");
 }
 
-function uploadAccount (account_num, container) {
+/**
+ * Uploads account information to the specified container, excluding hidden accounts.
+ *
+ * @param {number} accountNum - The account number.
+ * @param {HTMLElement} container - The container to upload the account to.
+ */
+function uploadAccount(accountNum, container) {
 	if (
-		!(container == id('accounts') &&
-		localStorage.getItem(`AHT${account_num}`) == '1')
-	)
-	container.insertAdjacentHTML('beforeend', constructAccountEl(account_num));
+		!(container === id('accounts') &&
+		localStorage.getItem(`AHT${accountNum}`) === "true")
+	) {
+		container.insertAdjacentHTML('beforeend', constructAccountEl(accountNum));
+	}
 }
 
 
 
-function uploadCategoriesToItsWindow (container, titles_array, icons_array) {
+/**
+ * Uploads category titles and icons to the specified container.
+ *
+ * @param {HTMLElement} container - The container to upload categories to.
+ * @param {string[]} titlesArray - Array of category titles.
+ * @param {string[]} iconsArray - Array of category icons.
+ */
+function uploadCategoriesToItsWindow(container, titlesArray, iconsArray) {
 
 	container.insertAdjacentHTML(
 		'afterbegin',
-		category_list_el(titles_array.length - 1, icons_array, titles_array)
+		category_list_el(titlesArray.length - 1, iconsArray, titlesArray)
 	);
 
-	for (let a = titles_array.length - 2; a >= 0; a--) {
+	for (let a = titlesArray.length - 2; a >= 0; a--) {
 		container.insertAdjacentHTML('afterbegin', category_list_hr);
 		container.insertAdjacentHTML(
 			'afterbegin',
-			category_list_el(a, icons_array, titles_array)
+			category_list_el(a, iconsArray, titlesArray)
 		);
 	}
 }
 
+/**
+ * Uploads subcategories to the subcategories window.
+ */
 function uploadSubcategoriesToItsWindow() {
 	
 	for (let a = subcategories_titles.length - 1; a >= 0; a--) {
@@ -2814,7 +2629,7 @@ function uploadSubcategoriesToItsWindow() {
 				'afterbegin',
 				subcategory_list_el(
 					b,
-					subcategories_icons, subcategories_titles,
+					SUBCATEGORY_ICONS, subcategories_titles,
 					a, b
 					)
 					);
@@ -2829,14 +2644,18 @@ function uploadSubcategoriesToItsWindow() {
 
 
 
-/** 
- * @param {number} all Update all widgets
- * @param {number} today Update today widget
- * @param {number} expenses_incomes Update expenses/incomes widget
- * @param {[number, number]} history Array of 2 numbers: update history widget and update history widget animated
- * @param {number} pie_chart Update pie chart widget
+/**
+ * Updates widgets data based on the specified parameters.
+ *
+ * @param {number} all - Update all widgets.
+ * @param {number} today - Update today widget.
+ * @param {number} expensesIncomes - Update expenses/incomes widget.
+ * @param {[number, number]} history - Array of 2 numbers: update history widget and update history widget animated.
+ * @param {number} pieChart - Update pie chart widget.
  */
-function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
+function updateWidgetsData(
+	all, today, expensesIncomes, history, pieChart
+) {
 
 	if (all) {
 		uploadTodayStats();
@@ -2849,7 +2668,7 @@ function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
 	if (today) {
 		uploadTodayStats();
 	}
-	if (expenses_incomes) {
+	if (expensesIncomes) {
 		uploadExpensesIncomesStats();
 	}
 	if (history[0]) {
@@ -2857,7 +2676,7 @@ function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
 	} else if (history[1]) {
 		uploadRecordsToHistoryAnimated();
 	}
-	if (pie_chart) {
+	if (pieChart) {
 		updatePieChart();
 	}
 }
@@ -2866,9 +2685,16 @@ function updateWidgetsData (all, today, expenses_incomes, history, pie_chart) {
 
 
 
-function getDateFormat (input_date) {
+/**
+ * Formats the input date object into a string with the following format: 'YYYY-MM-DDTHH:mm:ss'.
+ *
+ * @param {Date} inputDate - The input date object to be formatted.
+ *
+ * @returns {string} The formatted date string.
+ */
+function getDateFormat(inputDate) {
 
-	let date = input_date;
+	let date = inputDate;
 	
 	let year = date.getFullYear();
 	let month = date.getMonth() + 1;
@@ -2885,8 +2711,11 @@ function getDateFormat (input_date) {
 	return (`${year}-${month}-${day}T${hours}:${minutes}:${seconds}`);
 }
 
-function uploadRecordsToHistory () {
-	let period = id('history-period-nav').getAttribute('period');
+/**
+ * Uploads records to the history section based on the selected date range.
+ */
+function uploadRecordsToHistory() {
+	let period = uiState.date_range;
 
 	id('history').innerHTML = null;
 	id('history-empty').innerHTML = null;
@@ -2905,13 +2734,18 @@ function uploadRecordsToHistory () {
 	}	
 }
 
-function changeDatePeriodInCustomDateMenu (period) {
+/**
+ * Changes the date period in the custom date menu based on the selected date range.
+ *
+ * @param {string} period - The selected date range.
+ */
+function changeDatePeriodInCustomDateMenu(period) {
 
-	let date = new Date(),
-		current_date = date;
+	let date = new Date();
+	let current_date = date;
 	let date_top_border, date_bottom_border;
 
-	if (period == 'month 0') {
+	if (period === DATE_RANGE_ENUM.this_month) {
 
 		date = getMonthTopBorder(date, current_date, 0);
 		date_top_border = getDateFormat(date);
@@ -2919,7 +2753,7 @@ function changeDatePeriodInCustomDateMenu (period) {
 		date = getMonthBottomBorder(date);
 		date_bottom_border = getDateFormat(date);
 
-	} else if (period == 'month -1') {
+	} else if (period === DATE_RANGE_ENUM.last_month) {
 
 		date = getMonthTopBorder(date, current_date, -1);
 		date_top_border = getDateFormat(date);
@@ -2927,7 +2761,7 @@ function changeDatePeriodInCustomDateMenu (period) {
 		date = getMonthBottomBorder(date);
 		date_bottom_border = getDateFormat(date);
 
-	} else if (period == 'custom') {
+	} else if (period === DATE_RANGE_ENUM.custom) {
 		if (!sessionStorage.getItem('custom-date-top-border')) {
 
 			date = getMonthTopBorder(date, current_date, -2);
@@ -2948,17 +2782,34 @@ function changeDatePeriodInCustomDateMenu (period) {
 	uploadExactlyDatePeriodToCustomDateMenu(date_top_border, date_bottom_border);
 }
 
-function getMonthTopBorder (date, current_date, month_difference) {
+/**
+ * Retrieves the top border of the month based on the specified date and month difference.
+ *
+ * @param {Date} date - The base date.
+ * @param {Date} currentDate - The current date.
+ * @param {number} monthDifference - The difference in months.
+ *
+ * @returns {Date} The calculated top border date.
+ */
+function getMonthTopBorder(date, currentDate, monthDifference) {
 
 	date.setSeconds(59);
 	date.setMinutes(59);
 	date.setHours(23);
-	date.setMonth(current_date.getMonth() + 1 + month_difference);
+	date.setMonth(currentDate.getMonth() + 1 + monthDifference);
 	date.setDate(0);
 
 	return date;
 }
-function getMonthBottomBorder (date) {
+
+/**
+ * Retrieves the bottom border of the month based on the specified date.
+ *
+ * @param {Date} date - The base date.
+ *
+ * @returns {Date} The calculated bottom border date.
+ */
+function getMonthBottomBorder(date) {
 
 	date.setSeconds(0);
 	date.setMinutes(0);
@@ -2968,14 +2819,23 @@ function getMonthBottomBorder (date) {
 	return date;
 }
 
-function uploadExactlyDatePeriodToCustomDateMenu (date_top_border, date_bottom_border) {
+/**
+ * Uploads the exactly selected date period to the custom date menu.
+ *
+ * @param {string} dateTopBorder - The top border date string.
+ * @param {string} dateBottomBorder - The bottom border date string.
+ */
+function uploadExactlyDatePeriodToCustomDateMenu(dateTopBorder, dateBottomBorder) {
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 
-	inputs[0].value = date_top_border;
-	inputs[1].value = date_bottom_border;
+	inputs[0].value = dateTopBorder;
+	inputs[1].value = dateBottomBorder;
 }
 
-function showCustomDateFilterMenu () {
+/**
+ * Displays the custom date filter menu.
+ */
+function showCustomDateFilterMenu() {
 
 	id('date-filter-menu-cont').classList.add('show');
 	
@@ -2997,15 +2857,21 @@ function showCustomDateFilterMenu () {
 	}
 }
 
-function hideCustomDateFilterMenu () {
+/**
+ * Hides the custom date filter menu.
+ */
+function hideCustomDateFilterMenu() {
 	id('date-filter-menu-cont').classList.remove('show');
 }
 
-function uploadRecordsByCustomPeriod () {
+/**
+ * Uploads records based on the custom date period.
+ */
+function uploadRecordsByCustomPeriod() {
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
-	let account = id('accounts').getAttribute('accountnum'),
-		type = id('history-type-nav').getAttribute('history-type');
+	let account = id('accounts').getAttribute('data-accountnum'),
+		type = id('history-type-nav').getAttribute('data-history-type');
 	let date_border_from = new Date(inputs[0].value),
 		date_border_to = new Date(inputs[1].value),
 		record_date;
@@ -3016,8 +2882,8 @@ function uploadRecordsByCustomPeriod () {
 		
 		if (record_date < date_border_from && record_date > date_border_to) {
 			if (
-				(type == 'all' || localStorage.getItem(`RP${record_num}`) == type) &&
-				localStorage.getItem(`RA${record_num}`) == account
+				(type === 'all' || localStorage.getItem(`RP${record_num}`) === type) &&
+				localStorage.getItem(`RA${record_num}`) === account
 			)
 				addRecordToHistory(record_num, localStorage.getItem(`RA${record_num}`), 'beforeend');
 		} else if (record_date < date_border_to)
@@ -3026,7 +2892,10 @@ function uploadRecordsByCustomPeriod () {
 	}
 }
 
-function uploadRecordsToHistoryAnimated () {
+/**
+ * Uploads records to the history widget with an animated reload effect.
+ */
+function uploadRecordsToHistoryAnimated() {
 
 	id('history-reloading-background').classList.add('history-reloading-background-show');
 	if (id('history-empty').classList.contains('visible'))
@@ -3039,48 +2908,55 @@ function uploadRecordsToHistoryAnimated () {
 	}, 390);
 }
 
-function getRecordDateFormat (n) {
+/**
+ * Retrieves the formatted date of a record based on its number.
+ *
+ * @param {number} n - The record number.
+ *
+ * @returns {string} The formatted date string.
+ */
+function getRecordDateFormat(n) {
+	let date = localStorage.getItem(`RD${n}`);
 
-	let storage_date = localStorage.getItem(`RD${n}`);
-	let input_date = '';
-
-	input_date =
-		storage_date.charAt(0) + storage_date.charAt(1) + storage_date.charAt(2) + storage_date.charAt(3) + '-' +
-		storage_date.charAt(4) + storage_date.charAt(5) + '-' +
-		storage_date.charAt(6) + storage_date.charAt(7) + 'T' +
-		storage_date.charAt(8) + storage_date.charAt(9) + ':' +
-		storage_date.charAt(10) + storage_date.charAt(11) + ':00';
-
-	return input_date;
+	return date.charAt(0) + date.charAt(1) + date.charAt(2) + date.charAt(3) + '-' +
+		date.charAt(4) + date.charAt(5) + '-' +
+		date.charAt(6) + date.charAt(7) + 'T' +
+		date.charAt(8) + date.charAt(9) + ':' +
+		date.charAt(10) + date.charAt(11) + ':00';
 }
 
-function setUpClickOnRecord (record) {
+/**
+ * Sets up the click event on a record for editing.
+ *
+ * @param {HTMLElement} record - The record element to set up the click event for.
+ */
+function setUpClickOnRecord(record) {
 
-	let record_num = Number(record.getAttribute('recordnum')),
+	let record_num = Number(record.getAttribute('data-recordnum')),
 		windowEl_cont = id('make-record-window-cont'),
 		windowEl = id('make-record-window'),
 		clickEl = record,
-		record_abovecategory = Number(localStorage.getItem(`RB${record_num}`));
+		record_above_category = Number(localStorage.getItem(`RB${record_num}`));
 	
 	disableScrolling();
 	// upload record data to edit record window
-	if ( !(localStorage.getItem(`RB${record_num}`)) || record_abovecategory != 0 )
+	if ( !(localStorage.getItem(`RB${record_num}`)) || record_above_category !== 0 )
 		prepareEditRecordWindow(record_num);
-	else if (record_abovecategory == 0)
+	else if (record_above_category === 0)
 		prepareEditTransferWindow(record_num);
 
 	let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-	windowEl.setAttribute('top-position-x', top_position.x);
-	windowEl.setAttribute('top-position-y', top_position.y);
+	windowEl.setAttribute('data-top-position-x', top_position.x.toString());
+	windowEl.setAttribute('data-top-position-y', top_position.y.toString());
 
 	// set up click on remove record button
 	setUpClickOnRepeatRecordButton(clickEl, windowEl_cont, windowEl);
 
 	// set up click on remove record button
 	id('remove-record').onclick = () => {
-		if (!(localStorage.getItem(`RB${record_num}`)) || record_abovecategory != 0)
-			removeRecord(record_num, 1);
-		else if (record_abovecategory == 0)
+		if (!(localStorage.getItem(`RB${record_num}`)) || record_above_category !== 0)
+			removeRecord(record_num, true);
+		else if (record_above_category === 0)
 			removeTransfer(record_num);
 		closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl);
 	}
@@ -3095,51 +2971,61 @@ function setUpClickOnRecord (record) {
 
 }
 
-function prepareEditRecordWindow (record_num) {
+/**
+ * Prepares the edit record window with data from the specified record number.
+ *
+ * @param {number} recordNum - The record number to edit.
+ */
+function prepareEditRecordWindow(recordNum) {
 
-	// set 'old' attribute, set record number as attrinute
-	id('make-record-window').setAttribute('status', 'old');
-	id('make-record-window').setAttribute('recordnum', record_num);
+	// set 'old' attribute, set record number as attribute
+	id('make-record-window').setAttribute('data-status', 'old');
+	id('make-record-window').setAttribute('data-recordnum', recordNum.toString());
 	// upload record type to change record type bar
-	id('record-types').setAttribute('record-type', localStorage.getItem(`RP${record_num}`));
+	id('record-types').setAttribute('data-record-type', localStorage.getItem(`RP${recordNum}`));
 	// hide fields for make record window and make transfer window
 	id('make-record-window').classList.remove('make-record-status');
 	id('make-record-window').classList.add('edit-record-status');
 	// upload record date
-	id('make-record-date').value = getRecordDateFormat(record_num);
+	id('make-record-date').value = getRecordDateFormat(recordNum);
 	// upload record note
-	let note = localStorage.getItem(`RT${record_num}`);
+	let note = localStorage.getItem(`RT${recordNum}`);
 	if (note) {
 		id('make-record-note').value = note;
 		adaptInputLengthExplicitly(id('make-record-note'));
 	}
 	// upload record account
-	let account_num = localStorage.getItem(`RA${record_num}`);
+	let account_num = Number(localStorage.getItem(`RA${recordNum}`));
 	id('make-record-account').innerHTML = constructAccountEl(account_num);
-	id('make-record-account').setAttribute('accountnum', account_num);
+	id('make-record-account').setAttribute('data-accountnum', account_num.toString());
 	// upload record amount
-	id('make-record-amount').value = localStorage.getItem(`RU${record_num}`);
+	id('make-record-amount').value = localStorage.getItem(`RU${recordNum}`);
 	adaptInputLengthExplicitly(id('make-record-amount'));
 	// upload category to edit record window
-	uploadCategoryToEditRecordWindow(record_num);
+	uploadCategoryToEditRecordWindow(recordNum);
 	// upload save record button title
-	uploadSaveButtonTitle('short', id('make-record-save-button'));
+	id('make-record-save-button').value = getStrings(localStorage.getItem('L')).save;
 }
 
-function prepareEditTransferWindow (record_num) {
-	let transfer_pair = getTransfersPairNums(record_num);
+/**
+ * Prepares the edit transfer window with data from the specified record number.
+ *
+ * @param {number} recordNum - The record number to edit.
+ */
+function prepareEditTransferWindow(recordNum) {
+	let transfer_pair = getTransfersPairNums(recordNum);
 
-	// set 'old' attribute, set record number as attrinute
-	id('make-record-window').setAttribute('status', 'old');
-	id('make-record-window').setAttribute('recordnum', record_num);
+	// set 'old' attribute, set record number as attribute
+	id('make-record-window').setAttribute('data-status', 'old');
+	id('make-record-window').setAttribute('data-recordnum', recordNum.toString());
 	// upload record type to change record type bar
-	id('record-types').setAttribute('record-type', localStorage.getItem(`RP${record_num}`));
+	id('record-types').setAttribute('data-record-type', localStorage.getItem(`RP${recordNum}`));
 	// hide fields for make record window and make transfer window
 	id('make-record-window').classList.remove('make-record-status');
 	id('make-record-window').classList.add('edit-transfer-status');
 
 	// upload record date
-	id('make-record-date').value = getRecordDateFormat(record_num);
+	id('make-record-date').value = getRecordDateFormat(recordNum);
 	// upload 'transfer to account' field's title
 	uploadAccountFieldTitle('transfer');
 	// upload accounts
@@ -3160,94 +3046,126 @@ function prepareEditTransferWindow (record_num) {
 	setUpListenerToAdaptFinalAmountByRate();
 	adaptFinalAmountByRate();
 	// upload transfer button title
-	uploadSaveButtonTitle('short', id('make-transfer-button'));
+	id('make-transfer-button').value = getStrings(localStorage.getItem('L')).save;
 }
 
-function getTransfersPairNums (record_num) {
+/**
+ * Gets the pair of record numbers for transfer records.
+ *
+ * @param {number} recordNum - The record number of the transfer.
+ *
+ * @returns {object} An object containing 'from' and 'to' record numbers.
+ */
+function getTransfersPairNums(recordNum) {
 	let record_num_pair = {
 		from: 0,
 		to: 0
 	};
 
 	// decide which account is 'from' and which is 'to'
-	if (localStorage.getItem(`RP${record_num}`) == '-') {
-		record_num_pair.from = record_num;
-		record_num_pair.to = record_num + 1;
+	if (localStorage.getItem(`RP${recordNum}`) === '-') {
+		record_num_pair.from = recordNum;
+		record_num_pair.to = recordNum + 1;
 	} else {
-		record_num_pair.from = record_num - 1;
-		record_num_pair.to = record_num;
+		record_num_pair.from = recordNum - 1;
+		record_num_pair.to = recordNum;
 	}
 
 	return record_num_pair;
 }
 
-function uploadAccountsToEditTransferWindow (record_num_pair) {
-	let account_from_num = localStorage.getItem(`RA${record_num_pair.from}`),
-		account_to_num = localStorage.getItem(`RA${record_num_pair.to}`);
+/**
+ * Uploads accounts to the edit transfer window based on the record numbers pair.
+ *
+ * @param {object} recordNumPair - An object containing 'from' and 'to' record numbers.
+ */
+function uploadAccountsToEditTransferWindow(recordNumPair) {
+	let account_from_num = localStorage.getItem(`RA${recordNumPair.from}`),
+		account_to_num = localStorage.getItem(`RA${recordNumPair.to}`);
 	
 	// upload account to 'from account' field
-	id('make-record-account').innerHTML = constructAccountEl(account_from_num);
-	id('make-record-account').setAttribute('accountnum', account_from_num);
+	id('make-record-account').innerHTML = constructAccountEl(Number(account_from_num));
+	id('make-record-account').setAttribute('data-accountnum', account_from_num);
 		
 	// upload account to 'to account' field
-	id('make-transfer-to-account').innerHTML = constructAccountEl(account_to_num);
-	id('make-transfer-to-account').setAttribute('accountnum', account_to_num);
+	id('make-transfer-to-account').innerHTML = constructAccountEl(Number(account_to_num));
+	id('make-transfer-to-account').setAttribute('data-accountnum', account_to_num);
 }
 
-function uploadCategoryToEditRecordWindow (record_num) {
+/**
+ * Uploads category data to the edit record window based on the specified record number.
+ *
+ * @param {number} recordNum - The record number to edit.
+ */
+function uploadCategoryToEditRecordWindow(recordNum) {
 	let category_button = id('make-record-category');
 
-	if (localStorage.getItem(`RP${record_num}`) == '-') {
+	if (localStorage.getItem(`RP${recordNum}`) === '-') {
 		
 		id('record-type-expense').classList.add('active-input-cont');
 		id('record-type-income').classList.remove('active-input-cont');
 		
-		category_button.firstElementChild.innerHTML = subcategories_icons[localStorage.getItem(`RC${record_num}`)][localStorage.getItem(`RS${record_num}`)];
-		category_button.lastElementChild.value = subcategories_titles[localStorage.getItem(`RC${record_num}`)][localStorage.getItem(`RS${record_num}`)];
+		category_button.firstElementChild.innerHTML = SUBCATEGORY_ICONS[localStorage.getItem(`RC${recordNum}`)][localStorage.getItem(`RS${recordNum}`)];
+		category_button.lastElementChild.value = subcategories_titles[localStorage.getItem(`RC${recordNum}`)][localStorage.getItem(`RS${recordNum}`)];
 		
-	} else if (localStorage.getItem(`RP${record_num}`) == '+') {
+	} else if (localStorage.getItem(`RP${recordNum}`) === '+') {
 		
 		id('record-type-expense').classList.remove('active-input-cont');
 		id('record-type-income').classList.add('active-input-cont');
 		
-		category_button.firstElementChild.innerHTML = categories_income_icons[localStorage.getItem(`RC${record_num}`)];
-		category_button.lastElementChild.value = categories_income_titles[localStorage.getItem(`RC${record_num}`)];
+		category_button.firstElementChild.innerHTML = CATEGORY_INCOME_ICONS[localStorage.getItem(`RC${recordNum}`)];
+		category_button.lastElementChild.value = categories_income_titles[localStorage.getItem(`RC${recordNum}`)];
 		
 	}
 	
-	category_button.setAttribute('categorynum', localStorage.getItem(`RC${record_num}`));
-	category_button.setAttribute('subcategorynum', localStorage.getItem(`RS${record_num}`));
+	category_button.setAttribute('data-categorynum', localStorage.getItem(`RC${recordNum}`));
+	category_button.setAttribute('data-subcategorynum', localStorage.getItem(`RS${recordNum}`));
 }
 
 
-function setUpClickOnRepeatRecordButton (clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up the click event on the repeat record button.
+ *
+ * @param {HTMLElement} clickEl - Make record button element.
+ * @param {HTMLElement} windowElCont - The container of the edit record window.
+ * @param {HTMLElement} windowEl - The edit record window element.
+ */
+function setUpClickOnRepeatRecordButton(
+	clickEl, windowElCont, windowEl
+) {
 	id('repeat-record').onclick = () => {
 
 		// add attribute 'new' and 'record number' attribute to make record window
-		windowEl.setAttribute('status', 'repeat');
-		windowEl.setAttribute('recordnum', Number(localStorage.getItem('RCount')) + 1);
+		windowEl.setAttribute('data-status', 'repeat');
+		windowEl.setAttribute('data-recordnum', (Number(localStorage.getItem('RCount')) + 1).toString());
 		// upload current date
 		id('make-record-date').value = getDateFormat(new Date());
 
 		if (windowEl.classList.contains('edit-record-status'))
-			saveRecord(clickEl, windowEl_cont, windowEl);
+			onSaveRecordButton(clickEl, windowElCont, windowEl);
 		else if (windowEl.classList.contains('edit-transfer-status'))
-			saveTransfer(clickEl, windowEl_cont, windowEl);
+			saveTransfer(clickEl, windowElCont, windowEl);
 	}	
 }
 
 
-function removeRecord (record_num, return_status) {
+/**
+ * Removes a record from storage based on its record number and updates the records.
+ *
+ * @param {number} recordNum - The record number to remove.
+ * @param {boolean} returnRecordAmountToAccount - Whether to return the record amount to balance.
+ */
+function removeRecord(recordNum, returnRecordAmountToAccount) {
 	
-	if (return_status) returnRecordAmountToBalance(record_num);
+	if (returnRecordAmountToAccount) returnRecordAmountToBalance(recordNum);
 
-	for (let a = record_num; a <= Number(localStorage.getItem('RCount')); a++)
+	for (let a = recordNum; a <= Number(localStorage.getItem('RCount')); a++)
 	
 		if ( a < Number(localStorage.getItem('RCount')) )
 			// move record from to
 			moveRecord(a + 1, a);
 
-		else if ( a == Number(localStorage.getItem('RCount')) ) {
+		else if ( a === Number(localStorage.getItem('RCount')) ) {
 
 			if (!localStorage.getItem(`RR${a}`))
 				removeRecordFromStorage(a);
@@ -3255,8 +3173,13 @@ function removeRecord (record_num, return_status) {
 		}
 }
 
-function removeTransfer (record_num) {
-	let transfer_pair = getTransfersPairNums(record_num);
+/**
+ * Removes a transfer record from storage based on its record number and updates the records.
+ *
+ * @param {number} recordNum - The record number of the transfer to remove.
+ */
+function removeTransfer(recordNum) {
+	let transfer_pair = getTransfersPairNums(recordNum);
 	
 	returnRecordAmountToBalance(transfer_pair.from);
 	returnRecordAmountToBalance(transfer_pair.to);
@@ -3267,7 +3190,7 @@ function removeTransfer (record_num) {
 			// move record from to
 			moveRecord(a + 2, a);
 
-		else if ( a + 1 == Number(localStorage.getItem('RCount')) ) {
+		else if ( a + 1 === Number(localStorage.getItem('RCount')) ) {
 
 			if (!localStorage.getItem(`RR${a + 1}`))
 				removeRecordFromStorage(a + 1);
@@ -3279,73 +3202,58 @@ function removeTransfer (record_num) {
 		}
 }
 
-function returnRecordAmountToBalance (record_num) {
+/**
+ * Returns the record amount to the account balance based on the record number.
+ *
+ * @param {number} recordNum - The record number.
+ */
+function returnRecordAmountToBalance(recordNum) {
 
-	let type = localStorage.getItem(`RP${record_num}`);
-	let amount = Number(localStorage.getItem(`RU${record_num}`));
-	let account_num = localStorage.getItem(`RA${record_num}`);
-	let balance = Number(localStorage.getItem(`ABalance${account_num}`));
+	let type = localStorage.getItem(`RP${recordNum}`);
+	let amount = Number(localStorage.getItem(`RU${recordNum}`));
+	let accountId = Number(localStorage.getItem(`RA${recordNum}`));
+	let balance = Number(localStorage.getItem(`ABalance${accountId}`));
 
-	if (type == '-') localStorage.setItem(`ABalance${account_num}`, balance + amount);
-	else if (type == '+') localStorage.setItem(`ABalance${account_num}`, balance - amount);
+	if (type === '-') localStorage.setItem(`ABalance${accountId}`, (balance + amount).toString());
+	else if (type === '+') localStorage.setItem(`ABalance${accountId}`, (balance - amount).toString());
 
 	setTimeout(() => {
-		updateAccountInfoInCont(account_num, 'Balance', id('accounts'));
+		updateAccountInfoInCont(accountId, 'Balance', id('accounts'));
 	}, 400);
 }
 
-function getShowMessageInEmptyHistoryByLang (period, lang) {
-	let message = '';
-
-	if (period == 'month 0') {
-
-		if (lang == 'en')
-			message = 'You have no records in this month';
-		else if (lang == 'de')
-			message = 'Sie haben keine Einträge für diesen Monat';
-		else if (lang == 'cz')
-			message = 'V tomto měsíci nemáte žádné záznamy';
-		else if (lang == 'ru')
-			message = 'У вас нет записей за этот месяц';
-		else if (lang == 'ua')
-			message = 'У вас немає записів за цей місяць';
-			
-	} else if (period == 'month -1') {
-
-		if (lang == 'en')
-			message = 'You have no records in previous month';
-		else if (lang == 'de')
-			message = 'Sie haben keine Einträge vom letzten Monat';
-		else if (lang == 'cz')
-			message = 'V minulém měsíci nemáte žádné záznamy';
-		else if (lang == 'ru')
-			message = 'У вас нет записей за предыдущий месяц';
-		else if (lang == 'ua')
-			message = 'У вас немає записів за попередній місяць';
-			
-	} else if (period == 'custom') {
-
-		if (lang == 'en')
-			message = 'You have no records in this period';
-		else if (lang == 'de')
-			message = 'Sie haben keine Einträge für diesen Zeitraum';
-		else if (lang == 'cz')
-			message = 'V tomto období nemáte žádné záznamy';
-		else if (lang == 'ru')
-			message = 'У вас нет записей за этот период';
-		else if (lang == 'ua')
-			message = 'У вас немає записів за цей період';
-
+/**
+ * Gets the message to show in an empty history based on the period and language.
+ *
+ * @param {string} period - The date range period.
+ * @param {string} lang - The language.
+ *
+ * @returns {string} The message to display.
+ */
+function getShowMessageInEmptyHistoryByLang(period, lang) {
+	if (period === DATE_RANGE_ENUM.this_month) {
+		return getStrings(lang).no_records_this_month_message;
+	} else if (period === DATE_RANGE_ENUM.last_month) {
+		return getStrings(lang).no_records_last_month_message;
+	} else if (period === DATE_RANGE_ENUM.custom) {
+		return getStrings(lang).no_records_this_period_message;
 	}
-
-	return message;
 }
 
 
-function closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl) {
+/**
+ * Closes the edit record window with the reconnecting animation.
+ *
+ * @param {HTMLElement} clickEl - The element triggering the click event.
+ * @param {HTMLElement} windowElCont - The container of the edit record window.
+ * @param {HTMLElement} windowEl - The edit record window element.
+ */
+function closeEditRecordWindowByReconnectMethod(
+	clickEl, windowElCont, windowEl
+) {
 
-	reconnectFloatingWindow(clickEl, id('history'), windowEl_cont, windowEl);
-	closeReconnectedFloatingWindow(windowEl_cont, windowEl);
+	reconnectFloatingWindow(clickEl, id('history'), windowElCont, windowEl);
+	closeReconnectedFloatingWindow(windowElCont, windowEl);
 	uploadRecordsToHistoryAnimated();
 
 	setTimeout(() => {
@@ -3372,7 +3280,12 @@ id('enable-categories-details-scroll-button').onclick = function() {
 	changeWidgetScroll(id('pie-chart-categories-details'));
 }
 
-function changeChangeScrollButtonStatus (el) {
+/**
+ * Changes the status of the scroll button, enabling or disabling scrolling.
+ *
+ * @param {HTMLElement} el - The HTML element representing the scroll button.
+ */
+function changeChangeScrollButtonStatus(el) {
 
 	let holding_el = freezeWidthOfEl(el);
 
@@ -3380,48 +3293,22 @@ function changeChangeScrollButtonStatus (el) {
 		
 		if (el.classList.contains('active')) {
 			el.classList.remove('active');
-			changeChangeScrollButtonTitle(el, 'off', localStorage.getItem('L'));
+			el.value = getStrings(localStorage.getItem('L')).disable_scrolling;
 		} else {
 			el.classList.add('active');
-			changeChangeScrollButtonTitle(el, 'on', localStorage.getItem('L'));
+			el.value = getStrings(localStorage.getItem('L')).enable_scrolling;
 		}
 
 		updateWidthOfEl(el, holding_el);
 	}, 200);
 }
 
-function changeChangeScrollButtonTitle (el, status, lang) {
-
-	if (status == 'on') {
-
-		if (lang == 'en')
-			el.value = 'Disable scrolling';
-		else if (lang == 'de')
-			el.value = 'Scrolling ausschalten';
-		else if (lang == 'cz')
-			el.value = 'Vypnout rolování';
-		else if (lang == 'ru')
-			el.value = 'Выключить прокрутку';
-		else if (lang == 'ua')
-			el.value = 'Вимкнути прокручування';
-
-	} else {
-
-		if (lang == 'en')
-			el.value = 'Enable scrolling';
-		else if (lang == 'de')
-			el.value = 'Scrolling einschalten';
-		else if (lang == 'cz')
-			el.value = 'Zapnout rolování';
-		else if (lang == 'ru')
-			el.value = 'Включить прокрутку';
-		else if (lang == 'ua')
-			el.value = 'Увімкнути прокручування';
-
-	}
-}
-
-function changeWidgetScroll (el) {
+/**
+ * Changes the scroll status of a widget.
+ *
+ * @param {HTMLElement} el - The HTML element representing the widget.
+ */
+function changeWidgetScroll(el) {
 
 	animateClickOnHistory(el);
 
@@ -3432,7 +3319,12 @@ function changeWidgetScroll (el) {
 	}, 200);
 }
 
-function animateClickOnHistory (el) {
+/**
+ * Animates a click effect on the history element.
+ *
+ * @param {HTMLElement} el - The history widget html element.
+ */
+function animateClickOnHistory(el) {
 	el.style.transform = 'scale(0.99)';
 	setTimeout(() => { el.style.transform = 'scale(1)'; }, 100);
 }
@@ -3441,7 +3333,14 @@ function animateClickOnHistory (el) {
 
 
 
-function freezeWidthOfEl (el) {
+/**
+ * Freezes the width of the element to maintain its width during animation.
+ *
+ * @param {HTMLElement} el - The HTML element to freeze the width.
+ *
+ * @returns {HTMLElement} The placeholder element used to hold the width.
+ */
+function freezeWidthOfEl(el) {
 	let	holding_el = id('test-p');
 
 	el.style.width = el.clientWidth + 'px';
@@ -3456,28 +3355,39 @@ function freezeWidthOfEl (el) {
 	return holding_el;
 }
 
-function updateWidthOfEl (el, holding_el) {
+/**
+ * Updates the width of the element after animation to the original size.
+ *
+ * @param {HTMLInputElement} el - The HTML element to update the width.
+ * @param {HTMLElement} holderEl - The placeholder element holding the width.
+ */
+function updateWidthOfEl(el, holderEl) {
 
-	if (el.value)
-		holding_el.innerText = el.value;
-	else holding_el.innerText = el.innerText;
-		
-	el.style.width = holding_el.clientWidth + 'px';
+	if (el.value) {
+		holderEl.innerText = el.value;
+	} else {
+		holderEl.innerText = el.innerText;
+	}
+
+	el.style.width = holderEl.clientWidth + 'px';
 	el.style.color = null;
 	el.style.paddingLeft = null;
 	el.style.paddingRight = null;
 
-	holding_el.style.display = 'none';
+	holderEl.style.display = 'none';
 }
 
 
 
 
 
-function uploadTodayStats () {
+/**
+ * Uploads today's statistics to the today stats widget.
+ */
+function uploadTodayStats() {
 	
-	let descriptionEl = id('today-stats-despription'),
-		account_num = id('accounts').getAttribute('accountnum');
+	let descriptionEl = id('today-stats-description'),
+		account_num = id('accounts').getAttribute('data-accountnum');
 
 	descriptionEl.style.opacity = '0';
 	
@@ -3495,30 +3405,51 @@ function uploadTodayStats () {
 	}, 300);
 }
 
-function uploadTodayStatsData (descriptionEl, lang, account_num, today_amount, account_currency) {
-
-	if (today_amount == 0)
-		showTodayStatsMessageNoExpenses(descriptionEl, lang);
-
-	else if (
-		!Number(localStorage.getItem(`AWB${account_num}`)) &&
-		Number(localStorage.getItem(`ABalance${account_num}`)) >= 0
+/**
+ * Uploads today's statistics data to the specified element.
+ *
+ * @param {HTMLElement} descriptionEl - The HTML element to display the statistics description.
+ * @param {string} lang - The language code.
+ * @param {string} accountNum - The account number.
+ * @param {number} todayAmount - The amount spent today.
+ * @param {string} accountCurrency - The currency of the account.
+ */
+function uploadTodayStatsData(
+	descriptionEl, lang, accountNum, todayAmount, accountCurrency
+) {
+	if (todayAmount === 0) {
+		descriptionEl.innerText = getStrings(lang).greetings_no_expenses_message;
+	} else if (
+		!Number(localStorage.getItem(`AWB${accountNum}`)) &&
+		Number(localStorage.getItem(`ABalance${accountNum}`)) >= 0
 	) {
+		let default_account_balance = todayAmount + Number(localStorage.getItem(`ABalance${accountNum}`));
+		if (default_account_balance === 0) default_account_balance = 1;
 
-		let default_account_balance = today_amount + Number(localStorage.getItem(`ABalance${account_num}`));
-		if (default_account_balance == 0) default_account_balance = 1;
-
-		let today_percent_amount = ( (100 / default_account_balance) * today_amount ).toFixed(2);
-
-		showTodayStatsMessageSomeExenses(
-			descriptionEl, lang, getReadableNumber(today_amount.toFixed(2)), account_currency,
-			today_percent_amount, default_account_balance.toFixed(2)
+		let today_percent_amount = Number(
+			( (100 / default_account_balance) * todayAmount ).toFixed(2)
 		);
 
-	} else showTodayStatsMessageSomeExenses(descriptionEl, lang, today_amount, account_currency);
+		showTodayStatsMessageSomeExpenses(
+			descriptionEl, lang, getReadableNumber(Number(todayAmount.toFixed(2))),
+			accountCurrency, today_percent_amount, default_account_balance.toFixed(2)
+		);
+	} else {
+		showTodayStatsMessageSomeExpenses(
+			descriptionEl, lang, getReadableNumber(Number(todayAmount.toFixed(2))),
+			accountCurrency, 0, ""
+		);
+	}
 }
 
-function getTodayStatsAmount (account) {
+/**
+ * Retrieves the amount spent today for the specified account.
+ *
+ * @param {string} account - The account number.
+ *
+ * @returns {number} The amount spent today.
+ */
+function getTodayStatsAmount(account) {
 
 	let amount = 0,
 		compare_date = new Date();
@@ -3530,114 +3461,105 @@ function getTodayStatsAmount (account) {
 	for (let record_num = Number(localStorage.getItem('RCount')); record_num >= 1; record_num--)
 		if ( (getRecordDateFormat(record_num)) >= getDateFormat(compare_date) ) {
 			if (
-				(localStorage.getItem(`RP${record_num}`) == '-') &&
-				localStorage.getItem(`RA${record_num}`) == account
+				(localStorage.getItem(`RP${record_num}`) === '-') &&
+				localStorage.getItem(`RA${record_num}`) === account
 			)
 				amount += Number(localStorage.getItem(`RU${record_num}`));
 		} else break;
 
-	return amount;
+	return Number(amount.toFixed(2));
 }
 
-function getTodayStatsTitle (lang) {
+/**
+ * Retrieves the title for today's statistics based on the current time.
+ *
+ * @param {string} lang - The language code.
+ *
+ * @returns {string} The appropriate greeting based on the time of the day.
+ */
+function getTodayStatsTitle(lang) {
 	let time = (new Date()).getHours();
 
-	if (lang == 'en') {
-		if (6 <= time && time <= 12) return ('Good morning!');
-		else if (13 <= time && time <= 17) return ('Good afternoon!');
-		else if (18 <= time && time <= 22) return ('Good evening!');
-		else if (23 <= time || time <= 5) return ('Good night!');
-	} else if (lang == 'de') {
-		if (6 <= time && time <= 11) return ('Guten Morgen!');
-		else if (12 <= time && time <= 17) return ('Guten Tag!');
-		else if (18 <= time && time <= 22) return ('Guten Abend!');
-		else if (23 <= time || time <= 5) return ('Schönen Abend!');
-	} else if (lang == 'cz') {
-		if (6 <= time && time <= 11) return ('Dobré ráno!');
-		else if (12 == time) return ('Dobré poledne!');
-		else if (13 <= time && time <= 17) return ('Dobré odpoledne!');
-		else if (18 <= time || time <= 5) return ('Dobrý večer!');
-	} else if (lang == 'ru') {
-		if (6 <= time && time <= 11) return ('Доброе утро!');
-		else if (12 <= time && time <= 17) return ('Добрый день!');
-		else if (18 <= time || time <= 5) return ('Добрый вечер!');
-	} else if (lang == 'ua') {
-		if (6 <= time && time <= 11) return ('Доброго ранку!');
-		else if (12 <= time && time <= 17) return ('Доброго дня!');
-		else if (18 <= time || time <= 5) return ('Доброго вечора!');
+	if (6 <= time && time <= 12) {
+		return getStrings(lang).good_morning;
+	} else if (13 <= time && time <= 17) {
+		return getStrings(lang).good_afternoon;
+	} else {
+		return getStrings(lang).good_evening;
 	}
 }
 
-function showTodayStatsMessageNoExpenses (el, lang) {
+/**
+ * Displays the message for today's statistics with some expenses.
+ *
+ * @param {HTMLElement} el - The HTML element to display the message.
+ * @param {string} lang - The language code.
+ * @param {string} todayFormattedAmount - The amount spent today.
+ * @param {string} accountCurrency - The currency of the account.
+ * @param {number} todayPercentAmount - The percentage of today's amount relative to the total balance.
+ * @param {string} defaultBalance - The default balance.
+ */
+function showTodayStatsMessageSomeExpenses(
+	el, lang, todayFormattedAmount,
+	accountCurrency, todayPercentAmount, defaultBalance
+) {
 
-	if (lang == 'en')
-		el.innerHTML = 'No expenses yet today. I hope you are here not for the first one for today';
-	else if (lang == 'de')
-		el.innerHTML = `Heute Es wurden noch keine Spesen gemacht. Ich hoffe, dass Sie  hier nicht für die erste für heute sind`;
-	else if (lang == 'cz')
-		el.innerHTML = `Dnes ještě nebyly žádné výdaje. Doufám, že jste tady ne pro záznam prvního za dnes`;
-	else if (lang == 'ru')
-		el.innerHTML = 'Сегодня еще не было никаких расходов. Надеюсь, вы здесь не для записи первого за сегодня';
-	else if (lang == 'ua')
-		el.innerHTML = 'Сьогодні ще не було жодних витрат. Сподіваюся, ви тут не для запису першої за сьогодні';
-}
-
-function showTodayStatsMessageSomeExenses (el, lang, today_amount, account_currency, today_percent_amount, default_balance) {
-
-	let today_amount_by_percent = '';
-	if (today_percent_amount) {
-		if (lang == 'en')
-			today_amount_by_percent = `, or <span class="underlined-text">${today_percent_amount}%</span> of the total balance of this account (${default_balance} ${account_currency})`;
-		else if (lang == 'de')
-			today_amount_by_percent = `, was <span class="underlined-text">${today_percent_amount}%</span> des Gesamtsaldos dieses Kontos entspricht (${default_balance} ${account_currency})`;
-		else if (lang == 'cz')
-			today_amount_by_percent = `, neboli <span class="underlined-text">${today_percent_amount}%</span> od celkového zůstatku tohoto účtu (${default_balance} ${account_currency})`;
-		else if (lang == 'ru')
-			today_amount_by_percent = `, или же <span class="underlined-text">${today_percent_amount}%</span> от общего баланса этого счёта (${default_balance} ${account_currency})`;
-		else if (lang == 'ua')
-			today_amount_by_percent = `, або ж <span class="underlined-text">${today_percent_amount}%</span> від загального балансу цього рахунку (${default_balance} ${account_currency})`;
+	let today_amount_by_percent = "";
+	if (todayPercentAmount) {
+		if (lang === LANG_ENUM.en)
+			today_amount_by_percent = `, or <span class="underlined-text">${todayPercentAmount}%</span> of the total balance of this account (${defaultBalance} ${accountCurrency})`;
+		else if (lang === LANG_ENUM.cz)
+			today_amount_by_percent = `, was <span class="underlined-text">${todayPercentAmount}%</span> des Gesamtsaldos dieses Kontos entspricht (${defaultBalance} ${accountCurrency})`;
+		else if (lang === LANG_ENUM.de)
+			today_amount_by_percent = `, neboli <span class="underlined-text">${todayPercentAmount}%</span> od celkového zůstatku tohoto účtu (${defaultBalance} ${accountCurrency})`;
+		else if (lang === LANG_ENUM.ru)
+			today_amount_by_percent = `, или же <span class="underlined-text">${todayPercentAmount}%</span> от общего баланса этого счёта (${defaultBalance} ${accountCurrency})`;
+		else if (lang === LANG_ENUM.ua)
+			today_amount_by_percent = `, або ж <span class="underlined-text">${todayPercentAmount}%</span> від загального балансу цього рахунку (${defaultBalance} ${accountCurrency})`;
 	}
 
-	if (lang == 'en')
-		el.innerHTML = `Today you spent <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
-	else if (lang == 'de')
-		el.innerHTML = `Heute Sie haben bereits <span class="underlined-text">${today_amount} ${account_currency}</span> ausgegeben${today_amount_by_percent}`;
-	else if (lang == 'cz')
-		el.innerHTML = `Dnes jste utratil(-a) <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
-	else if (lang == 'ru')
-		el.innerHTML = `Сегодня вы потратили <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
-	else if (lang == 'ua')
-		el.innerHTML = `Сьогодні ви витратили <span class="underlined-text">${today_amount} ${account_currency}</span>${today_amount_by_percent}`;
+	if (lang === LANG_ENUM.en)
+		el.innerHTML = `Today you spent <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
+	else if (lang === LANG_ENUM.cz)
+		el.innerHTML = `Dnes jste utratil(-a) <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
+	else if (lang === LANG_ENUM.de)
+		el.innerHTML = `Heute Sie haben bereits <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span> ausgegeben${today_amount_by_percent}`;
+	else if (lang === LANG_ENUM.ru)
+		el.innerHTML = `Сегодня вы потратили <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
+	else if (lang === LANG_ENUM.ua)
+		el.innerHTML = `Сьогодні ви витратили <span class="underlined-text">${todayFormattedAmount} ${accountCurrency}</span>${today_amount_by_percent}`;
 }
 
 
 
 
 
-function uploadExpensesIncomesStats () {
+/**
+ * Uploads expenses and income statistics for the specified period and language.
+ */
+function uploadExpensesIncomesStats() {
 
 	// upload title
 	uploadExpensesIncomesStatsTitle(
 		id('incomes-expenses-month-title'),
-		id('history-period-nav').getAttribute('period'),
+		uiState.date_range,
 		localStorage.getItem('L')
 	);
 
 	// upload incomes and expenses statistic
 	
 	let incomes_amount = getTotalAmountOfExactlyTypeByCustomPeriod(
-		'+', id('accounts').getAttribute('accountnum'), 0
+		'+', id('accounts').getAttribute('data-accountnum'), 0
 	);
 	let expenses_amount = getTotalAmountOfExactlyTypeByCustomPeriod(
-		'-', id('accounts').getAttribute('accountnum'), 0
+		'-', id('accounts').getAttribute('data-accountnum'), 0
 	);
 
-	let total_amount = incomes_amount + expenses_amount,
-		incomes_percent = 0, expenses_percent = 0;
-	
-	if (total_amount == 0) total_amount = 1;
-	incomes_percent = (100 / total_amount) * incomes_amount;
-	expenses_percent = (100 / total_amount) * expenses_amount;
+	let total_amount = incomes_amount + expenses_amount;
+
+	if (total_amount === 0) total_amount = 1;
+	let incomes_percent = (100 / total_amount) * incomes_amount;
+	let expenses_percent = (100 / total_amount) * expenses_amount;
 	
 	visualizeExpensesIncomesDataInWidget(
 		incomes_percent, expenses_percent,
@@ -3645,71 +3567,53 @@ function uploadExpensesIncomesStats () {
 	);
 }
 
-function uploadExpensesIncomesStatsTitle (el, period, lang) {
+/**
+ * Uploads the title for expenses and income statistics based on the specified period and language.
+ *
+ * @param {HTMLElement} el - The HTML element to display the title.
+ * @param {string} period - The period for which statistics are displayed.
+ * @param {string} lang - The language code.
+ */
+function uploadExpensesIncomesStatsTitle(el, period, lang) {
 
 	el.style.opacity = '0';
 	
 	setTimeout(() => {
-		if (period == 'month 0') {
-
-			if (lang == 'en')
-				el.innerText = 'This month';
-			else if (lang == 'de')
-				el.innerText = 'Dieser Monat';
-			else if (lang == 'cz')
-				el.innerText = 'Tento měsíc';
-			else if (lang == 'ru')
-				el.innerText = 'Этот месяц';
-			else if (lang == 'ua')
-				el.innerText = 'Цей місяць';
-				
-		} else if (period == 'month -1') {
-			
-			if (lang == 'en')
-				el.innerText = 'Previous month';
-			else if (lang == 'de')
-				el.innerText = 'Vormonat';
-			else if (lang == 'cz')
-				el.innerText = 'Předchozí měsíc';
-			else if (lang == 'ru')
-				el.innerText = 'Предыдущий месяц';
-			else if (lang == 'ua')
-				el.innerText = 'Попередній місяць';
-				
-		} else if (period == 'custom') {
-			
-			let inputs = id('date-filter-menu').getElementsByClassName('field-date'),
-				from = getReadableDateByFormatDayMonthYear(inputs[0].value),
-				to = getReadableDateByFormatDayMonthYear(inputs[1].value);
-	
-			if (lang == 'en')
-				el.innerText = `From ${from}
-					to ${to}`;
-			else if (lang == 'de')
-				el.innerText = `Von ${from}
-					bis ${to}`;
-			else if (lang == 'cz')
-				el.innerText = `Od ${from}
-					do ${to}`;
-			else if (lang == 'ru')
-				el.innerText = `От ${from}
-					до ${to}`;
-			else if (lang == 'ua')
-				el.innerText = `Від ${from}
-					до ${to}`;
-	
+		if (period === DATE_RANGE_ENUM.this_month) {
+			el.innerText = getStrings(lang).this_month_title;
+		} else if (period === DATE_RANGE_ENUM.last_month) {
+			el.innerText = getStrings(lang).last_month_title;
+		} else if (period === DATE_RANGE_ENUM.custom) {
+			let inputs = id('date-filter-menu').getElementsByClassName('field-date');
+			el.innerText = `${getStrings(lang).from} ${getReadableDateByFormatDayMonthYear(inputs[0].value)}
+				${getStrings(lang).to_time_meaning} ${getReadableDateByFormatDayMonthYear(inputs[1].value)}`;
 		}
-		
 		el.style.opacity = '1';
 	}, 300);
 }
 
-function getReadableDateByFormatDayMonthYear (date) {
-	date = new Date(date);
-	return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+/**
+ * Converts a date to a readable format (day.month.year).
+ *
+ * @param {string} date - The date to be converted. Date has to be in format, accessible for the new Date() method.
+ *
+ * @returns {string} The readable date format.
+ */
+function getReadableDateByFormatDayMonthYear(date) {
+	let formattedDate = new Date(date);
+	return `${formattedDate.getDate()}.${formattedDate.getMonth() + 1}.${formattedDate.getFullYear()}`;
 }
 
-function getTotalAmountOfExactlyTypeByCustomPeriod (type, account, amount) {
+/**
+ * Retrieves the total amount of the specified type for the custom period and account.
+ *
+ * @param {string} type - The type of record ('+' for income, '-' for expense).
+ * @param {string} account - The account number.
+ * @param {number} amount - The initial amount (accumulative).
+ *
+ * @returns {number} The total amount of records of the specified type.
+ */
+function getTotalAmountOfExactlyTypeByCustomPeriod(type, account, amount) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
@@ -3723,8 +3627,8 @@ function getTotalAmountOfExactlyTypeByCustomPeriod (type, account, amount) {
 		
 		if (record_date < date_border_from && record_date > date_border_to) {
 			if (
-				localStorage.getItem(`RP${record_num}`) == type &&
-				localStorage.getItem(`RA${record_num}`) == account
+				localStorage.getItem(`RP${record_num}`) === type &&
+				localStorage.getItem(`RA${record_num}`) === account
 			)
 				amount += Number(localStorage.getItem(`RU${record_num}`));
 		} else if (record_date < date_border_to)
@@ -3735,10 +3639,20 @@ function getTotalAmountOfExactlyTypeByCustomPeriod (type, account, amount) {
 	return amount;
 }
 
-function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent, incomes_amount, expenses_amount) {
+/**
+ * Visualizes expenses and income data in the widget.
+ *
+ * @param {number} incomesPercent - The percentage of income relative to the total amount.
+ * @param {number} expensesPercent - The percentage of expenses relative to the total amount.
+ * @param {string} incomesAmount - The total amount of incomes.
+ * @param {string} expensesAmount - The total amount of expenses.
+ */
+function visualizeExpensesIncomesDataInWidget(
+	incomesPercent, expensesPercent, incomesAmount, expensesAmount
+) {
 
-	id('incomes-column').style.width = incomes_percent + '%';
-	id('expenses-column').style.width = expenses_percent + '%';
+	id('incomes-column').style.width = incomesPercent + '%';
+	id('expenses-column').style.width = expensesPercent + '%';
 	
 	let titles = id('stats-column').getElementsByClassName('stats-column-title');
 	
@@ -3746,20 +3660,20 @@ function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent
 	titles[1].style.opacity = '0';
 	id('incomes-expenses-total-cont').style.opacity = '0';
 	
-	let total = incomes_amount - expenses_amount;
-	let currency = localStorage.getItem('ACurrency' + id('accounts').getAttribute('accountnum'));
+	let total = incomesAmount - expensesAmount;
+	let currency = localStorage.getItem('ACurrency' + id('accounts').getAttribute('data-accountnum'));
 	setTimeout(() => {
 
-		id('incomes-column-percent').innerText = incomes_percent.toFixed(2) + '%';
-		id('expenses-column-percent').innerText = expenses_percent.toFixed(2) + '%';
+		id('incomes-column-percent').innerText = incomesPercent.toFixed(2) + '%';
+		id('expenses-column-percent').innerText = expensesPercent.toFixed(2) + '%';
 		
-		id('incomes-column-amount').innerText = `+ ${getReadableNumber(incomes_amount)} ${currency}`;
-		id('expenses-column-amount').innerText = `- ${getReadableNumber(expenses_amount)} ${currency}`;
+		id('incomes-column-amount').innerText = `+ ${getReadableNumber(Number(incomesAmount))} ${currency}`;
+		id('expenses-column-amount').innerText = `- ${getReadableNumber(Number(expensesAmount))} ${currency}`;
 
 		if (total < 0)
-			id('incomes-expenses-total').innerText = `- ${getReadableNumber( (Math.abs(total)).toFixed(2) )} ${currency}`;
+			id('incomes-expenses-total').innerText = `- ${getReadableNumber( Number((Math.abs(total)).toFixed(2)) )} ${currency}`;
 		else
-			id('incomes-expenses-total').innerText = `+ ${getReadableNumber(total.toFixed(2))} ${currency}`;
+			id('incomes-expenses-total').innerText = `+ ${getReadableNumber( Number(total.toFixed(2)) )} ${currency}`;
 		
 		titles[0].style.opacity = '1';
 		titles[1].style.opacity = '1';
@@ -3771,18 +3685,32 @@ function visualizeExpensesIncomesDataInWidget (incomes_percent, expenses_percent
 
 
 
-function calculateInnerScale (parent, child) {
+/**
+ * Calculates the inner scale based on the parent and child elements.
+ *
+ * @param {HTMLElement} parent - The parent element.
+ * @param {HTMLElement} child - The child element.
+ *
+ * @returns {number} The calculated inner scale.
+ */
+function calculateInnerScale(parent, child) {
 	return ( (parent.clientWidth - ((parseInt(window.getComputedStyle(parent).paddingLeft)) * 2)) / child.clientWidth );
 }
 
-function fitPieChartSize () {
+/**
+ * Fits the size of the pie chart based on the inner scale.
+ */
+function fitPieChartSize() {
 
 	let scaleX = calculateInnerScale(id('pie-chart-cont'), id('pie-chart'));
-	id('pie-chart').setAttribute('scaleX', scaleX);
+	id('pie-chart').setAttribute('scaleX', scaleX.toString());
 	id('pie-chart').style.transform = `scale(${scaleX})`;
 }
 
-function updatePieChart () {
+/**
+ * Updates the pie chart.
+ */
+function updatePieChart() {
 	
 	id('pie-chart').style.transform = `scale(0)`;
 	let scaleX = id('pie-chart').getAttribute('scaleX');
@@ -3794,39 +3722,54 @@ function updatePieChart () {
 	}, 350);
 }
 
-function uploadDataToPieChart () {
+/**
+ * Uploads data to the pie chart.
+ */
+function uploadDataToPieChart() {
 
 	let results = getCategoriesStats();
 
-	let type = id('history-type-nav').getAttribute('history-type');
-	if (type == 'all') type = '-';
+	let type = id('history-type-nav').getAttribute('data-history-type');
+	if (type === 'all') type = '-';
 	uploadCategoriesToDetailPieChartPreview(
 		type,
-		id('accounts').getAttribute('accountnum'),
+		id('accounts').getAttribute('data-accountnum'),
 		results
 	);
-	if (type == '-')
+	if (type === '-')
 		setUpClickOnDetailCategoriesPreview();
 
 	drawPieChart(results);
 	uploadAmountToPieChart();
 }
 
-function getCategoriesStats () {
+/**
+ * Retrieves categories statistics based on the selected type and account.
+ *
+ * @returns {Array} Array containing the statistics for each category.
+ */
+function getCategoriesStats() {
 
-	let account = id('accounts').getAttribute('accountnum'),
-		type = id('history-type-nav').getAttribute('history-type');
-	if (type == 'all') type = '-';
+	let account = id('accounts').getAttribute('data-accountnum'),
+		type = id('history-type-nav').getAttribute('data-history-type');
+	if (type === 'all') type = '-';
 	
 	return getCategoriesStatsByCustomPeriod(type, account, getArrayForStatsResults(type));
 }
 
-function getArrayForStatsResults (type) {
+/**
+ * Generates an array to store the statistics results for each category.
+ *
+ * @param {string} type - The type of history ('+' for income, '-' for expense).
+ *
+ * @returns {Array} The array for storing statistics results.
+ */
+function getArrayForStatsResults(type) {
 	let results,
 		theme = localStorage.getItem('T');
 
-	if (type == '-') {
-		if (theme == 'l')
+	if (type === '-') {
+		if (theme === 'l')
 			results = [
 				/* 1 */ {total: 0, color: "#97a97c"},
 				/* 2 */ {total: 0, color: "#9a8c98"},
@@ -3840,7 +3783,7 @@ function getArrayForStatsResults (type) {
 				/* 9 */ {total: 0, color: "#db924d"},
 				/* 10 */ {total: 0, color: "#22223b"}
 			];
-		else if (theme == 'b' || theme == 'd')
+		else if (theme === 'b' || theme === 'd')
 			results = [
 				/* 1 */ {total: 0, color: "#798763"},
 				/* 2 */ {total: 0, color: "#7c717a"},
@@ -3855,8 +3798,8 @@ function getArrayForStatsResults (type) {
 				/* 10 */ {total: 0, color: "#1b1b2f"}
 			];
 	}
-	else if (type == '+') {
-		if (theme == 'l')
+	else if (type === '+') {
+		if (theme === 'l')
 			results = [
 				/* 1 */ {total: 0, color: "#97a97c"},
 				/* 2 */ {total: 0, color: "#4a4e69"},
@@ -3869,7 +3812,7 @@ function getArrayForStatsResults (type) {
 				// /* 9 */ {total: 0, color: "#709775"}
 				/* 9 */ {total: 0, color: "#db924d"}
 			];
-		else if (theme == 'b' || theme == 'd')
+		else if (theme === 'b' || theme === 'd')
 			results = [
 				/* 1 */ {total: 0, color: "#798763"},
 				/* 2 */ {total: 0, color: "#3b3d52"},
@@ -3887,7 +3830,16 @@ function getArrayForStatsResults (type) {
 	return results;
 }
 
-function getCategoriesStatsByCustomPeriod (type, account, results) {
+/**
+ * Retrieves category statistics for the custom period based on type and account.
+ *
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ * @param {Array} results - The array to store the category statistics.
+ *
+ * @returns {Array} The updated array of category statistics.
+ */
+function getCategoriesStatsByCustomPeriod(type, account, results) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
@@ -3901,8 +3853,8 @@ function getCategoriesStatsByCustomPeriod (type, account, results) {
 		
 		if (record_date < date_border_from && record_date > date_border_to) {
 			if (
-				localStorage.getItem(`RP${record_num}`) == type &&
-				localStorage.getItem(`RA${record_num}`) == account
+				localStorage.getItem(`RP${record_num}`) === type &&
+				localStorage.getItem(`RA${record_num}`) === account
 			)
 				results[localStorage.getItem(`RC${record_num}`)].total += Number(localStorage.getItem(`RU${record_num}`));
 		} else if (record_date < date_border_to)
@@ -3913,12 +3865,19 @@ function getCategoriesStatsByCustomPeriod (type, account, results) {
 	return results;
 }
 
-function uploadCategoriesToDetailPieChartPreview (type, account, results) {
+/**
+ * Uploads categories to the detailed pie chart preview along with their details.
+ *
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ * @param {Array} results - The array of category statistics.
+ */
+function uploadCategoriesToDetailPieChartPreview(type, account, results) {
 
 	id('pie-chart-categories-details').innerHTML = null;
 
 	for (let a = 0; results[a]; a++)
-		if (results[a].total != 0)
+		if (results[a].total !== 0)
 			uploadCategoryToDetailPieChartPreview(a, results[a].total, results[a].color, type, account);
 
 	if (!(id('pie-chart-categories-details').firstElementChild))
@@ -3927,21 +3886,32 @@ function uploadCategoriesToDetailPieChartPreview (type, account, results) {
 		id('pie-chart-categories-details').classList.remove('hide');
 }
 
-function uploadCategoryToDetailPieChartPreview (unit_num, amount, color, type, account) {
+/**
+ * Uploads a single category to the detailed pie chart preview.
+ *
+ * @param {number} unitNum - The category unit number.
+ * @param {number} amount - The total amount for the category.
+ * @param {string} color - The color associated with the category.
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ */
+function uploadCategoryToDetailPieChartPreview(
+	unitNum, amount, color, type, account
+) {
 	let el;
 	
-	if (type == '-')
+	if (type === '-')
 		el = constructCategoryPreviewEl(
-			categories_expense_icons[unit_num],
-			categories_expense_titles[unit_num],
-			unit_num, type, amount,
+			CATEGORY_EXPENSE_ICONS[unitNum],
+			categories_expense_titles[unitNum],
+			unitNum, type, amount,
 			localStorage.getItem(`ACurrency${account}`)
 		);
-	else if (type == '+')
+	else if (type === '+')
 		el = constructCategoryPreviewEl(
-			categories_income_icons[unit_num],
-			categories_income_titles[unit_num],
-			unit_num, type, amount,
+			CATEGORY_INCOME_ICONS[unitNum],
+			categories_income_titles[unitNum],
+			unitNum, type, amount,
 			localStorage.getItem(`ACurrency${account}`)
 		);
 
@@ -3950,36 +3920,50 @@ function uploadCategoryToDetailPieChartPreview (unit_num, amount, color, type, a
 	id('pie-chart-categories-details').lastElementChild.style.borderRight = `4px solid ${color}`;
 }
 
-function constructCategoryPreviewEl (icon, title, category_num, type, amount, account_currency) {
-
-	let el = `<div class="category-details" categorynum="${category_num}">
+/**
+ * Constructs HTML code for a category preview element.
+ *
+ * @param {string} icon - The icon for the category.
+ * @param {string} title - The title of the category.
+ * @param {number} categoryNum - The category number.
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {number} amount - The total amount for the category.
+ * @param {string} accountCurrency - The currency associated with the account.
+ *
+ * @returns {string} The HTML code for the category preview element.
+ */
+function constructCategoryPreviewEl(
+	icon, title, categoryNum, type, amount, accountCurrency
+) {
+	return `<div class="category-details" data-categorynum="${categoryNum}">
 				<div class="category">
 					<div>${icon}</div>
 					<h3>${title}</h3>
 				</div>
 				<div class="category-amount">
 					<h3>${type}</h3>
-					<h3>${getReadableNumber( amount.toFixed(2) )}</h3>
-					<h3>${account_currency}</h3>
+					<h3>${getReadableNumber( Number(amount.toFixed(2)) )}</h3>
+					<h3>${accountCurrency}</h3>
 				</div>
 			</div>`;
-
-	return el;
 }
 
-function setUpClickOnDetailCategoriesPreview () {
+/**
+ * Sets up click functionality for detailed categories preview.
+ */
+function setUpClickOnDetailCategoriesPreview() {
 
 	for (let el of id('pie-chart-categories-details').getElementsByClassName('category-details')) {
 		el.onclick = function() {
 
 			let windowEl_cont = id('subcategories-detail-view-cont'),
-				windowEl = id('subcategories-detail-view-cont').lastElementChild;
+				windowEl = id('subcategories-detail-view-cont').lastElementChild,
 				clickEl = this;
 			
 			windowEl.firstElementChild.firstElementChild.innerHTML = clickEl.firstElementChild.innerHTML;
 				
 			windowEl.lastElementChild.innerHTML = null;
-			uploadSubcategoriesToDetailCategoryPreview(clickEl.getAttribute('categorynum'), windowEl.lastElementChild);
+			uploadSubcategoriesToDetailCategoryPreview(clickEl.getAttribute('data-categorynum'), windowEl.lastElementChild);
 
 			disableScrolling();
 			openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
@@ -3993,29 +3977,42 @@ function setUpClickOnDetailCategoriesPreview () {
 	}
 }
 
-function uploadSubcategoriesToDetailCategoryPreview (category_num, container) {
+/**
+ * Uploads subcategories to the detailed category preview.
+ *
+ * @param {number} categoryNum - The category number.
+ * @param {HTMLElement} container - The container for subcategories.
+ */
+function uploadSubcategoriesToDetailCategoryPreview(categoryNum, container) {
 
-	let account = id('accounts').getAttribute('accountnum'),
-		type = id('history-type-nav').getAttribute('history-type');
-	if (type == 'all') type = '-';
+	let account = id('accounts').getAttribute('data-accountnum'),
+		type = id('history-type-nav').getAttribute('data-history-type');
+	if (type === 'all') type = '-';
 
 	let results = getArrayForSubcategoriesStatsResult();
 	
 	results = getSubcategoriesStatsByCustomPeriod(type, account, results);
 	
-	for (let a = 0; results[category_num][a]; a++)
-		if (results[category_num][a].total != 0) {
-			el = constructCategoryPreviewEl(
-				subcategories_icons[category_num][a],
-				subcategories_titles[category_num][a],
-				a, '-', results[category_num][a].total,
-				localStorage.getItem(`ACurrency${id('accounts').getAttribute('accountnum')}`)
+	for (let a = 0; results[categoryNum][a]; a++)
+		if (results[categoryNum][a].total !== 0) {
+			container.insertAdjacentHTML(
+				'beforeend',
+				constructCategoryPreviewEl(
+					SUBCATEGORY_ICONS[categoryNum][a],
+					subcategories_titles[categoryNum][a],
+					a, '-', results[categoryNum][a].total,
+					localStorage.getItem(`ACurrency${id('accounts').getAttribute('data-accountnum')}`)
+				)
 			);
-			container.insertAdjacentHTML('beforeend', el);
 		}
 }
 
-function getArrayForSubcategoriesStatsResult () {
+/**
+ * Gets an array initialized with objects for subcategory statistics results.
+ *
+ * @returns {Array} An array of objects for subcategory statistics results.
+ */
+function getArrayForSubcategoriesStatsResult() {
 	return ([
 		/* 1 */
 		[ {total: 0}, {total: 0}, {total: 0} ],
@@ -4043,7 +4040,15 @@ function getArrayForSubcategoriesStatsResult () {
 	]);
 }
 
-function getSubcategoriesStatsByCustomPeriod (type, account, results) {
+/**
+ * Retrieves subcategory statistics for the custom period based on type and account.
+ *
+ * @param {string} type - The type of records to consider ('-', '+').
+ * @param {string} account - The account number.
+ * @param {Array} results - The array to store the subcategory statistics.
+ * @returns {Array} The updated array of subcategory statistics.
+ */
+function getSubcategoriesStatsByCustomPeriod(type, account, results) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
@@ -4057,8 +4062,8 @@ function getSubcategoriesStatsByCustomPeriod (type, account, results) {
 		
 		if (record_date < date_border_from && record_date > date_border_to) {
 			if (
-				localStorage.getItem(`RP${record_num}`) == type &&
-				localStorage.getItem(`RA${record_num}`) == account
+				localStorage.getItem(`RP${record_num}`) === type &&
+				localStorage.getItem(`RA${record_num}`) === account
 			)
 				results[
 					localStorage.getItem(`RC${record_num}`)
@@ -4073,12 +4078,17 @@ function getSubcategoriesStatsByCustomPeriod (type, account, results) {
 	return results;
 }
 
-function drawPieChart (results) {
+/**
+ * Draws the pie chart on the canvas based on the provided results.
+ *
+ * @param {Array} results - The array of category statistics.
+ */
+function drawPieChart(results) {
 
 	let ctx = id('pie-chart').getContext('2d');
 	ctx.clearRect(0, 0, id('pie-chart').width, id('pie-chart').height);
 
-	let sum = 0, currentAngle = 0,
+	let currentAngle = 0,
 		totalNumberOfPeople = results.reduce((sum, {total}) => sum + total, 0);
 
     for (let unit of results) {
@@ -4098,17 +4108,20 @@ function drawPieChart (results) {
 		results[a].total = 0;
 }
 
-function uploadAmountToPieChart () {
+/**
+ * Uploads the total amount to the pie chart based on the selected history type.
+ */
+function uploadAmountToPieChart() {
 
-	let type = id('history-type-nav').getAttribute('history-type');
-	if (type == 'all') type = '-';
+	let type = id('history-type-nav').getAttribute('data-history-type');
+	if (type === 'all') type = '-';
 	
 	id('pie-chart-amount').classList.add('pie-chart-amount-hide');
 
 	setTimeout(() => {
-		if (type == '-')
+		if (type === '-')
 			id('pie-chart-amount').innerHTML = id('expenses-column-amount').innerHTML;
-		else if (type == '+')
+		else if (type === '+')
 			id('pie-chart-amount').innerHTML = id('incomes-column-amount').innerHTML;
 
 		id('pie-chart-amount').classList.remove('pie-chart-amount-hide');
@@ -4118,7 +4131,10 @@ function uploadAmountToPieChart () {
 
 
 
-function positionateDateFilterMenu () {
+/**
+ * Places the date filter menu to the right side of the screen.
+ */
+function placeDateFilterMenu() {
 	let x = window.innerWidth - id('date-filter-menu-cont').getBoundingClientRect().left;
 	id('date-filter-menu-cont').style.transform = `translateX(calc(${x}px + 10vw))`;
 }
@@ -4126,7 +4142,10 @@ function positionateDateFilterMenu () {
 
 
 
-function fixCurrentWidthOfElements () {
+/**
+ * Fixes the current width of elements after a short delay.
+ */
+function fixCurrentWidthOfElements() {
 	setTimeout(() => {
 		let holding_el = freezeWidthOfEl(id('enable-history-scroll-button'));
 		updateWidthOfEl(id('enable-history-scroll-button'), holding_el);
@@ -4140,14 +4159,34 @@ function fixCurrentWidthOfElements () {
 
 
 
-function calculateScaleX (clickEl, windowEl_cont) {
-	return ( clickEl.offsetWidth / ( windowEl_cont.lastElementChild.offsetWidth ) );
+/**
+ * Calculates the scaleX value for a floating window based on the click element and the window container.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ *
+ * @returns {number} The calculated scaleX value.
+ */
+function calculateScaleX(clickEl, windowElCont) {
+	return ( clickEl.offsetWidth / ( windowElCont.lastElementChild.offsetWidth ) );
 }
 
-function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
+/**
+ * Opens a floating window with a scaling animation.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ * @param {number} scaleX - The scaleX value for the scaling transformation.
+ *
+ * @returns {object} The top position coordinates.
+ */
+function openFloatingWindow(
+	clickEl, windowElCont, windowEl, scaleX
+) {
 	let transition = `opacity .4s, transform .4s .03s`;
 	
-	windowEl_cont.classList.add('floating-window-cont-visible');
+	windowElCont.classList.add('floating-window-cont-visible');
 	
 	clickEl.style.transition = transition;
 	let windowEl_full_height = windowEl.clientHeight;
@@ -4167,26 +4206,33 @@ function openFloatingWindow (clickEl, windowEl_cont, windowEl, scaleX) {
 
 	setTimeout(() => {
 		windowEl.style.transition = transition;
-		windowEl_cont.classList.add('floating-window-cont-darker');
+		windowElCont.classList.add('floating-window-cont-darker');
 
 		clickEl.style.opacity = '0';
-		clickEl.style.transform = `scale(${Math.min(1 * 1 / scaleX, 1 * 1 / scaleY)}) translate(${clickEl_position_X}px, ${clickEl_position_Y}px)`;
+		clickEl.style.transform = `scale(${Math.min(1 / scaleX, 1 / scaleY)}) translate(${clickEl_position_X}px, ${clickEl_position_Y}px)`;
 	}, 1);
 
 	return top_position;
 }
 
-function closeFloatingWindow (clickEl, windowEl_cont, windowEl) {
+/**
+ * Closes a floating window with a scaling animation.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeFloatingWindow(clickEl, windowElCont, windowEl) {
 	
 	clickEl.style.transition = `opacity .5s, transform .4s`;
 	clickEl.style.opacity = '1';
 	clickEl.style.transform = 'scale(1) translateY(0px)';
 
 	windowEl.style.transition = `opacity .35s .15s, transform .4s`;
-	windowEl_cont.classList.remove('floating-window-cont-darker');
+	windowElCont.classList.remove('floating-window-cont-darker');
 	
 	setTimeout(() => {
-		windowEl_cont.classList.remove('floating-window-cont-visible');
+		windowElCont.classList.remove('floating-window-cont-visible');
 		windowEl.style.transform = 'translateY(0px) scale(1)';
 		windowEl.style.transition = 'all 0s';
 
@@ -4196,30 +4242,53 @@ function closeFloatingWindow (clickEl, windowEl_cont, windowEl) {
 	}, 390);
 }
 
-function changeFloatingWindowTransformation (clickEl, windowEl_cont, windowEl) {
+/**
+ * Changes the transformation of a floating window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ *
+ * @returns {string} The transition property value of the clicked element.
+ */
+function changeFloatingWindowTransformation(clickEl, windowElCont, windowEl) {
 
 	let clickEL_transition = clickEl.style.transition;
 	clickEl.style.transition = 'transform 0s';
 	clickEl.style.transform = 'scale(1) translateY(0px)';
 	
-	let scaleX = calculateScaleX(clickEl, windowEl_cont);
+	let scaleX = calculateScaleX(clickEl, windowElCont);
 	let scaleY = scaleX / ((windowEl.clientHeight * scaleX) / clickEl.clientHeight);
-	let top_position_X = windowEl.getAttribute('top-position-x');
-	let top_position_Y = windowEl.getAttribute('top-position-y');
+	let top_position_X = windowEl.getAttribute('data-top-position-x');
+	let top_position_Y = windowEl.getAttribute('data-top-position-y');
 
 	windowEl.style.transform = `translate(${top_position_X}px, ${top_position_Y}px) scale(${scaleX}, ${scaleY})`;
 
-	let clickEl_position_X = ( windowEl.getBoundingClientRect().left + (windowEl.offsetWidth / 2) - clickEl.getBoundingClientRect().left - (clickEl.offsetWidth / 2) ) * Math.max(scaleX, scaleY);
-	let clickEl_position_Y = ( windowEl.getBoundingClientRect().top + (windowEl.clientHeight / 2) - clickEl.getBoundingClientRect().top + ((clickEl.clientHeight / 2)) ) * Math.max(scaleX, scaleY);
+	let clickEl_position_X = (
+			windowEl.getBoundingClientRect().left + (windowEl.offsetWidth / 2) -
+			clickEl.getBoundingClientRect().left - (clickEl.offsetWidth / 2)
+		) * Math.max(scaleX, scaleY);
+	let clickEl_position_Y = (
+			windowEl.getBoundingClientRect().top + (windowEl.clientHeight / 2) -
+			clickEl.getBoundingClientRect().top + ((clickEl.clientHeight / 2))
+		) * Math.max(scaleX, scaleY);
 	clickEl.style.transform = `scale(${1 / scaleX}) translate(${clickEl_position_X}px, ${clickEl_position_Y}px)`;
 
 	return clickEL_transition;
 }
 
-function reconnectFloatingWindow (previous_clickEl, clickEl, windowEl_cont, windowEl) {
+/**
+ * Reconnects a floating window by hiding the previous clicked element and updating the transformation.
+ *
+ * @param {HTMLElement} previousClickEl - The previously clicked element.
+ * @param {HTMLElement} clickEl - The current clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function reconnectFloatingWindow(previousClickEl, clickEl, windowElCont, windowEl) {
 
-	previous_clickEl.style.display = 'none';
-	let scaleX = calculateScaleX(clickEl, windowEl_cont);
+	previousClickEl.style.display = 'none';
+	let scaleX = calculateScaleX(clickEl, windowElCont);
 	let scaleY = scaleX / ((windowEl.clientHeight * scaleX) / clickEl.clientHeight);
 
 	let width_difference = windowEl.clientWidth - (windowEl.clientWidth * scaleX);
@@ -4230,29 +4299,42 @@ function reconnectFloatingWindow (previous_clickEl, clickEl, windowEl_cont, wind
 	windowEl.style.transform = `translate(${top_position_X}px, ${top_position_Y}px) scale(${scaleX}, ${scaleY})`;
 }
 
-function closeReconnectedFloatingWindow (windowEl_cont, windowEl) {
+/**
+ * Closes a reconnected floating window with a scaling animation.
+ *
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeReconnectedFloatingWindow(windowElCont, windowEl) {
 
   windowEl.style.transition = `opacity .35s .15s, transform .4s`;
-  windowEl_cont.classList.remove('floating-window-cont-darker');
+  windowElCont.classList.remove('floating-window-cont-darker');
   
   setTimeout(() => {
-    windowEl_cont.classList.remove('floating-window-cont-visible');
+    windowElCont.classList.remove('floating-window-cont-visible');
     windowEl.style.transform = 'translateY(0px) scale(1)';
     windowEl.style.transition = 'all 0s';
   }, 390);
 }
 
-function closeFloatingWindowByDisappearMethod (clickEl, windowEl_cont, windowEl) {
+/**
+ * Closes a floating window using the disappear method.
+ *
+ * @param {HTMLElement} clickEl - The clicked element.
+ * @param {HTMLElement} windowElCont - The window container.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeFloatingWindowByDisappearMethod(clickEl, windowElCont, windowEl) {
 
 	clickEl.style.display = `none`;
 
 	windowEl.style.transition = `opacity .4s, transform .4s`;
 	windowEl.style.transform = `translateY(0px) scale(0.5)`;
 	windowEl.style.opacity = `0`;
-	windowEl_cont.classList.remove('floating-window-cont-darker');
+	windowElCont.classList.remove('floating-window-cont-darker');
 	
 	setTimeout(() => {
-		windowEl_cont.classList.remove('floating-window-cont-visible');
+		windowElCont.classList.remove('floating-window-cont-visible');
 		windowEl.style.transition = 'all 0s';
 
 		clickEl.style.transition = null;
@@ -4265,15 +4347,25 @@ function closeFloatingWindowByDisappearMethod (clickEl, windowEl_cont, windowEl)
 
 
 
-function showPopUpConnectedNotification (notification_command, notification_contEl, connected_window) {
+/**
+ * Displays a popup notification for a connected action.
+ *
+ * @param {string} notificationCommand - The notification command.
+ * @param {HTMLElement} notificationContEl - The container element for the notification.
+ * @param {HTMLElement} connectedWindow - The connected window element.
+ *
+ * @returns {number} The timeout ID for hiding the notification.
+ */
+function showPopUpConnectedNotification(notificationCommand, notificationContEl, connectedWindow) {
 
-	let notificationEl = notification_contEl.firstElementChild,
+	let notificationEl = notificationContEl.firstElementChild,
 		hide_popup_notification;
-	
-	uploadPopUpNotificationMessage(notification_command, notificationEl.lastElementChild.firstElementChild);
 
-	notification_contEl.style.top = (connected_window.getBoundingClientRect().top + 20) + 'px';
-	notification_contEl.classList.add('show');
+	notificationEl.lastElementChild.firstElementChild.innerText =
+		getStrings(localStorage.getItem('L')).account_removing_message;
+
+	notificationContEl.style.top = (connectedWindow.getBoundingClientRect().top + 20) + 'px';
+	notificationContEl.classList.add('show');
 
 	notificationEl.style.transform = `scale(1.02) translateY(calc(${-(notificationEl.clientHeight)}px - 46px))`;
 	
@@ -4282,54 +4374,48 @@ function showPopUpConnectedNotification (notification_command, notification_cont
 	}, 400);
 	
 	hide_popup_notification = setTimeout(() => {
-		hidePopUpConnectedNotificationAfterTimer (notification_contEl);
+		hidePopUpConnectedNotificationAfterTimer (notificationContEl);
 	}, 5000);
 
 	notificationEl.onclick = () => {
 		clearTimeout(hide_popup_notification);
-		hidePopUpConnectedNotificationAfterTimer(notification_contEl);
+		hidePopUpConnectedNotificationAfterTimer(notificationContEl);
 	}
 
 	return hide_popup_notification;
 }
 
-function uploadPopUpNotificationMessage (notification_command, notificationEl) {
-	let lang = localStorage.getItem('L');
-
-	if (notification_command == 'remove account') {
-		if (lang == 'en')
-			notificationEl.innerHTML = 'It will also delete all records connected with this account. It is irreversible action.';
-		else if (lang == 'de')
-			notificationEl.innerHTML = 'Damit werden auch alle mit diesem Konto verbundenen Datensätze gelöscht. Dieser Vorgang kann man nicht rückgängig gemacht werden.';
-		else if (lang == 'cz')
-			notificationEl.innerHTML = 'To také smaže všechny záznamy spojené s tímto účtem. Je to nevratná akce.';
-		else if (lang == 'ru')
-			notificationEl.innerHTML = 'Это также удалит все записи, связанные с этим счётом. Это необратимое действие.';
-		else if (lang == 'ua')
-			notificationEl.innerHTML = `Це також видалить всі записи, пов'язані з цим рахунком. Це незворотня дія.`;
-	}
-}
-
-function hidePopUpConnectedNotificationAfterTimer (notification_contEl) {
-	let notificationEl = notification_contEl.firstElementChild;
+/**
+ * Hides the popup notification after a timer.
+ *
+ * @param {HTMLElement} notificationContEl - The container element for the notification.
+ */
+function hidePopUpConnectedNotificationAfterTimer(notificationContEl) {
+	let notificationEl = notificationContEl.firstElementChild;
 
 	notificationEl.style.transform = null;
 	
 	setTimeout(() => {
-		notification_contEl.classList.remove('show');
+		notificationContEl.classList.remove('show');
 		notificationEl.lastElementChild.firstElementChild.innerHTML = null;
 	}, 400);
 }
 
-function hidePopUpConnectedNotification (notification_contEl, hide_popup_notification) {
-	let notificationEl = notification_contEl.firstElementChild;
+/**
+ * Hides the popup notification.
+ *
+ * @param {HTMLElement} notificationContEl - The container element for the notification.
+ * @param {number} hidePopupNotification - The timeout ID for hiding the notification.
+ */
+function hidePopUpConnectedNotification(notificationContEl, hidePopupNotification) {
+	let notificationEl = notificationContEl.firstElementChild;
 
-	clearTimeout(hide_popup_notification);
+	clearTimeout(hidePopupNotification);
 	
 	notificationEl.style.opacity = 0;
 	
 	setTimeout(() => {
-		notification_contEl.classList.remove('show');
+		notificationContEl.classList.remove('show');
 		notificationEl.style = null;
 		notificationEl.lastElementChild.firstElementChild.innerHTML = null;
 	}, 400);
@@ -4339,12 +4425,18 @@ function hidePopUpConnectedNotification (notification_contEl, hide_popup_notific
 
 
 
-function openWindowBlock (windowEl_cont, windowEl) {
+/**
+ * Opens a window block with a dark overlay.
+ *
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function openWindowBlock(windowElCont, windowEl) {
 
-  windowEl_cont.classList.add('window-block-cont-visible');
+  windowElCont.classList.add('window-block-cont-visible');
 
   setTimeout(() => {
-    windowEl_cont.classList.add('window-block-cont-darker');
+    windowElCont.classList.add('window-block-cont-darker');
     
     setTimeout(() => {
       windowEl.classList.add('window-block-transform');
@@ -4352,14 +4444,20 @@ function openWindowBlock (windowEl_cont, windowEl) {
   }, 1);
 }
 
-function closeWindowBlock (windowEl_cont, windowEl) {
+/**
+ * Closes a window block.
+ *
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} windowEl - The window element.
+ */
+function closeWindowBlock(windowElCont, windowEl) {
 
 	windowEl.style = null;
 	windowEl.classList.remove('window-block-transform');
-	windowEl_cont.classList.remove('window-block-cont-darker');
+	windowElCont.classList.remove('window-block-cont-darker');
 
 	setTimeout(() => {
-		windowEl_cont.classList.remove('window-block-cont-visible');
+		windowElCont.classList.remove('window-block-cont-visible');
 	}, 300);
 }
 
@@ -4367,62 +4465,82 @@ function closeWindowBlock (windowEl_cont, windowEl) {
 
 
 
-function openWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, bubble_els_array) {
+/**
+ * Opens a window using a bubble queue method.
+ *
+ * @param {HTMLElement} clickEl - The click element.
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} closeButton - The close button element.
+ * @param {HTMLCollectionOf<HTMLElementTagNameMap[string]>} bubbleElsArray - The array of elements to show.
+ */
+function openWindowByBubbleQueueMethod(
+	clickEl, windowElCont, closeButton, bubbleElsArray
+) {
 
 	// hide click element
 	clickEl.style.transition = '.5s transform, .5s opacity';
 	clickEl.classList.add('bubble-hide');
 
 	// show elements' container 
-	windowEl_cont.classList.add('visible');
+	windowElCont.classList.add('visible');
 	
-	let len = bubble_els_array.length,
+	let len = bubbleElsArray.length,
 		delay = 80;
 	
 	// show elements one by one
 	for (let a = len; a > 0; a--) {
 		
 		setTimeout(() => {
-			bubble_els_array[a - 1].style.transition = '.15s transform, .15s opacity';
-			bubble_els_array[a - 1].classList.add('show');
+			bubbleElsArray[a - 1].style.transition = '.15s transform, .15s opacity';
+			bubbleElsArray[a - 1].classList.add('show');
 		}, delay * (len - a));
 
-		if (a == 1)
+		if (a === 1)
 			setTimeout(() => {
-				close_button.style.transition = '.15s transform, .15s opacity';
-				close_button.classList.add('show');
+				closeButton.style.transition = '.15s transform, .15s opacity';
+				closeButton.classList.add('show');
 			}, delay * len);
 	}
 }
 
-function closeWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, bubble_els_array) {
+/**
+ * Closes a window using a bubble queue method.
+ *
+ * @param {HTMLElement} clickEl - The click element.
+ * @param {HTMLElement} windowElCont - The window container element.
+ * @param {HTMLElement} closeButton - The close button element.
+ * @param {HTMLCollectionOf<HTMLElementTagNameMap[string]>} bubbleElsArray - The array of elements to hide.
+ */
+function closeWindowByBubbleQueueMethod(
+	clickEl, windowElCont, closeButton, bubbleElsArray
+) {
 
 	clickEl.style.transition = '.15s transform, .15s opacity';
 
-	let len = bubble_els_array.length,
+	let len = bubbleElsArray.length,
 		delay = 40;
 
 	// hide elements one by one
 	for (let a = len - 1; a >= 0; a--) {
 
-		if (a == len - 1) {
-			close_button.style.transition = '.15s transform, .15s opacity';
-			close_button.classList.remove('show');
+		if (a === len - 1) {
+			closeButton.style.transition = '.15s transform, .15s opacity';
+			closeButton.classList.remove('show');
 		}
 		
 		setTimeout(() => {
-			bubble_els_array[a].style.transition = '.15s transform, .15s opacity';
-			bubble_els_array[a].classList.remove('show');
+			bubbleElsArray[a].style.transition = '.15s transform, .15s opacity';
+			bubbleElsArray[a].classList.remove('show');
 		}, delay * (len - a + 1));
 
-		if (a == 0) {
+		if (a === 0) {
 			setTimeout(() => {
 				// show click element
 				clickEl.classList.remove('bubble-hide');
 			}, delay * len);
 			setTimeout(() => {
 				// hide elements' container 
-				windowEl_cont.classList.remove('visible');
+				windowElCont.classList.remove('visible');
 			}, delay * len);
 		}
 	}
@@ -4432,9 +4550,11 @@ function closeWindowByBubbleQueueMethod (clickEl, windowEl_cont, close_button, b
 
 
 
-// set up clicks on accounts on topbar
-var account_tap_time = (new Date()).getTime();
-function setUpClickOnAccountsInTopbar () {
+let accountTapTime = (new Date()).getTime();
+/**
+ * Sets up click event handling on accounts in the top bar.
+ */
+function setUpClickOnAccountsInTopBar() {
 
 	for (let account of id('accounts').getElementsByClassName('account')) {
 		account.onclick = function(e) {
@@ -4442,10 +4562,10 @@ function setUpClickOnAccountsInTopbar () {
 			if (!(account.classList.contains('active-account'))) {
 				// change active account
 				for (let account of id('accounts').getElementsByClassName('account'))
-					if (account == this) {
+					if (account === this) {
 						
 						setTimeout(() => { account.classList.add('active-account'); }, 100);
-						id('accounts').setAttribute('accountnum', account.getAttribute('accountnum'));
+						id('accounts').setAttribute('data-accountnum', account.getAttribute('data-accountnum'));
 						
 					} else if (account.classList.contains('active-account'))
 						account.classList.remove('active-account');
@@ -4456,17 +4576,23 @@ function setUpClickOnAccountsInTopbar () {
 			
 			listenDoubleClickOnAccount(account, e);
 		}
-		updateAccountInfo (account, account.getAttribute('accountnum'), 'Balance');
+		updateAccountInfo(account, Number(account.getAttribute('data-accountnum')), 'Balance');
 	}
 
 	id('accounts').firstElementChild.classList.add('active-account');
-	id('accounts').setAttribute('accountnum', id('accounts').firstElementChild.getAttribute('accountnum'));
+	id('accounts').setAttribute('data-accountnum', id('accounts').firstElementChild.getAttribute('data-accountnum'));
 	// update data in all widgets
 	updateWidgetsData(1, 0, 0, [1, 0], 0);
 }
 
-function listenDoubleClickOnAccount (account, event) {
-	let account_num = account.getAttribute('accountnum');
+/**
+ * Listens for double-clicks on an account.
+ *
+ * @param {HTMLElement} account - The account element.
+ * @param {Event} event - The click event.
+ */
+function listenDoubleClickOnAccount(account, event) {
+	let account_num = Number(account.getAttribute('data-accountnum'));
 
 	// prevent zoom by double tap
 	event.preventDefault();
@@ -4474,40 +4600,43 @@ function listenDoubleClickOnAccount (account, event) {
 	let tap_time = (new Date()).getTime();
 	
 	// if it was double tap
-	if (tap_time - account_tap_time < 400 && !Number(localStorage.getItem(`AWB${account_num}`))) {
-		localStorage.setItem( `AHB${account_num}`, Number(!Number(localStorage.getItem(`AHB${account_num}`))) );
+	if (tap_time - accountTapTime < 400 && localStorage.getItem(`AWB${account_num}`) === "false") {
+		localStorage.setItem(
+			`AHB${account_num}`,
+			localStorage.getItem(`AHB${account_num}`) === "true" ? "false" : "true"
+		);
 		updateAccountInfo(account, account_num, 'Balance');
 	}
 
-	account_tap_time = tap_time;
+	accountTapTime = tap_time;
 }
 
-// set up clicks on history period nav buttons
-const history_period_nav_buttons = id('history-period-nav').getElementsByTagName('div');
-
-for (let button of history_period_nav_buttons) {
+const HISTORY_PERIOD_NAV_BUTTONS = id('history-period-nav').getElementsByTagName('div');
+/**
+ * Handles the click event on history period navigation buttons.
+ */
+for (let button of HISTORY_PERIOD_NAV_BUTTONS) {
 	button.onclick = function() {
 
 		if ( !(button.classList.contains('active-input-cont')) ) {
 			// change active button
-			for (let button of history_period_nav_buttons)
-				if (button == this) {
-
+			for (let button of HISTORY_PERIOD_NAV_BUTTONS)
+				if (button === this) {
 					button.classList.add('active-input-cont');
-					id('history-period-nav').setAttribute('period', button.getAttribute('period'));
-
-				} else if (button.classList.contains('active-input-cont'))
+					uiState.date_range = getDateRangeEnumByNavPeriodButtonId(button.id);
+				} else if (button.classList.contains('active-input-cont')) {
 					button.classList.remove('active-input-cont');
+				}
 
 			// apply new period to custom date menu
-			changeDatePeriodInCustomDateMenu(id('history-period-nav').getAttribute('period'));
+			changeDatePeriodInCustomDateMenu(uiState.date_range);
 			// update data in all widgets
 			updateWidgetsData(0, 0, 1, [0, 1], 1);
 		}
 
 		// show or hide custom date filter menu
 		if (
-			button.getAttribute('period') == 'custom' &&
+			button.id === 'custom-period' &&
 			!(id('date-filter-menu-cont').classList.contains('show'))
 		)
 			showCustomDateFilterMenu();
@@ -4517,25 +4646,43 @@ for (let button of history_period_nav_buttons) {
 	}
 }
 
+/**
+ * Gets the date range enumeration based on the ID of the history period button.
+ *
+ * @param {string} id - The ID of the history period button.
+ * @returns {DATE_RANGE_ENUM} - The corresponding date range enumeration.
+ */
+function getDateRangeEnumByNavPeriodButtonId(id) {
+	if (id === "this-month-period") {
+		return DATE_RANGE_ENUM.this_month
+	} else if (id === "last-month-period") {
+		return DATE_RANGE_ENUM.last_month
+	} else {
+		return DATE_RANGE_ENUM.custom
+	}
+}
+
 id('date-filter-menu-cont').firstElementChild.onclick = () => {
 	hideCustomDateFilterMenu();
 }
 
-for (let button of id('date-filter-other').getElementsByTagName('input')) {
+for (let button of id('date-filter-other').getElementsByTagName('button')) {
 	button.onclick = function() {
-
 		applyOtherDateToDateFieldsOfDateFilterMenu(this);
-		
 	}
 }
 
-function applyOtherDateToDateFieldsOfDateFilterMenu (button) {
+/**
+ * Applies other date filters to the date fields of the date filter menu.
+ *
+ * @param {HTMLElement} button - The button element representing the selected date filter.
+ */
+function applyOtherDateToDateFieldsOfDateFilterMenu(button) {
 
 	let inputs = id('date-filter-menu').getElementsByClassName('field-date');
-	let button_period = button.getAttribute('period');
 	let border1 = new Date(), border2 = new Date();
 
-	if (button_period == 'thisweek') {
+	if (button.id === "date-filter-other-this-week") {
 		
 		border1 = getDateBySunday(border1);
 		border2 = getDateByMonday(border2);
@@ -4543,19 +4690,19 @@ function applyOtherDateToDateFieldsOfDateFilterMenu (button) {
 		border1 = getDateBorderByInput(59, 59, 23, border1.getDate(), border1.getMonth(), border1.getFullYear());
 		border2 = getDateBorderByInput(0, 0, 0, border2.getDate(), border2.getMonth(), border2.getFullYear());
 		
-	} else if (button_period == '7days') {
+	} else if (button.id === "date-filter-other-seven-days") {
 
 		border2.setDate(Number((new Date()).getDate()) - 6);
 
 		border1 = getDateBorderByInput(59, 59, 23, border1.getDate(), border1.getMonth(), border1.getFullYear());
 		border2 = getDateBorderByInput(0, 0, 0, border2.getDate(), border2.getMonth(), border2.getFullYear());
 		
-	} else if (button_period == 'thisyear') {
+	} else if (button.id === "date-filter-other-this-year") {
 
 		border1 = getDateBorderByInput(59, 59, 23, 31, 11, border1.getFullYear());
 		border2 = getDateBorderByInput(0, 0, 0, 1, 0, border2.getFullYear());
 
-	} else if (button_period == 'prevyear') {
+	} else if (button.id === "date-filter-other-last-year") {
 
 		border1.setFullYear((new Date()).getFullYear() - 1);
 		border2.setFullYear((new Date()).getFullYear() - 1);
@@ -4569,30 +4716,53 @@ function applyOtherDateToDateFieldsOfDateFilterMenu (button) {
 	inputs[1].value = getDateFormat(border2);
 }
 
-function getDateByMonday (date) {
+/**
+ * Gets the date by Monday for the given date.
+ *
+ * @param {Date} date - The input date.
+ *
+ * @returns {Date} - The date adjusted to the nearest Monday.
+ */
+function getDateByMonday(date) {
 
-	while (date.getDay() != 1)
+	while (date.getDay() !== 1)
 		date.setDate(Number(date.getDate()) - 1);
 
 	return date;
 }
 
-function getDateBySunday (date) {
+/**
+ * Gets the date by Sunday for the given date.
+ *
+ * @param {Date} date - The input date.
+ *
+ * @returns {Date} - The date adjusted to the nearest Sunday.
+ */
+function getDateBySunday(date) {
 
-	while (date.getDay() != 0)
+	while (date.getDay() !== 0)
 		date.setDate(Number(date.getDate()) + 1);
 	
 	return date;
 }
 
-for (let button of id('date-filter-months').getElementsByTagName('input')) {
+/**
+ * Handles the click event on month selection buttons in the date filter menu.
+ */
+for (let button of id('date-filter-months').getElementsByTagName('button')) {
 	button.onclick = function() {
 
 		let inputs = id('date-filter-menu').getElementsByClassName('field-date');
 	
 		let border_year = (new Date(inputs[0].value)).getFullYear();
-		let border1 = getDateBorderByInput(59, 59, 23, 0, Number(button.getAttribute('num')) + 1, border_year);
-		let border2 = getDateBorderByInput(0, 0, 0, 1, button.getAttribute('num'), border_year);
+		let border1 = getDateBorderByInput(
+			59, 59, 23, 0,
+			Number(button.getAttribute('data-num')) + 1, border_year
+		);
+		let border2 = getDateBorderByInput(
+			0, 0, 0, 1,
+			Number(button.getAttribute('data-num')), border_year
+		);
 		
 		inputs[0].value = getDateFormat(border1);
 		inputs[1].value = getDateFormat(border2);
@@ -4600,7 +4770,21 @@ for (let button of id('date-filter-months').getElementsByTagName('input')) {
 	}
 }
 
-function getDateBorderByInput (seconds, minutes, hours, day, month, year) {
+/**
+ * Gets the date border based on input parameters.
+ *
+ * @param {number} seconds - The seconds component.
+ * @param {number} minutes - The minutes component.
+ * @param {number} hours - The hours component.
+ * @param {number} day - The day component.
+ * @param {number} month - The month component.
+ * @param {number} year - The year component.
+ *
+ * @returns {Date} - The constructed date object.
+ */
+function getDateBorderByInput(
+	seconds, minutes, hours, day, month, year
+) {
 	let date = new Date();
 	
 	date.setSeconds(seconds);
@@ -4614,16 +4798,18 @@ function getDateBorderByInput (seconds, minutes, hours, day, month, year) {
 
 // set up clicks on history type nav buttons
 const history_type_nav_buttons = id('history-type-nav').getElementsByTagName('div');
-
+/**
+ * Handles click events on history type navigation buttons.
+ */
 for (let button of history_type_nav_buttons) {
 	button.onclick = function() {
 
 		if (!(button.classList.contains('active-input-cont'))) {
 			// change active button
 			for (let button of history_type_nav_buttons)
-				if (button == this) {
+				if (button === this) {
 					button.classList.add('active-input-cont');
-					id('history-type-nav').setAttribute('history-type', button.getAttribute('history-type'));
+					id('history-type-nav').setAttribute('data-history-type', button.getAttribute('data-history-type'));
 				} else if (button.classList.contains('active-input-cont'))
 					button.classList.remove('active-input-cont');
 	
@@ -4639,9 +4825,10 @@ for (let button of history_type_nav_buttons) {
 
 
 
-// const record_window_account_root = ReactDOM.createRoot(id('make-record-account'));
-const make_record_types = id('record-types').getElementsByTagName('div');
-
+const MAKE_RECORD_TYPE_BUTTONS = id('record-types').getElementsByTagName('div');
+/**
+ * Handles the click event on the "Make Record" button.
+ */
 id('make-record-button').onclick = () => {
 
 	let windowEl_cont = id('make-record-window-cont'),
@@ -4661,22 +4848,28 @@ id('make-record-button').onclick = () => {
 	}
 }
 
-function prepareMakeRecordWindow () {
-	let account_num = id('accounts').getAttribute('accountnum');
+/**
+ * Prepares the "Make Record" window for opening by uploading data to fields.
+ */
+function prepareMakeRecordWindow() {
+	let account_num = id('accounts').getAttribute('data-accountnum');
 
 	// hide fields for transfer window and edit record window
 	id('make-record-window').classList.add('make-record-status');
 	// add attribute 'new' and 'record number' attribute to make record window
-	id('make-record-window').setAttribute('status', 'new');
-	id('make-record-window').setAttribute('recordnum', Number(localStorage.getItem('RCount')) + 1);
+	id('make-record-window').setAttribute('data-status', 'new');
+	id('make-record-window').setAttribute(
+		'data-recordnum',
+		(Number(localStorage.getItem('RCount')) + 1).toString()
+	);
 	// upload current date
 	id('make-record-date').value = getDateFormat(new Date());
 	// automatic adjust length of input record amount while typing
 	adaptInputLengthExplicitly(id('make-record-amount'));
 	// upload account to change account button
 	uploadAccountFieldTitle('record');
-	id('make-record-account').innerHTML = constructAccountEl(account_num);
-	id('make-record-account').setAttribute('accountnum', account_num);
+	id('make-record-account').innerHTML = constructAccountEl(Number(account_num));
+	id('make-record-account').setAttribute('data-accountnum', account_num);
 
 	// hide transfer button if account's count is less for 2
 	if (Number(localStorage.getItem('ACount')) < 2)
@@ -4689,10 +4882,18 @@ function prepareMakeRecordWindow () {
 		id('make-record-category').lastElementChild
 	);
 	// upload save button title
-	uploadSaveButtonTitle('long', id('make-record-save-button'));
+	id('make-record-save-button').value = getStrings(localStorage.getItem('L')).save_record;
 }
 
-function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field_name) {
+/**
+ * Uploads the category to the "Make Record" category field.
+ *
+ * @param {string} type - The type of the record.
+ * @param {HTMLElement} field - The category field.
+ * @param {HTMLElement} fieldIcon - The icon element in the category field.
+ * @param {HTMLElement} fieldName - The name element in the category field.
+ */
+function uploadCategoryToMakeRecordCategoryField(type, field, fieldIcon, fieldName) {
 
 	let category_num, subcategory_num,
 		record_num = Number(localStorage.getItem('RCount'));
@@ -4700,57 +4901,60 @@ function uploadCategoryToMakeRecordCategoryField (type, field, field_icon, field
 	for (let num = record_num; num > 0; num--) {
 
 		if (
-			localStorage.getItem(`RP${num}`) == type && type == '-' &&
-			localStorage.getItem(`RC${num}`) != '>'
+			localStorage.getItem(`RP${num}`) === type && type === '-' &&
+			localStorage.getItem(`RC${num}`) !== '>'
 		) {
 			
 			category_num = localStorage.getItem(`RC${num}`);
 			subcategory_num = localStorage.getItem(`RS${num}`);
-			field.setAttribute('categorynum', category_num);
-			field.setAttribute('subcategorynum', subcategory_num);
+			field.setAttribute('data-categorynum', category_num);
+			field.setAttribute('data-subcategorynum', subcategory_num);
 
-			field_icon.innerHTML = subcategories_icons[category_num][subcategory_num];
-			field_name.value = subcategories_titles[category_num][subcategory_num];
+			fieldIcon.innerHTML = SUBCATEGORY_ICONS[category_num][subcategory_num];
+			fieldName.value = subcategories_titles[category_num][subcategory_num];
 
 			return;
 
 		} else if (
-			localStorage.getItem(`RP${num}`) == type && type == '+' &&
-			localStorage.getItem(`RC${num}`) != '>'
+			localStorage.getItem(`RP${num}`) === type && type === '+' &&
+			localStorage.getItem(`RC${num}`) !== '>'
 		) {
 
 			category_num = localStorage.getItem(`RC${num}`);
-			field.setAttribute('categorynum', category_num);
+			field.setAttribute('data-categorynum', category_num);
 
-			field_icon.innerHTML = categories_income_icons[category_num];
-			field_name.value = categories_income_titles[category_num];
+			fieldIcon.innerHTML = CATEGORY_INCOME_ICONS[category_num];
+			fieldName.value = categories_income_titles[category_num];
 
 			return;
 		}
 	}
 
-	if (type == '-') {
+	if (type === '-') {
 
-		category_num = subcategories_icons.length - 1;
-		subcategory_num = subcategories_icons[subcategories_icons.length - 1].length - 2;
-		field.setAttribute('categorynum', category_num);
-		field.setAttribute('subcategorynum', subcategory_num);
+		category_num = SUBCATEGORY_ICONS.length - 1;
+		subcategory_num = SUBCATEGORY_ICONS[SUBCATEGORY_ICONS.length - 1].length - 2;
+		field.setAttribute('data-categorynum', category_num);
+		field.setAttribute('data-subcategorynum', subcategory_num);
 
-		field_icon.innerHTML = subcategories_icons[category_num][subcategory_num];
-		field_name.value = subcategories_titles[category_num][subcategory_num];
+		fieldIcon.innerHTML = SUBCATEGORY_ICONS[category_num][subcategory_num];
+		fieldName.value = subcategories_titles[category_num][subcategory_num];
 
-	} else if (type == '+') {
+	} else if (type === '+') {
 		
-		category_num = categories_income_icons.length - 1;
-		field.setAttribute('categorynum', category_num);
+		category_num = CATEGORY_INCOME_ICONS.length - 1;
+		field.setAttribute('data-categorynum', category_num);
 
-		field_icon.innerHTML = categories_income_icons[category_num];
-		field_name.value = categories_income_titles[category_num];
+		fieldIcon.innerHTML = CATEGORY_INCOME_ICONS[category_num];
+		fieldName.value = categories_income_titles[category_num];
 
 	}
 }
 
-function resetMakeRecordWindowData () {
+/**
+ * Resets the data in the "Make Record" window data.
+ */
+function resetMakeRecordWindowData() {
 
 	// remove class to hide fields for transfer window and edit record window
 	if (id('make-record-window').classList.contains('make-record-status'))
@@ -4762,9 +4966,9 @@ function resetMakeRecordWindowData () {
 	if (id('record-type-transfer').classList.contains('element-hide'))
 		id('record-type-transfer').classList.remove('element-hide');
 
-	id('record-types').setAttribute('record-type', id('record-type-expense').getAttribute('record-type'));
-  	for (let button of make_record_types)
-		if (button.id == 'record-type-expense')
+	id('record-types').setAttribute('data-record-type', id('record-type-expense').getAttribute('data-record-type'));
+  	for (let button of MAKE_RECORD_TYPE_BUTTONS)
+		if (button.id === 'record-type-expense')
 			button.classList.add('active-input-cont');
 		else button.classList.remove('active-input-cont');
 
@@ -4782,21 +4986,23 @@ function resetMakeRecordWindowData () {
 
 
 
-// set up clicks on make record types buttons
-for (let button of make_record_types) {
+/**
+ * Handles click events on record type buttons.
+ */
+for (let button of MAKE_RECORD_TYPE_BUTTONS) {
 	button.onclick = function() {
 		if (!button.classList.contains('active-input-cont')) {
-			for (let button of make_record_types) {
+			for (let button of MAKE_RECORD_TYPE_BUTTONS) {
 
-				if (button == this) {
+				if (button === this) {
 					button.classList.add('active-input-cont');
 			
-					id('record-types').setAttribute('record-type', button.getAttribute('record-type'));
+					id('record-types').setAttribute('data-record-type', button.getAttribute('data-record-type'));
 			
-					if (button.id != 'record-type-transfer')
-						changeMakeRecordCategoryType_ExpenseOrIncome();
-					else if (button.id == 'record-type-transfer')
-						uploadDataDuringHidingWindow(prepareMakeTransferWindow, 0);
+					if (button.id !== 'record-type-transfer')
+						changeMakeRecordCategoryType_ExpenseOrIncome().then();
+					else if (button.id === 'record-type-transfer')
+						uploadDataDuringHidingWindow(prepareMakeTransferWindow, function(){});
 			
 				} else if (button.classList.contains('active-input-cont'))
 					button.classList.remove('active-input-cont');	
@@ -4806,7 +5012,10 @@ for (let button of make_record_types) {
   	}
 }
 
-async function changeMakeRecordCategoryType_ExpenseOrIncome () {
+/**
+ * Changes the category type for the "Make Record" window between Expense and Income.
+ */
+async function changeMakeRecordCategoryType_ExpenseOrIncome() {
 	let field = id('make-record-category');
 
 	// reset 'make transfer' window data and upload 'make record' window data
@@ -4825,7 +5034,13 @@ async function changeMakeRecordCategoryType_ExpenseOrIncome () {
 	await showFieldByHideSlideMethod(field);
 }
 
-function uploadDataDuringHidingWindow (passedFunction1, passedFunction2) {
+/**
+ * Uploads data while hiding the window.
+ *
+ * @param {function} passedFunction1 - The function to be executed before uploading.
+ * @param {function} passedFunction2 - The function to be executed after uploading.
+ */
+function uploadDataDuringHidingWindow(passedFunction1, passedFunction2) {
 	let window = id('make-record-window'),
 		el_transition = window.style.transition;
 
@@ -4843,7 +5058,12 @@ function uploadDataDuringHidingWindow (passedFunction1, passedFunction2) {
 	}, 200);
 }
 
-async function hideFieldByHideSlideMethod (field) {
+/**
+ * Hides a field using the hide slide method animation.
+ *
+ * @param {HTMLElement} field - The field to be hidden.
+ */
+async function hideFieldByHideSlideMethod(field) {
 
 	field.style.transition = '.2s transform, .2s opacity';
 	field.classList.add('category-button-changing-hide');
@@ -4851,19 +5071,29 @@ async function hideFieldByHideSlideMethod (field) {
 	await makeDelay(300);
 }
 
-async function showFieldByHideSlideMethod (field) {
+/**
+ * Shows a field using the hide slide method animation.
+ *
+ * @param {HTMLElement} field - The field to be shown.
+ */
+async function showFieldByHideSlideMethod(field) {
 
 	field.style.transition = 'transform 0s';
 	field.classList.remove('category-button-changing-hide');
 	field.classList.add('category-type-changed-hide');
 
 	await makeDelay(50);
-	
+
 	field.style.transition = null;
 	field.classList.remove('category-type-changed-hide');
 }
 
-function getRecordTypeAsSing () {
+/**
+ * Gets the record type as a single character.
+ *
+ * @returns {string} - The record type as a single character: "-" for expense, "+" for income, "t" for transfer.
+ */
+function getRecordTypeAsSing() {
 
 	if (id('record-type-expense').classList.contains('active-input-cont'))
 		return ('-');
@@ -4875,10 +5105,13 @@ function getRecordTypeAsSing () {
 
 
 
-function prepareMakeTransferWindow () {
+/**
+ * Prepares the "Make Transfer" window data for opening.
+ */
+function prepareMakeTransferWindow() {
 
 	// upload account to 'transfer to account' field
-	uploadAnotherAccountToExactlyField(id('make-transfer-to-account'));
+	uploadAnotherAccountToExactlyField(id('make-transfer-to-account'), undefined);
 	
 	// hide fields of make record window and edit record window
 	id('make-record-window').classList.remove('make-record-status');
@@ -4892,10 +5125,13 @@ function prepareMakeTransferWindow () {
 	setUpListenerToAdaptFinalAmountByRate();
 	adaptFinalAmountByRate();
 	// upload transfer button title
-	uploadSaveButtonTitle('long', id('make-transfer-button'));
+	id('make-transfer-button').value = getStrings(localStorage.getItem('L')).make_transfer;
 }
 
-function setUpListenerToAdaptFinalAmountByRate () {
+/**
+ * Sets up listeners to adapt the final amount by rate.
+ */
+function setUpListenerToAdaptFinalAmountByRate() {
 	
 	id('make-record-amount').addEventListener('input', adaptFinalAmountByRate);
 	id('make-transfer-start-rate').addEventListener('input', adaptFinalAmountByRate);
@@ -4903,9 +5139,12 @@ function setUpListenerToAdaptFinalAmountByRate () {
 	id('make-transfer-final-amount').addEventListener('input', adaptStartRateByAmount);
 }
 
-function adaptFinalAmountByRate () {
+/**
+ * Adapts the final amount based on the rates.
+ */
+function adaptFinalAmountByRate() {
 
-	if (id('make-transfer-start-rate').value == 0 || id('make-transfer-final-rate').value == 0) {
+	if (id('make-transfer-start-rate').value === 0 || id('make-transfer-final-rate').value === 0) {
 		id('make-transfer-final-amount').value = 0;	
 		return;
 	}
@@ -4919,12 +5158,15 @@ function adaptFinalAmountByRate () {
 	adaptInputLengthExplicitly(id('make-transfer-final-amount'));
 }
 
-function adaptStartRateByAmount () {
+/**
+ * Adapts the start rate based on the amount.
+ */
+function adaptStartRateByAmount() {
 
 	if (
-		id('make-transfer-start-rate').value == 0 ||
-		id('make-transfer-final-amount').value == 0 ||
-		id('make-record-amount').value == 0
+		id('make-transfer-start-rate').value === 0 ||
+		id('make-transfer-final-amount').value === 0 ||
+		id('make-record-amount').value === 0
 	) {
 		id('make-transfer-final-rate').value = 0;
 		return;
@@ -4939,7 +5181,10 @@ function adaptStartRateByAmount () {
 	adaptInputLengthExplicitly(id('make-transfer-final-amount'));
 }
 
-function resetMakeTransferWindowData () {
+/**
+ * Resets the data in the "Make Transfer" window.
+ */
+function resetMakeTransferWindowData() {
 
 	// remove class to hide fields of make record window and edit record window
 	if (id('make-record-window').classList.contains('make-transfer-status'))
@@ -4958,26 +5203,48 @@ function resetMakeTransferWindowData () {
 
 
 
+/**
+ * Sets up a click event on the 'Make Record' account field.
+ * Initiates the process of changing the account or opening the account selection window.
+ */
 id('make-record-account').onclick = function() {
-	changeAccountOrOpenWindowToChoose(this);
+	changeAccountOrOpenWindowToChoose(this).then();
 }
+/**
+ * Sets up a click event on the 'Transfer To Account' field in the 'Make Transfer' window.
+ * Initiates the process of changing the account or opening the account selection window.
+ */
 id('make-transfer-to-account').onclick = function() {
-	changeAccountOrOpenWindowToChoose(this);
+	changeAccountOrOpenWindowToChoose(this).then();
 }
 
-async function changeAccountOrOpenWindowToChoose (clickEl) {
+/**
+ * Determines whether to change the account or open the account selection window based on the number of accounts.
+ * If there are only two accounts, directly changes the account; otherwise, opens the account selection window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the account change or selection.
+ */
+async function changeAccountOrOpenWindowToChoose(clickEl) {
 	let accounts_count = Number(localStorage.getItem('ACount'));
 
-	if (accounts_count == 2) {
+	if (accounts_count === 2) {
 		let account_num = await uploadAnotherAccountToSameField(clickEl, accounts_count);
-		checkAccountInOtherFieldThanThisForRepeating(clickEl, account_num);
+		await checkAccountInOtherFieldThanThisForRepeating(clickEl, account_num);
 	} else if (accounts_count > 2)
 		openChooseAccountWindow(clickEl);
 }
 
-async function uploadAnotherAccountToSameField (field, accounts_count) {
+/**
+ * Uploads another account to the same field and animates the change.
+ *
+ * @param {HTMLElement} field - The field to change the account.
+ * @param {number} accounts_count - The total number of accounts.
+ *
+ * @returns {Promise<number>} - A promise with the new account number.
+ */
+async function uploadAnotherAccountToSameField(field, accounts_count) {
 	
-	let account_num = Number(field.getAttribute('accountnum'));
+	let account_num = Number(field.getAttribute('data-accountnum'));
 	account_num = account_num % accounts_count + 1;
 
 	await hideFieldByHideSlideMethod(field);
@@ -4987,7 +5254,12 @@ async function uploadAnotherAccountToSameField (field, accounts_count) {
 	return account_num;
 }
 
-function openChooseAccountWindow (clickEl) {
+/**
+ * Opens the window for choosing an account.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the account selection window.
+ */
+function openChooseAccountWindow(clickEl) {
 
 	let windowEl_cont = id('accounts-window-cont'),
 		windowEl = id('accounts-window');
@@ -5002,8 +5274,8 @@ function openChooseAccountWindow (clickEl) {
 		clickEl, windowEl_cont, windowEl,
 		calculateScaleX(clickEl, windowEl_cont)
 	);
-	windowEl.setAttribute('top-position-x', top_position.x);
-	windowEl.setAttribute('top-position-y', top_position.y);
+	windowEl.setAttribute('data-top-position-x', (top_position.x).toString());
+	windowEl.setAttribute('data-top-position-y', (top_position.y).toString());
 
 	// set up click on accounts
 	setUpChoosingAccount(clickEl, windowEl_cont, windowEl);
@@ -5014,120 +5286,152 @@ function openChooseAccountWindow (clickEl) {
 	}
 }
 
-function setUpChoosingAccount (clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up click events on account selection in the 'Choose Account' window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the account selection.
+ * @param {HTMLElement} windowElCont - The container of the account selection window.
+ * @param {HTMLElement} windowEl - The account selection window.
+ */
+function setUpChoosingAccount(clickEl, windowElCont, windowEl) {
 
 	for (let account of windowEl.getElementsByClassName('account')) {
 		account.onclick = function() {
 
-			let account_num = account.getAttribute('accountnum'),
-				account_clickEl = clickEl.firstElementChild;
-			clickEl.setAttribute('accountnum', account_num);
+			let accountNum = Number(account.getAttribute('data-accountnum')),
+				accountClickEl = clickEl.firstElementChild;
+			clickEl.setAttribute('data-accountnum', accountNum.toString());
 
-			// upload choosen accounts data to change account button
-			account_clickEl.classList.add('account-block-animation');
-			account_clickEl.style.background = '#' + localStorage.getItem(`AColor${account_num}`);
-			checkAccountColor(account_clickEl);
-			account_clickEl.firstElementChild.innerText = localStorage.getItem(`ACurrency${account_num}`);
-			account_clickEl.lastElementChild.innerText = getAccountBalance(account_num);
+			// upload chosen accounts data to change account button
+			accountClickEl.classList.add('account-block-animation');
+			accountClickEl.style.background = '#' + localStorage.getItem(`AColor${accountNum}`);
+			checkAccountColor(accountClickEl);
+			accountClickEl.firstElementChild.innerText = localStorage.getItem(`ACurrency${accountNum}`);
+			accountClickEl.lastElementChild.innerText = getAccountBalance(accountNum);
 
 			// animate closing 'choose account' window
-			let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);
+			let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 			setTimeout(() => {
 				clickEl.classList.remove('account-block-animation');
 				clickEl.style.transition = clickEL_transition;
-				closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+				closeFloatingWindow(clickEl, windowElCont, windowEl);
 			}, 1);
 			
-			// upload account to 'transfer to account' field other than choosen 'from account'
-			checkAccountInOtherFieldThanThisForRepeating(clickEl, account_num);
+			// upload account to 'transfer to account' field other than chosen 'from account'
+			checkAccountInOtherFieldThanThisForRepeating(clickEl, accountNum).then();
 			
 		}
 	}
 }
 
-async function checkAccountInOtherFieldThanThisForRepeating (clickEl, choosen_acc_num) {
+/**
+ * Checks if the chosen account is already used in the other field, if so, updates the other field.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the check.
+ * @param {number} chosenAccountNum - The chosen account number.
+ */
+async function checkAccountInOtherFieldThanThisForRepeating(clickEl, chosenAccountNum) {
 
-	let from_accountEl = id('make-record-account'),
-		to_accountEl = id('make-transfer-to-account');
+	let fromAccountEl = id('make-record-account'),
+		toAccountEl = id('make-transfer-to-account');
 
 	if (
 		id('make-record-window').classList.contains('make-transfer-status') ||
 		id('make-record-window').classList.contains('edit-transfer-status')
 	) {
 		if (
-			clickEl == from_accountEl &&
-			choosen_acc_num == to_accountEl.getAttribute('accountnum')
+			clickEl === fromAccountEl &&
+			chosenAccountNum === Number(toAccountEl.getAttribute('data-accountnum'))
 		) {
-			await hideFieldByHideSlideMethod(to_accountEl);
-			uploadAnotherAccountToExactlyField(to_accountEl);
-			await showFieldByHideSlideMethod(to_accountEl);
+			await hideFieldByHideSlideMethod(toAccountEl);
+			uploadAnotherAccountToExactlyField(toAccountEl, undefined);
+			await showFieldByHideSlideMethod(toAccountEl);
 		}
 			
 		else if (
-			clickEl == to_accountEl &&
-			choosen_acc_num == from_accountEl.getAttribute('accountnum')
+			clickEl === toAccountEl &&
+			chosenAccountNum === Number(fromAccountEl.getAttribute('data-accountnum'))
 		) {
-			await hideFieldByHideSlideMethod(from_accountEl);
-			uploadAnotherAccountToExactlyField(from_accountEl);
-			await showFieldByHideSlideMethod(from_accountEl);
+			await hideFieldByHideSlideMethod(fromAccountEl);
+			uploadAnotherAccountToExactlyField(fromAccountEl, undefined);
+			await showFieldByHideSlideMethod(fromAccountEl);
 		}
 	}
 }
 
-function uploadAnotherAccountToExactlyField (field, account_num) {
+/**
+ * Uploads another account to the specified field.
+ *
+ * @param {HTMLElement} field - The field to upload the new account.
+ * @param {number} accountNum - The new account number to upload.
+ */
+function uploadAnotherAccountToExactlyField(field, accountNum) {
 
-	// get choosen 'from account' number
-	if (!account_num) {
-		if (field == id('make-record-account'))
-			account_num = Number(id('make-transfer-to-account').getAttribute('accountnum'));
-		else if (field == id('make-transfer-to-account'))
-			account_num = Number(id('make-record-account').getAttribute('accountnum'));
+	// get chosen 'from account' number
+	if (!accountNum) {
+		if (field === id('make-record-account')) {
+			accountNum = Number(id('make-transfer-to-account').getAttribute('data-accountnum'));
+		} else if (field === id('make-transfer-to-account')) {
+			accountNum = Number(id('make-record-account').getAttribute('data-accountnum'));
+		}
 
 		// define another account number
-		if ( account_num + 1 <= Number(localStorage.getItem('ACount')) )
-			account_num += 1;
-		else account_num -= 1;
+		if ( accountNum + 1 <= Number(localStorage.getItem('ACount')) ) {
+			accountNum += 1;
+		} else {
+			accountNum -= 1;
+		}
 	}
 
 	// upload account to passed field
-	field.innerHTML = constructAccountEl(account_num);
-	field.setAttribute('accountnum', account_num);
+	field.innerHTML = constructAccountEl(accountNum);
+	field.setAttribute('data-accountnum', accountNum.toString());
 }
 
 
 
 
+/**
+ * Sets up a click event on the 'Make Record' category field to open the category selection window.
+ */
 id('make-record-category').onclick = () => {
 	
 	let clickEl = id('make-record-category'),
-		windowEl_cont, windowEl, categories_els_arr;
+		windowElCont, windowEl, categories;
 	
 	if (id('record-type-expense').classList.contains('active-input-cont')) {
 
-		windowEl_cont = id('categories-expense-cont');
+		windowElCont = id('categories-expense-cont');
 		windowEl = id('categories-expense');
-		categories_els_arr = id('subcategories').getElementsByClassName('subcategory');
+		categories = id('subcategories').getElementsByClassName('subcategory');
 
 	} else if (id('record-type-income').classList.contains('active-input-cont')) {
 		
-		windowEl_cont = id('categories-income-cont');
+		windowElCont = id('categories-income-cont');
 		windowEl = id('categories-income');
-		categories_els_arr = id('categories-income').getElementsByClassName('category');
+		categories = id('categories-income').getElementsByClassName('category');
 
 	}
 
-	openCategoryWindow(clickEl, windowEl_cont, windowEl);
-	setUpClickOnSubcategory(clickEl, windowEl_cont, windowEl, categories_els_arr);
+	openCategoryWindow(clickEl, windowElCont, windowEl);
+	setUpClickOnSubcategory(clickEl, windowElCont, windowEl, categories);
 }
 
-function openCategoryWindow (clickEl, windowEl_cont, windowEl) {
+/**
+ * Opens the category selection window and sets up the click event to close the window.
+ *
+ * @param {HTMLElement} clickEl - The clicked element triggering the category selection window.
+ * @param {HTMLElement} windowElCont - The container of the category selection window.
+ * @param {HTMLElement} windowEl - The category selection window.
+ */
+function openCategoryWindow(clickEl, windowElCont, windowEl) {
 	
-	let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-	windowEl.setAttribute('top-position-x', top_position.x);
-	windowEl.setAttribute('top-position-y', top_position.y);
+	let topPosition = openFloatingWindow(clickEl, windowElCont, windowEl, calculateScaleX(clickEl, windowElCont));
+	windowEl.setAttribute('data-top-position-x', topPosition.x.toString());
+	windowEl.setAttribute('data-top-position-y', topPosition.y.toString());
 	
-	windowEl_cont.firstElementChild.onclick = () => {
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+	windowElCont.firstElementChild.onclick = () => {
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
 
 		if (id('subcategories-cont').classList.contains('subcategories-cont-visible'))
 			setTimeout(() => {
@@ -5136,75 +5440,120 @@ function openCategoryWindow (clickEl, windowEl_cont, windowEl) {
 	}
 }
 
-function resetCategoryWindowData (subcategories_els_arr) {
+/**
+ * Resets the data and visibility of the category selection window.
+ *
+ * @param {HTMLCollection} subcategoriesElsArr - The collection of subcategory elements.
+ */
+function resetCategoryWindowData(subcategoriesElsArr) {
 
 	id('categories-expense').classList.remove('categories-overflow');
 	id('subcategories-title').innerHTML = null;
 	id('subcategories-cont').classList.remove('subcategories-cont-visible');
-	subcategories_els_arr[id('subcategories').getAttribute('categorynum')].classList.remove('subcategory-cont-visible');
+	subcategoriesElsArr[id('subcategories').getAttribute('data-categorynum')].classList.remove('subcategory-cont-visible');
 }
 
-function setUpOpeningSubcategoryList (categories_block, categories_els_arr, subcategories_els_arr) {
+/**
+ * Sets up the click events on category selection to open the subcategory list.
+ *
+ * @param {HTMLElement} categoriesBlock - The block containing category elements.
+ * @param {HTMLCollection} categories - The collection of category elements.
+ * @param {HTMLCollection} subcategories - The collection of subcategory elements.
+ */
+function setUpOpeningSubcategoryList(categoriesBlock, categories, subcategories) {
 	
-	for (let category of categories_els_arr) {
+	for (let category of categories) {
 		category.onclick = function() {
 
-			let category_num = this.getAttribute('categorynum');
-			id('subcategories').setAttribute('categorynum', category_num);
+			let category_num = this.getAttribute('data-categorynum');
+			id('subcategories').setAttribute('data-categorynum', category_num);
 
-			categories_block.classList.add('categories-overflow');
+			categoriesBlock.classList.add('categories-overflow');
 			id('subcategories-title').innerHTML = this.lastElementChild.innerHTML;
-			subcategories_els_arr[category_num].classList.add('subcategory-cont-visible');
+			subcategories[category_num].classList.add('subcategory-cont-visible');
 				
 			id('subcategories-cont').classList.add('subcategories-cont-visible');
 
 			id('subcategories-back-button').onclick = function() {
-				closeSubcategoriesWindow(categories_block, subcategories_els_arr, category_num);
+				closeSubcategoriesWindow(categoriesBlock, subcategories, category_num);
 			}
 
 		}
 	}
 }
 
-function closeSubcategoriesWindow (categories_block, subcategories_els_arr, category_num) {
+/**
+ * Closes the subcategories window, resets data, and hides the window.
+ *
+ * @param {HTMLElement} categoriesBlock - The block containing category elements.
+ * @param {HTMLCollection} subcategories - The collection of subcategory elements.
+ * @param {number} categoryId - The ID of the selected category.
+ */
+function closeSubcategoriesWindow(categoriesBlock, subcategories, categoryId) {
 
-	categories_block.classList.remove('categories-overflow');
+	categoriesBlock.classList.remove('categories-overflow');
 	id('subcategories-cont').classList.remove('subcategories-cont-visible');
 
 	setTimeout(() => {
 		id('subcategories-title').innerHTML = null;
-		subcategories_els_arr[category_num].classList.remove('subcategory-cont-visible');
+		subcategories[categoryId].classList.remove('subcategory-cont-visible');
 	}, 300);
 }
 
-function setUpClickOnSubcategory (clickEl, windowEl_cont, windowEl, categories_els_arr) {
-
-  for (let category of categories_els_arr) {
-    category.onclick = function() {
+/**
+ * Add onClick to a category list element.
+ *
+ * @param {HTMLElement} clickEl - Category field html element.
+ * @param {HTMLElement} windowElCont - Categories window container html element.
+ * @param {HTMLElement} windowEl - Categories window html element.
+ * @param {HTMLElement} categories - Categories in the categories window.
+ */
+function setUpClickOnSubcategory(
+	clickEl, windowElCont, windowEl, categories
+) {
+  	for (let category of categories) {
+		category.onclick = function() {
       
-		clickEl.firstElementChild.innerHTML = this.firstElementChild.innerHTML;
-		clickEl.lastElementChild.value = this.lastElementChild.innerHTML;
+			clickEl.firstElementChild.innerHTML = this.firstElementChild.innerHTML;
+			clickEl.lastElementChild.value = this.lastElementChild.innerHTML;
 
-		if (windowEl.id == 'categories-expense') {
-			clickEl.setAttribute('categorynum', id('subcategories').getAttribute('categorynum'));
-			clickEl.setAttribute('subcategorynum', this.getAttribute('subcategorynum'));
-		}
-		else
-			clickEl.setAttribute('categorynum', this.getAttribute('categorynum'));
+			if (windowEl.id === 'categories-expense') {
+				clickEl.setAttribute(
+					'data-categorynum',
+					id('subcategories').getAttribute('data-categorynum')
+				);
+				clickEl.setAttribute(
+					'data-subcategorynum',
+					this.getAttribute('data-subcategorynum')
+				);
+			} else {
+				clickEl.setAttribute(
+					'data-categorynum',
+					this.getAttribute('data-categorynum')
+				);
+			}
 
-		closeCategoriesWindow(clickEl, windowEl_cont, windowEl);
+			closeCategoriesWindow(clickEl, windowElCont, windowEl);
 
-    }
-  }
+    	}
+	}
 }
 
-function closeCategoriesWindow (clickEl, windowEl_cont, windowEl) {
+/**
+ * Change categories window target transformation and close it with animation. Then call resetCategoryWindowData()
+ * function toreset subcategories window data.
+ *
+ * @param {HTMLElement} clickEl - Category button field.
+ * @param {HTMLElement} windowElCont - Categories window container.
+ * @param {HTMLElement} windowEl - Categories window.
+ */
+function closeCategoriesWindow(clickEl, windowElCont, windowEl) {
 	
-	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);;
+	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 	
 	setTimeout(() => {
 		clickEl.style.transition = clickEL_transition;
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
 	}, 1);
 
 	if (id('subcategories-cont').classList.contains('subcategories-cont-visible'))
@@ -5217,25 +5566,37 @@ function closeCategoriesWindow (clickEl, windowEl_cont, windowEl) {
 
 
 
+/**
+ * Sets up a click event on the 'Save' button for making a record.
+ * Checks if the 'make-record-amount' field is not empty before saving the record.
+ */
 id('make-record-save-button').onclick = () => {
-
-	if (id('make-record-amount').value != 0)
-		saveRecord(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
-	else
+	if (id('make-record-amount').value !== 0) {
+		onSaveRecordButton(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
+	} else {
 		animateEmptyFieldError(id('make-record-amount'));
+	}
 }
 
-function saveRecord (clickEl, windowEl_cont, windowEl) {
-
-	let record = getMakeRecordDataArray(),
-		record_status = id('make-record-window').getAttribute('status');
+/**
+ * Save record to the local storage, update account balance, update widgets statistics, close make record window.
+ *
+ * @param {HTMLElement} clickEl - Make record button HtmlElement.
+ * @param {HTMLElement} windowEl_cont - Make record window container HtmlElement.
+ * @param {HTMLElement} windowEl - Make record window HtmlElement.
+ */
+function onSaveRecordButton(clickEl, windowEl_cont, windowEl) {
+	let record = getStorageDefaultRecordObject(),
+		record_status = id('make-record-window').getAttribute('data-status');
 
 	// update account balance
-	updateStorageAccountBalance(record.num, record.type, record.account, record.amount, record_status);
-	updateAccountInfoInCont(record.account, 'Balance', id('accounts'));
+	updateStorageAccountBalance(record.num, record.type, record.accountId, record.amount, record_status);
+	updateAccountInfoInCont(record.accountId, 'Balance', id('accounts'));
 
 	// save record to storage
-	saveRecordToStorage(record, 'record');
+	localStorage.setItem(`RP${record.num}`, record.type);
+	saveDefaultRecordToStorage(record);
+	saveRecordDateToStorage(record.num);
 
 	// add or update record in history widget
 	operateWidgetsAfterRecord(record, record_status, clickEl, windowEl_cont, windowEl);
@@ -5244,115 +5605,517 @@ function saveRecord (clickEl, windowEl_cont, windowEl) {
 	updateDataAfterClosingMakeRecordWindow();
 }
 
-function operateWidgetsAfterRecord (record, record_status, clickEl, windowEl_cont, windowEl) {
-
-	if (record_status == 'new') {
-
-		updateHistoryForNewRecord(record.num, record.type, record.account);
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
-
-	} else if (record_status == 'old') {
-
-		for (let recordEl of id('history').getElementsByClassName('record'))
-			if (recordEl.getAttribute('recordnum') == record.num) {
-				updateHistoryForEditedRecord(record.num, recordEl);			
-				break;
-			}
-
-	} else if (record_status == 'repeat') {
-
-		// increase records count in storage
-		localStorage.setItem('RCount', record.num);
-		// close edit record window
-		closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl);		
-
-	}
-}
-
+/**
+ * Sets up a click event on the 'Transfer' button for making a transfer record.
+ * Checks if both 'make-record-amount' and 'make-transfer-final-amount' fields are not empty before saving the transfer.
+ * Animates an empty field error for each empty field.
+ */
 id('make-transfer-button').onclick = () => {
 	
-	if (id('make-record-amount').value != 0 && id('make-transfer-final-amount').value != 0)
-		saveTransfer();
-	else {
-		if (id('make-record-amount').value == 0)
+	if (id('make-record-amount').value !== 0 && id('make-transfer-final-amount').value !== 0) {
+		saveTransfer(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
+	} else {
+		if (id('make-record-amount').value === 0) {
 			animateEmptyFieldError(id('make-record-amount'));
-		if (id('make-transfer-final-amount').value == 0)
+		}
+		if (id('make-transfer-final-amount').value === 0) {
 			animateEmptyFieldError(id('make-transfer-final-amount'));
+		}
 	}
 }
 
-function saveTransfer (clickEl, windowEl_cont, windowEl) {
-
-	let record = getMakeTransferDataArray(),
+/**
+ * Save transfer to the local storage, update accounts balance, update widgets statistics, close make record window.
+ *
+ * @param {HTMLElement} clickEl - Make record button HtmlElement.
+ * @param {HTMLElement} windowEl_cont - Make record window container HtmlElement.
+ * @param {HTMLElement} windowEl - Make record window HtmlElement.
+ */
+function saveTransfer(clickEl, windowEl_cont, windowEl) {
+	let transfer = getStorageTransferRecordObject(),
 		accounts_cont = id('accounts'),
-		record_status = id('make-record-window').getAttribute('status');
+		record_status = id('make-record-window').getAttribute('data-status');
 
-	// minus amount from balance of 'from account'
-	updateStorageAccountBalance(record.num, '-', record.from_account, record.amount, record_status);
-	updateAccountInfoInCont(record.from_account, 'Balance', accounts_cont);
-	// save first record to storage
-	record.type = '-';
-	saveRecordToStorage(record, 'transfer');
-	checkRecordsOrderByDate(Number(record.num));
-	record.num += 1;
+	// decrease balance of 'from account'
+	updateStorageAccountBalance(transfer.num, '-', transfer.fromAccountId, transfer.startAmount, record_status);
+	updateAccountInfoInCont(transfer.fromAccountId, 'Balance', accounts_cont);
+	// increase balance of 'to account'
+	updateStorageAccountBalance(transfer.num + 1, '+', transfer.toAccountId, transfer.finalAmount, record_status);
+	updateAccountInfoInCont(transfer.toAccountId, 'Balance', accounts_cont);
 
-	// plus amount to balance of 'to account'
-	updateStorageAccountBalance(record.num, '+', record.to_account, record.final_amount, record_status);
-	updateAccountInfoInCont(record.to_account, 'Balance', accounts_cont);
-	// save second record to storage
-	record.type = '+';
-	saveRecordToStorage(record, 'transfer');
-	checkRecordsOrderByDate(Number(record.num));
+	saveTransferRecordToStorage(transfer);
 
-	// add or update record in history widget
-	operateWidgetsAfterTransfer(record, record_status, clickEl, windowEl_cont, windowEl);
+	operateWidgetsAfterTransfer(transfer, record_status, clickEl, windowEl_cont, windowEl);
 
-	// update data in widgets and reset make record and make transfer window data
 	updateDataAfterClosingMakeRecordWindow();
 }
 
-function operateWidgetsAfterTransfer (record, record_status, clickEl, windowEl_cont, windowEl) {
 
-	if (record_status == 'new') {
+/**
+ * Represents record data that can be saved to the local storage.
+ *
+ * @class StorageDefaultRecord
+ *
+ * @param {number} num - Record number.
+ * @param {string} type - Record type. "-" for expense and "+" for income.
+ * @param {string} note - Record note.
+ * @param {number} accountId - Account id that holds this record.
+ * @param {number} amount - Record amount.
+ * @param {number} categoryId - Category ID to which record belongs.
+ * @param {number} subcategoryId - Subcategory ID to which record belongs. Has to be connected with the category.
+ */
+class StorageDefaultRecord {
 
-		// increase records count in storage
-		localStorage.setItem('RCount', record.num);
-		// reupload records to history
-		uploadRecordsToHistoryAnimated();
-		// close edit transfer window
-		closeFloatingWindow(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
+	num;
+	type;
+	note;
+	accountId;
+	amount;
+	categoryId;
+	subcategoryId;
 
-	} else if (record_status == 'old') {
+	constructor(num, type, note, accountId, amount, categoryId, subcategoryId) {
+		this.num = num;
+		this.type = type;
+		this.note = note;
+		this.accountId = accountId;
+		this.amount = amount;
+		this.categoryId = categoryId;
+		this.subcategoryId = subcategoryId;
+	}
+}
 
-		windowEl_cont = id('make-record-window-cont');
-		windowEl = id('make-record-window');
+/**
+ * Get record storage object with fill out data.
+ *
+ * @return {StorageDefaultRecord} - StorageDefaultRecord object with fill out data from the make record window.
+ */
+function getStorageDefaultRecordObject() {
 
-		if (
-			id('make-record-window').getAttribute('status') == 'old' &&
-			id('record-types').getAttribute('record-type') == '-'
-		)
-			record.num -= 1;
-		
-		// close edit transfer window
-		for (let recordEl of id('history').getElementsByClassName('record'))
-			if (recordEl.getAttribute('recordnum') == record.num) {
-				closeEditRecordWindowByReconnectMethod (recordEl, windowEl_cont, windowEl);
-				break;
-			}
+	let record = new StorageDefaultRecord(
+		Number(id('make-record-window').getAttribute('data-recordnum')),
+		id('record-types').getAttribute('data-record-type'),
+		id('make-record-note').value,
+		id('make-record-account').getAttribute('data-accountnum'),
+		Math.abs(id('make-record-amount').value),
+		id('make-record-category').getAttribute('data-categorynum'),
+		id('make-record-category').getAttribute('data-subcategorynum')
+	);
 
-	} else if (record_status == 'repeat') {
+	if (record.type === '+') record.subcategoryId = null;
 
-		// increase records count in storage
-		localStorage.setItem('RCount', record.num);
-		// close edit transfer window
-		closeEditRecordWindowByReconnectMethod (clickEl, windowEl_cont, windowEl);
+	return record;
+}
+
+/**
+ * Represents transfer data that can be saved to the local storage as two separate records - expense record and income.
+ *
+ * @class StorageTransferRecord
+ *
+ * @param {number} num - Record number for the first of two record.
+ * @param {number} fromAccountId - Account id of the first expense record.
+ * @param {number} toAccountId - Account id of the second income record.
+ * @param {number} startAmount - Amount of the first expense record.
+ * @param {number} finalAmount - Amount of the second income record.
+ * @param {number} startRate - Start rate. Start amount and final amount will have ratio [start rate] x [final rate].
+ * @param {number} finalRate - Final rate. Start amount and final amount will have ratio [start rate] x [final rate].
+ */
+class StorageTransferRecord {
+
+	num;
+	fromAccountId;
+	toAccountId;
+	startAmount;
+	finalAmount;
+	startRate;
+	finalRate;
+
+	constructor(num, fromAccountId, toAccountId, startAmount, finalAmount, startRate, finalRate) {
+		this.num = num;
+		this.fromAccountId = fromAccountId;
+		this.toAccountId = toAccountId;
+		this.startAmount = startAmount;
+		this.finalAmount = finalAmount;
+		this.startRate = startRate;
+		this.finalRate = finalRate;
+	}
+}
+
+/**
+ * Get transfer storage object with fill out data.
+ *
+ * @return {StorageTransferRecord} - StorageTransferRecord object with fill out data from the make record window.
+ */
+function getStorageTransferRecordObject() {
+
+	let transfer = new StorageTransferRecord(
+		Number(id('make-record-window').getAttribute('data-recordnum')),
+		id('make-record-account').getAttribute('data-accountnum'),
+		id('make-transfer-to-account').getAttribute('data-accountnum'),
+		Math.abs(id('make-record-amount').value),
+		Math.abs(id('make-transfer-final-amount').value),
+		Math.abs(id('make-transfer-start-rate').value),
+		Math.abs(id('make-transfer-final-rate').value)
+	);
+
+	if (
+		id('make-record-window').getAttribute('data-status') === 'old' &&
+		id('record-types').getAttribute('data-record-type') === '+'
+	) {
+		transfer.num -= 1;
+	}
+
+	return transfer;
+}
+
+/**
+ * Save default record to local storage.
+ *
+ * @param {StorageDefaultRecord} record - Record, to save data in the local storage.
+ */
+function saveDefaultRecordToStorage(record) {
+
+	// save or delete note
+	if ((record.note).length !== 0) {
+		localStorage.setItem(`RT${record.num}`, record.note);
+	} else if (record.note.length === 0 && localStorage.getItem(`RT${record.num}`)) {
+		localStorage.removeItem(`RT${record.num}`);
+	}
+	// account and amount
+	localStorage.setItem(`RA${record.num}`, record.accountId);
+	localStorage.setItem(`RU${record.num}`, record.amount);
+	// category (and subcategory)
+	localStorage.setItem(`RC${record.num}`, record.categoryId);
+	if (record.subcategoryId) {
+		localStorage.setItem(`RS${record.num}`, record.subcategoryId);
+	}
+}
+
+/**
+ * Save transfer record to local storage.
+ *
+ * @param {StorageTransferRecord} transfer - Record, to save data in the local storage.
+ */
+function saveTransferRecordToStorage(transfer) {
+
+	// account, amount, rate, category (and subcategory)
+	localStorage.setItem(`RP${transfer.num}`, '-');
+	localStorage.setItem(`RA${transfer.num}`, transfer.fromAccountId);
+	localStorage.setItem(`RU${transfer.num}`, transfer.startAmount);
+	localStorage.setItem(`RR${transfer.num}`, transfer.startRate);
+	localStorage.setItem(`RC${transfer.num}`, (subcategories_titles.length - 1).toString());
+	localStorage.setItem(`RS${transfer.num}`, (subcategories_titles[subcategories_titles.length - 1].length - 1).toString());
+	localStorage.setItem(`RB${transfer.num}`, (0).toString());
+	saveRecordDateToStorage(transfer.num);
+	checkRecordsOrderByDate(transfer.num);
+
+	localStorage.setItem(`RP${transfer.num + 1}`, '+');
+	localStorage.setItem(`RA${transfer.num + 1}`, transfer.toAccountId);
+	localStorage.setItem(`RU${transfer.num + 1}`, transfer.finalAmount);
+	localStorage.setItem(`RR${transfer.num + 1}`, transfer.finalRate);
+	localStorage.setItem(`RC${transfer.num + 1}`, (categories_income_titles.length - 1).toString());
+	localStorage.setItem(`RB${transfer.num + 1}`, (0).toString());
+	saveRecordDateToStorage(transfer.num + 1);
+	checkRecordsOrderByDate(transfer.num + 1);
+}
+
+/**
+ * Save record date to local storage in format ddMMyyyyHHmm.
+ *
+ * @param {number} recordNum - Number of a record so the date of this record can be found in the local storage.
+ */
+function saveRecordDateToStorage(recordNum) {
+	let inputDate = id('make-record-date').value + '';
+	let storageDate =
+		inputDate.charAt(0) + inputDate.charAt(1) + inputDate.charAt(2) + inputDate.charAt(3) +
+		inputDate.charAt(5) + inputDate.charAt(6) +
+		inputDate.charAt(8) + inputDate.charAt(9) +
+		inputDate.charAt(11) + inputDate.charAt(12) +
+		inputDate.charAt(14) + inputDate.charAt(15);
+
+	localStorage.setItem(`RD${recordNum}`, storageDate);
+}
+
+
+/**
+ * Update account balance based on what record status it is. If it is "new" or "repeat", it will increase or decrease
+ * account balance based on the passed record type and passed amount.
+ * If it is "edit" record status, it will return back old record amount to the account balance (past amount and past
+ * account are taken from the local storage by passed record num) and then increase or decrease balance based on the
+ * passed record type and passed amount.
+ *
+ * @param {number} recordNum - Record number.
+ * @param {string} recordType - Type of this record - "-" for expense and "+" for income.
+ * @param {number} accountId - ID of the account currently connected with this record.
+ * @param {number} recordAmount - New amount of this record.
+ * @param {string} recordStatus - Status of this record - "new", "repeat" or "edit".
+ */
+function updateStorageAccountBalance(
+	recordNum, recordType, accountId, recordAmount, recordStatus
+) {
+	let signNumber = Number(recordType + '1');
+	let recordAccountBalance = Number(localStorage.getItem(`ABalance${accountId}`));
+
+	if (recordStatus === 'new' || recordStatus === 'repeat') {
+		localStorage.setItem(
+			`ABalance${accountId}`,
+			(recordAccountBalance + (recordAmount * signNumber)).toFixed(2)
+		);
+	} else {
+		if (id('make-record-window').classList.contains('edit-record-status')) {
+			updateStorageAccountBalance_EditedRecord(recordNum, signNumber, accountId, recordAmount);
+		} else if (id('make-record-window').classList.contains('edit-transfer-status')) {
+			updateStorageAccountBalance_EditedTransfer(recordNum, signNumber, accountId, recordAmount);
+		}
+	}
+}
+
+/**
+ * Update account balance after record editing.
+ *
+ * @param {number} recordNum - Number of a record.
+ * @param {number} signNumber - Pass 1 if the record is of type income and -1 if it was expense.
+ * @param {number} accountId - ID of an account.
+ * @param {number} amount - Amount of this record.
+ */
+function updateStorageAccountBalance_EditedRecord(
+	recordNum, signNumber, accountId, amount
+) {
+	let storageAccountId = Number(localStorage.getItem(`RA${recordNum}`));
+	let storageAccountBalance = Number(
+			localStorage.getItem(`ABalance${storageAccountId}`)
+		).toFixed(2);
+	let storageAmount = Number(localStorage.getItem(`RU${recordNum}`));
+
+	localStorage.setItem(
+		`ABalance${storageAccountId}`,
+		(storageAccountBalance - (storageAmount * signNumber)).toFixed(2)
+	);
+
+	let recordAccountBalance = Number(localStorage.getItem(`ABalance${accountId}`));
+	localStorage.setItem(
+		`ABalance${accountId}`,
+		(recordAccountBalance + (amount * signNumber)).toFixed(2)
+	);
+
+	for (let account of id('accounts').getElementsByClassName('account')) {
+		if (Number(account.getAttribute('data-accountnum')) === storageAccountId) {
+			updateAccountInfoInCont(storageAccountId, 'Balance', id('accounts'));
+		}
+	}
+}
+
+/**
+ * Update account balance after transfer editing.
+ *
+ * @param {number} recordNum - Number of a record.
+ * @param {number} signNumber - Pass 1 if the record is of type income and -1 if it was expense.
+ * @param {number} accountId - ID of an account.
+ * @param {number} amount - Amount of this record.
+ */
+function updateStorageAccountBalance_EditedTransfer(
+	recordNum, signNumber, accountId, amount
+) {
+	let storageAccountId = Number(localStorage.getItem(`RA${recordNum}`));
+	let storageAccountBalance = Number(
+		Number(localStorage.getItem(`ABalance${storageAccountId}`)).toFixed(2)
+	);
+	let	storageAmount = Number(localStorage.getItem(`RU${recordNum}`));
+
+	alert(`storageAccountBalance{${storageAccountBalance}} - (storageAmount * signNumber){${storageAmount * signNumber}}`);
+	localStorage.setItem(
+		`ABalance${storageAccountId}`,
+		(storageAccountBalance - (storageAmount * signNumber)).toFixed(2)
+	);
+
+	let recordAccountBalance = Number(localStorage.getItem(`ABalance${accountId}`));
+	alert(`recordAccountBalance{${recordAccountBalance}} + (amount * signNumber){${amount * signNumber}}`);
+	localStorage.setItem(
+		`ABalance${accountId}`,
+		(recordAccountBalance + (amount * signNumber)).toFixed(2)
+	);
+
+	for (let account of id('accounts').getElementsByClassName('account')) {
+		if (Number(account.getAttribute('data-accountnum')) === storageAccountId) {
+			updateAccountInfoInCont(storageAccountId, 'Balance', id('accounts'));
+		}
+	}
+}
+
+
+/**
+ * Calls updateAllAccountInfo() function withpassed accountId and for every data (color, balance and currency).
+ *
+ * @param {number} accountId - Account ID.
+ */
+function updateUIDataOfAccount(accountId) {
+	updateAllAccountInfo(accountId, ACCOUNT_INFO.currency);
+	updateAllAccountInfo(accountId, ACCOUNT_INFO.balance);
+	updateAllAccountInfo(accountId, ACCOUNT_INFO.color);
+}
+
+/**
+ * Calls updateAccountInfoInCont() function withpassed account info and accountId for all containers that contains
+ * accounts (top-bar container and container in settings).
+ *
+ * @param {number} accountId - Account ID.
+ * @param {string} info - Account info (in ACCOUNT_INFO) that has to be changed.
+ */
+function updateAllAccountInfo(accountId, info) {
+	updateAccountInfoInCont(accountId, info, id('accounts'));
+	updateAccountInfoInCont(accountId, info, id('settings-category-window-content'));
+}
+
+/**
+ * Update account information at the passed container.
+ *
+ * @param {number} accountId - Account ID.
+ * @param {string} info - Account info (in ACCOUNT_INFO) that has to be changed.
+ * @param {HTMLElement} cont - Html container in which account info has to be changed.
+ */
+function updateAccountInfoInCont(accountId, info, cont) {
+	let accounts = cont.getElementsByClassName('account');
+
+	for (let account of accounts) {
+		if (Number(account.getAttribute('data-accountnum')) === accountId) {
+			updateAccountInfo(account, accountId, info);
+		}
+	}
+}
+
+/**
+ * Update account information to the passed account Html element based on the local storage.
+ *
+ * @param {HTMLElement} account - Account Html element that has to be updated.
+ * @param {number} accountId - Account ID.
+ * @param {string} info - Account information (in ACCOUNT_INFO) that has to be updated.
+ */
+function updateAccountInfo(account, accountId, info) {
+
+	if (info === ACCOUNT_INFO.currency) {
+
+		account.firstElementChild.innerText = localStorage.getItem(`A${info}${accountId}`);
+
+	} else if (info === ACCOUNT_INFO.balance) {
+
+		let holding_el = freezeWidthOfEl(account.lastElementChild);
+		account.lastElementChild.innerText = getAccountBalance(accountId);
+		updateWidthOfEl(account.lastElementChild, holding_el);
+
+	} else if (info === ACCOUNT_INFO.color) {
+
+		let color = localStorage.getItem(`A${info}${accountId}`);
+		account.style.background = '#' + color;
+		if (color === '050505' && !account.classList.contains('account-dark-color')) {
+			account.classList.add('account-dark-color');
+		} else if (color !== '050505' && account.classList.contains('account-dark-color')) {
+			account.classList.remove('account-dark-color');
+		}
 
 	}
 }
 
-function updateDataAfterClosingMakeRecordWindow () {
+/**
+ * If passed account html element has black color, add account-dark-color class to it so if dark theme is applied,
+ * its color will be inverted to the white one.
+ */
+function checkAccountColor(account) {
+	let color = account.style.background;
 
-	// update data in all widgets
+	if (color === 'rgb(5, 5, 5)' && !account.classList.contains('account-dark-color')) {
+		account.classList.add('account-dark-color');
+	} else if (color !== 'rgb(5, 5, 5)' && account.classList.contains('account-dark-color')) {
+		account.classList.remove('account-dark-color');
+	}
+}
+
+
+/**
+ * Update widgets data with animation based on the record status ("new", "old", "repeat") and close make record window.
+ *
+ * @param {StorageDefaultRecord} record - Record object to take data from.
+ * @param {string} recordStatus - Status of this record ("new", "old", "repeat").
+ * @param {HTMLElement} clickEl - Make record button HtmlElement.
+ * @param {HTMLElement} windowElCont - Make record window container HtmlElement.
+ * @param {HTMLElement} windowEl - Make record window HtmlElement.
+ */
+function operateWidgetsAfterRecord(
+	record, recordStatus, clickEl, windowElCont, windowEl
+) {
+
+	if (recordStatus === 'new') {
+
+		updateHistoryForNewRecord(record.num, record.type, record.accountId);
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
+
+	} else if (recordStatus === 'old') {
+
+		for (let recordEl of id('history').getElementsByClassName('record')) {
+			if (Number(recordEl.getAttribute('data-recordnum')) === record.num) {
+				updateHistoryForEditedRecord(record.num, recordEl);
+				break;
+			}
+		}
+
+	} else if (recordStatus === 'repeat') {
+
+		// increase records count in storage
+		localStorage.setItem('RCount', record.num);
+		closeEditRecordWindowByReconnectMethod(clickEl, windowElCont, windowEl);
+
+	}
+}
+
+/**
+ * Update widgets data with animation based on the record status ("new", "old", "repeat") and close make record window.
+ *
+ * @param {StorageTransferRecord} record - Record transfer object to take data from.
+ * @param {string} recordStatus - Status of this record ("new", "old", "repeat").
+ * @param {HTMLElement} clickEl - Make record button HtmlElement.
+ * @param {HTMLElement} windowElCont - Make record window container HtmlElement.
+ * @param {HTMLElement} windowEl - Make record window HtmlElement.
+ */
+function operateWidgetsAfterTransfer(
+	record, recordStatus, clickEl, windowElCont, windowEl
+) {
+	if (recordStatus === 'new') {
+
+		localStorage.setItem('RCount', (record.num + 1).toString());
+		uploadRecordsToHistoryAnimated();
+		closeFloatingWindow(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
+
+	} else if (recordStatus === 'old') {
+
+		if (
+			id('make-record-window').getAttribute('data-status') === 'old' &&
+			id('record-types').getAttribute('data-record-type') === '+'
+		)
+			record.num += 1;
+
+		// close edit transfer window
+		for (let recordEl of id('history').getElementsByClassName('record')) {
+			if (Number(recordEl.getAttribute('data-recordnum')) === record.num) {
+				closeEditRecordWindowByReconnectMethod(
+					recordEl, id('make-record-window-cont'), id('make-record-window')
+				);
+				break;
+			}
+		}
+
+	} else if (recordStatus === 'repeat') {
+
+		localStorage.setItem('RCount', (record.num + 1).toString());
+		closeEditRecordWindowByReconnectMethod (clickEl, windowElCont, windowEl);
+
+	}
+}
+
+/**
+ * Update data in every widget and reset data in make record fields.
+ */
+function updateDataAfterClosingMakeRecordWindow() {
+
+	// update data in every widget
 	updateWidgetsData(0, 1, 1, [0, 0], 1);
 
 	// reset make record window data
@@ -5363,241 +6126,30 @@ function updateDataAfterClosingMakeRecordWindow () {
 	}, 390);
 }
 
-function getMakeRecordDataArray () {
-	let array = {
-		num: Number(id('make-record-window').getAttribute('recordnum')),
-		type: id('record-types').getAttribute('record-type'),
-		note: id('make-record-note').value,
-		account: id('make-record-account').getAttribute('accountnum'),
-		amount: Math.abs(id('make-record-amount').value),
-		category: id('make-record-category').getAttribute('categorynum'),
-		subcategory: id('make-record-category').getAttribute('subcategorynum')
-	};
 
-	if (array.type == '+') array.subcategory = null;
-
-	return array;
-}
-
-function getMakeTransferDataArray () {
-	let array = {
-		num: Number(id('make-record-window').getAttribute('recordnum')),
-		type: '',
-		from_account: id('make-record-account').getAttribute('accountnum'),
-		to_account: id('make-transfer-to-account').getAttribute('accountnum'),
-		amount: Math.abs(id('make-record-amount').value),
-		final_amount: Math.abs(id('make-transfer-final-amount').value),
-		start_rate: Math.abs(id('make-transfer-start-rate').value),
-		final_rate: Math.abs(id('make-transfer-final-rate').value)
-	};
-
-	if (
-		id('make-record-window').getAttribute('status') == 'old' &&
-		id('record-types').getAttribute('record-type') == '+'
-	)
-		array.num -= 1;
-
-	return array;
-}
-
-
-function updateStorageAccountBalance (record_num, record_type, record_account, record_amount, record_status) {
-	
-	let type_sign = Number(record_type + '1'),
-		record_account_balance = Number(localStorage.getItem(`ABalance${record_account}`));
-
-	if (record_status == 'new' || record_status == 'repeat') {
-		localStorage.setItem(`ABalance${record_account}`, (record_account_balance + (record_amount * type_sign)).toFixed(2));
-	} else {
-		
-		if (id('make-record-window').classList.contains('edit-record-status'))
-			updateStorageAccountBalance_EditedRecord(record_num, type_sign, record_account, record_amount);
-		else if (id('make-record-window').classList.contains('edit-transfer-status'))
-			updateStorageAccountBalance_EditedTransfer(record_num, type_sign, record_account, record_amount);
-		
-	}
-}
-
-function updateStorageAccountBalance_EditedRecord (record_num, type_sign, record_account, record_amount) {
-
-	let storage_account_num = localStorage.getItem(`RA${record_num}`),
-		storage_account_balance = Number(localStorage.getItem(`ABalance${storage_account_num}`)).toFixed(2),
-		record_storage_amount = Number(localStorage.getItem(`RU${record_num}`));
-	
-		
-	localStorage.setItem(
-		`ABalance${storage_account_num}`,
-		(storage_account_balance - (record_storage_amount * type_sign)).toFixed(2)
-	);
-
-	let record_account_balance = Number(localStorage.getItem(`ABalance${record_account}`));
-	localStorage.setItem(
-		`ABalance${record_account}`,
-		(record_account_balance + (record_amount * type_sign)).toFixed(2)
-	);
-	
-	for (let account of id('accounts').getElementsByClassName('account'))
-		if (account.getAttribute('accountnum') == storage_account_num)
-			updateAccountInfoInCont(storage_account_num, 'Balance', id('accounts'));
-}
-
-function updateStorageAccountBalance_EditedTransfer (record_num, type_sign, record_account, record_amount) {
-
-	let storage_account_num = localStorage.getItem(`RA${record_num}`),
-		storage_account_balance = Number(localStorage.getItem(`ABalance${storage_account_num}`)).toFixed(2),
-		record_storage_amount = Number(localStorage.getItem(`RU${record_num}`));
-	
-	localStorage.setItem(
-		`ABalance${storage_account_num}`,
-		(storage_account_balance - (record_storage_amount * type_sign)).toFixed(2)
-	);
-	
-	let record_account_balance = Number(localStorage.getItem(`ABalance${record_account}`));
-	localStorage.setItem(
-		`ABalance${record_account}`,
-		(record_account_balance + (record_amount * type_sign)).toFixed(2)
-	);
-	
-	for (let account of id('accounts').getElementsByClassName('account'))
-		if (account.getAttribute('accountnum') == storage_account_num)
-			updateAccountInfoInCont(storage_account_num, 'Balance', id('accounts'));
-}
-
-
-function updateUIDataOfAccount (account_num) {
-	updateAllAccountInfo(account_num, 'Color');
-	updateAllAccountInfo(account_num, 'Balance');
-	updateAllAccountInfo(account_num, 'Currency');
-}
-
-function updateAllAccountInfo (account_num, info) {
-
-	updateAccountInfoInCont(account_num, info, id('accounts'));
-	updateAccountInfoInCont(account_num, info, id('settings-category-window-content'));
-}
-
-function updateAccountInfoInCont (account_num, info, cont) {
-	let accounts = cont.getElementsByClassName('account');
-	
-	for (let account of accounts)
-		if (account.getAttribute('accountnum') == account_num)
-			updateAccountInfo(account, account_num, info);
-}
-
-function updateAccountInfo (account, account_num, info) {
-
-	if (info == 'Currency')
-		account.firstElementChild.innerText = localStorage.getItem(`A${info}${account_num}`);
-		
-	else if (info == 'Balance') {
-
-		let holding_el = freezeWidthOfEl(account.lastElementChild);
-		account.lastElementChild.innerText = getAccountBalance(account_num);
-		updateWidthOfEl(account.lastElementChild, holding_el);
-			
-
-	} else if (info == 'Color') {
-
-		let color = localStorage.getItem(`A${info}${account_num}`);
-		account.style.background = '#' + color;
-		if (color == '050505' && !account.classList.contains('account-dark-color'))
-			account.classList.add('account-dark-color');
-		else if (color != '050505' && account.classList.contains('account-dark-color'))
-			account.classList.remove('account-dark-color');
-		
-	}
-}
-
-function checkAccountColor (account) {
-	let color = account.style.background;
-
-	if (color == 'rgb(5, 5, 5)' && !account.classList.contains('account-dark-color'))
-			account.classList.add('account-dark-color');
-		else if (color != 'rgb(5, 5, 5)' && account.classList.contains('account-dark-color'))
-			account.classList.remove('account-dark-color');
-}
-
-
-function saveRecordToStorage (record, record_status) {
-
-	// type
-	localStorage.setItem(`RP${record.num}`, record.type);
-	
-	// other record's stuff
-	if (record_status == 'record')
-		saveDefaultRecordToStorage(record);
-	else if (record_status == 'transfer')
-		saveTransferRecordToStorage(record);
-
-	// date
-	saveRecordDateToStorage(record.num);
-}
-
-function saveDefaultRecordToStorage (record) {
-
-	// save or delete note
-	if ((record.note).length != 0)
-		localStorage.setItem(`RT${record.num}`, record.note);
-	else if (record.note.length == 0 && localStorage.getItem(`RT${record.num}`))
-		localStorage.removeItem(`RT${record.num}`);
-	// account and amount
-	localStorage.setItem(`RA${record.num}`, record.account);
-	localStorage.setItem(`RU${record.num}`, record.amount);
-	// category (and subcategory)
-	localStorage.setItem(`RC${record.num}`, record.category);
-	if (record.subcategory)
-		localStorage.setItem(`RS${record.num}`, record.subcategory);
-}
-
-function saveTransferRecordToStorage (record) {
-
-	// account, amount, rate, category (and subcategory)
-	if (record.type == '-') {
-		localStorage.setItem(`RA${record.num}`, record.from_account);
-		localStorage.setItem(`RU${record.num}`, record.amount);
-		localStorage.setItem(`RR${record.num}`, record.start_rate);
-		localStorage.setItem(`RC${record.num}`, subcategories_titles.length - 1);
-		localStorage.setItem(`RS${record.num}`, subcategories_titles[subcategories_titles.length - 1].length - 1);
-	} else {
-		localStorage.setItem(`RA${record.num}`, record.to_account);
-		localStorage.setItem(`RU${record.num}`, record.final_amount);
-		localStorage.setItem(`RR${record.num}`, record.final_rate);
-		localStorage.setItem(`RC${record.num}`, categories_income_titles.length - 1);
-	}
-	// above category
-	localStorage.setItem(`RB${record.num}`, 0);
-}
-
-function saveRecordDateToStorage (record_num) {
-
-	let input_date = id('make-record-date').value + '';
-	let storage_date = '';
-
-	storage_date =
-		input_date.charAt(0) + input_date.charAt(1) + input_date.charAt(2) + input_date.charAt(3) +
-		input_date.charAt(5) + input_date.charAt(6) +
-		input_date.charAt(8) + input_date.charAt(9) +
-		input_date.charAt(11) + input_date.charAt(12) +
-		input_date.charAt(14) + input_date.charAt(15);
-
-	localStorage.setItem(`RD${record_num}`, storage_date);
-}
-
-
-function updateHistoryForNewRecord (record_num, record_type, record_account) {
+/**
+ * Decide how exactly add new record to record history element based on record date, type, account number.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param record_type - Type of record.
+ * @param record_account - Account number saved in this record.
+ */
+function updateHistoryForNewRecord(record_num, record_type, record_account) {
 
 	// increase records count in storage
 	localStorage.setItem('RCount', record_num);
 
-	let history_type = id('history-type-nav').getAttribute('history-type');
+	let history_type = id('history-type-nav').getAttribute('data-history-type');
 
 	if (
 		(
 			id('history').firstElementChild &&
-			getRecordDateFormat( id('history').firstElementChild.getAttribute('recordnum') ) > getRecordDateFormat(record_num)
+			getRecordDateFormat(
+				 Number(id('history').firstElementChild.getAttribute('data-recordnum'))
+			) > getRecordDateFormat(record_num)
 		) ||
-		(history_type != 'all' && record_type != history_type) ||
-		id('accounts').getAttribute('accountnum') != record_account
+		(history_type !== 'all' && record_type !== history_type) ||
+		id('accounts').getAttribute('data-accountnum') !== record_account
 	) {
 		checkRecordsOrderByDate(Number(record_num));
 		uploadRecordsToHistoryAnimated();
@@ -5618,7 +6170,14 @@ function updateHistoryForNewRecord (record_num, record_type, record_account) {
 
 }
 
-function addRecordToHistory (record_num, record_account, place) {
+/**
+ * Add a new record to record history container.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param record_account - Account number saved in this record.
+ * @param place - String to pass to insertAdjacentHtml function todefine where to place new record.
+ */
+function addRecordToHistory(record_num, record_account, place) {
 
 	let history_cont = id('history');
 	let recordEl = constructRecordEl(record_num, record_account);
@@ -5630,14 +6189,30 @@ function addRecordToHistory (record_num, record_account, place) {
 	history_cont.insertAdjacentHTML(place, recordEl);
 }
 
-function constructRecordEl (record_num, record_account) {
+/**
+ * Get either default record element or transfer record element as string.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param record_account - Account saved in a record.
+ *
+ * @return string - Returns record HtmlDomElement as string.
+ */
+function constructRecordEl(record_num, record_account) {
 	
-	if ( !(localStorage.getItem(`RB${record_num}`)) || Number(localStorage.getItem(`RB${record_num}`)) != 0 )
+	if ( !(localStorage.getItem(`RB${record_num}`)) || Number(localStorage.getItem(`RB${record_num}`)) !== 0 )
 		return getDefaultRecordEl(record_num, record_account);
 	else return getTransferRecordEl(record_num, record_account);
 }
 
-function getDefaultRecordEl (record_num, record_account) {
+/**
+ * Get default record element as string.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param record_account - Account number saved in a record.
+ *
+ * @return string - Returns record HtmlDomElement as string.
+ */
+function getDefaultRecordEl(record_num, record_account) {
 	
 	let record_date = getRecordDate_DayMonth(record_num),
 		category_num = localStorage.getItem(`RC${record_num}`),
@@ -5648,81 +6223,100 @@ function getDefaultRecordEl (record_num, record_account) {
 	if (localStorage.getItem(`RT${record_num}`))
 		record_note = `<h4 class="note">${localStorage.getItem('RT' + record_num)}</h4>`;
 
-	if (localStorage.getItem(`RP${record_num}`) == '-') {
-		icon = subcategories_icons[category_num][subcategory_num];
+	if (localStorage.getItem(`RP${record_num}`) === '-') {
+		icon = SUBCATEGORY_ICONS[category_num][subcategory_num];
 		title = subcategories_titles[category_num][subcategory_num];
 	} else {
-		icon = categories_income_icons[category_num];
+		icon = CATEGORY_INCOME_ICONS[category_num];
 		title = categories_income_titles[category_num];
 	}
 	
 	return (`
-		<div class="record" recordnum="${record_num}">
+		<div class="record" data-recordnum="${record_num}">
 			<h4 class="date">${record_date}</h4>
 			${record_note}
-			<div class="category" categorynum="${category_num}" subcategorynum="${subcategory_num}">
+			<div class="category" data-categorynum="${category_num}" data-subcategorynum="${subcategory_num}">
 				<div>${icon}</div>
 				<h3>${title}</h3>
 			</div>
 			<div class="amount">
 				<h3>${localStorage.getItem('RP' + record_num)}</h3>
-				<h3>${getReadableNumber( Number(localStorage.getItem('RU' + record_num)).toFixed(2) )}</h3>
+				<h3>${getReadableNumber(
+					Number(
+						Number(localStorage.getItem('RU' + record_num)).toFixed(2)
+					)
+				)}</h3>
 				<h3>${localStorage.getItem('ACurrency' + record_account)}</h3>
 			</div>
 		</div>
 	`);
 }
 
-function getTransferRecordEl (record_num, record_account) {
+/**
+ * Get transfer record element as string.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param record_account - Account number saved in a record.
+ *
+ * @return string - Returns record HtmlDomElement as string.
+ */
+function getTransferRecordEl(record_num, record_account) {
 
 	let transfer_pair = getTransfersPairNums(record_num);
 	let record_date = getRecordDate_DayMonth(record_num),
 		account_num, account_field_title,
 		from_account = localStorage.getItem(`RA${transfer_pair.from}`),
-		abovecategory_num = localStorage.getItem(`RB${record_num}`),
-		icon = above_categories_icons[abovecategory_num],
-		title = above_categories_titles[abovecategory_num],
+		above_category_num = localStorage.getItem(`RB${record_num}`),
+		icon = ABOVE_CATEGORY_ICONS[above_category_num],
+		title = above_categories_titles[above_category_num],
 		account_dark_class = '';
-	let account_fields_titles = getRecordAccountFieldsTitles();
 
-	if (from_account == record_account) {
+	if (from_account === record_account) {
 		account_num = localStorage.getItem(`RA${transfer_pair.to}`);
-		account_field_title = account_fields_titles[1];
+		account_field_title = getStrings(localStorage.getItem('L')).to_account;
 	} else {
 		account_num = from_account
-		account_field_title = account_fields_titles[0];
+		account_field_title = getStrings(localStorage.getItem('L')).from_account;
 	}
 
 	let account_color = localStorage.getItem(`AColor${account_num}`);
 
-	if (account_color == '050505')
+	if (account_color === '050505')
 		account_dark_class = 'account-dark-color';
+	account_color = "#" + account_color;
 	
 	return (`
-		<div class="record" recordnum="${record_num}">
+		<div class="record" data-recordnum="${record_num}">
 			<div class="above-category-cont">
 				<h4 class="date">${record_date}</h4>
-				<div class="above-category" categorynum="${abovecategory_num}" style="background: var(--primary-color); color: var(--opposite-color);">
+				<div class="above-category" data-categorynum="${above_category_num}" style="background: var(--primary-color); color: var(--opposite-color);">
 					<div>${icon}</div>
 					<h3>${title}</h3>
 				</div>
 			</div>
 			<div class="transfer-accounts">
 				<h4>${account_field_title}</h4>
-				<span class="${account_dark_class}" style="color: #ddd; background: #${account_color};">
+				<span class="${account_dark_class}" style="color: #ddd; background: ${account_color};">
 					${localStorage.getItem('ACurrency' + account_num)}
 				</span>
 			</div>
 			<div class="amount">
 				<h3>${localStorage.getItem('RP' + record_num)}</h3>
-				<h3>${getReadableNumber( Number(localStorage.getItem('RU' + record_num)).toFixed(2) )}</h3>
+				<h3>${getReadableNumber( Number(Number(localStorage.getItem('RU' + record_num)).toFixed(2)) )}</h3>
 				<h3>${localStorage.getItem('ACurrency' + record_account)}</h3>
 			</div>
 		</div>
 	`);
 }
 
-function getRecordDate_DayMonth (record_num) {
+/**
+ * Get date as string in format dd.MM.
+ *
+ * @param record_num - Number of a record in local storage.
+ *
+ * @return string - Returns record HtmlDomElement as string.
+ */
+function getRecordDate_DayMonth(record_num) {
 	let storage_date = localStorage.getItem(`RD${record_num}`);
 
 	let day = storage_date.charAt(6) + storage_date.charAt(7),
@@ -5731,31 +6325,12 @@ function getRecordDate_DayMonth (record_num) {
 	return (Number(day) + '.' + Number(month));
 }
 
-function getRecordAccountFieldsTitles () {
-	let lang = localStorage.getItem('L'),
-		account_fields_titles = [];
-
-	if (lang == 'en') {
-		account_fields_titles[0] = 'From account';
-		account_fields_titles[1] = 'To account';
-	} else if (lang == 'de') {
-		account_fields_titles[0] = 'Von Konto';
-		account_fields_titles[1] = 'Auf Konto';
-	} else if (lang == 'cz') {
-		account_fields_titles[0] = 'Z účtu';
-		account_fields_titles[1] = 'Na účet';
-	} else if (lang == 'ru') {
-		account_fields_titles[0] = 'Со счёта';
-		account_fields_titles[1] = 'На счёт';
-	} else if (lang == 'ua') {
-		account_fields_titles[0] = 'З рахунку';
-		account_fields_titles[1] = 'На рахунок';
-	}
-
-	return account_fields_titles;
-}
-
-function animateAddingRecord (record) {
+/**
+ * Run animation of displaying a new record in record history container.
+ *
+ * @param record - Record HtmlDomElement to run animation on.
+ */
+function animateAddingRecord(record) {
 
 	// .history has padding-block and gap set up on 15px, and small-hr has height 3px: 15 * 2 - 3 = 27
 	let margin_top = 27 + record.clientHeight;
@@ -5765,7 +6340,7 @@ function animateAddingRecord (record) {
 	setTimeout(() => {
 		record.style.transition = 'margin-top .4s .4s';
 		record.style.marginTop = '0px';
-		
+
 		setTimeout(() => {
 			record.style.transition = null;
 		}, 800);
@@ -5773,25 +6348,27 @@ function animateAddingRecord (record) {
 }
 
 
-function updateHistoryForEditedRecord (record_num, record) {
+/**
+ * Decide how exactly update record data and which animation to use based on this record note and date.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param record - Record HtmlDomElement.
+ */
+function updateHistoryForEditedRecord(record_num, record) {
 
 	updateRecordInHistory(record_num, record);
 
-	let period = id('history-period-nav').getAttribute('period');
-	let compare_date = new Date();
+	let compare_date = new Date(getRecordDateFormat(record_num));
 	let make_record_note_len = id('make-record-note').value.length,
 		record_note_classname = record.firstElementChild.nextElementSibling.className;
 
-	if (period == 'week') compare_date.setDate(compare_date.getDate() - 7);
-	else if (period == 'month') compare_date.setMonth(compare_date.getMonth() - 1);
-	else compare_date = new Date(getRecordDateFormat(record_num));
-
 	if (
-		checkRecordsOrderByDate(Number(record_num)) != record_num ||
+		checkRecordsOrderByDate(Number(record_num)) !== record_num ||
 		getRecordDateFormat(record_num) < getDateFormat(compare_date) ||
-		id('make-record-account').getAttribute('accountnum') != id('make-record-account').firstElementChild.getAttribute('accountnum') ||
-		( make_record_note_len != 0 && record_note_classname != 'note' ||
-			make_record_note_len == 0 && record_note_classname == 'note' )
+		id('make-record-account').getAttribute('data-accountnum') !==
+			id('make-record-account').firstElementChild.getAttribute('data-accountnum') ||
+		( make_record_note_len !== 0 && record_note_classname !== 'note' ||
+			make_record_note_len === 0 && record_note_classname === 'note' )
 	) {
 		reconnectFloatingWindow(record, id('history'), id('make-record-window-cont'), id('make-record-window'));
 		closeReconnectedFloatingWindow(id('make-record-window-cont'), id('make-record-window'));
@@ -5802,18 +6379,24 @@ function updateHistoryForEditedRecord (record_num, record) {
 	}
 }
 
-function updateRecordInHistory (record_num, recordEl) {
+/**
+ * Update record data in a record history container.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param recordEl - Record HtmlDomElement.
+ */
+function updateRecordInHistory(record_num, recordEl) {
 
 	let record_date = getRecordDate_DayMonth(record_num),
 		category_num = localStorage.getItem(`RC${record_num}`),
 		subcategory_num = localStorage.getItem(`RS${record_num}`),
 		icon, title;
 
-	if (localStorage.getItem(`RP${record_num}`) == '-') {
-		icon = subcategories_icons[category_num][subcategory_num];
+	if (localStorage.getItem(`RP${record_num}`) === '-') {
+		icon = SUBCATEGORY_ICONS[category_num][subcategory_num];
 		title = subcategories_titles[category_num][subcategory_num];
 	} else {
-		icon = categories_income_icons[category_num];
+		icon = CATEGORY_INCOME_ICONS[category_num];
 		title = categories_income_titles[category_num];
 	}
 
@@ -5824,15 +6407,27 @@ function updateRecordInHistory (record_num, recordEl) {
 	// update category
 	updateRecordCategoryInHistory(record_num, recordEl, record_noteEl, icon, title);
 	// update amount
-	recordEl.lastElementChild.firstElementChild.nextElementSibling.innerHTML = getReadableNumber( Number(localStorage.getItem(`RU${record_num}`)).toFixed(2) );
+	recordEl.lastElementChild.firstElementChild.nextElementSibling.innerHTML = getReadableNumber(
+		Number(
+			Number(localStorage.getItem(`RU${record_num}`)).toFixed(2)
+		)
+	);
 	// update currency
 	recordEl.lastElementChild.lastElementChild.innerHTML = localStorage.getItem(`ACurrency${ localStorage.getItem('RA' + record_num) }`);
 }
 
-function updateRecordNoteInHistory (record_num, recordEl) {
+/**
+ * Update record note in the record history container.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param recordEl - Record HtmlDomElement.
+ *
+ * @return HtmlElement - Note html element of a record html element.
+ */
+function updateRecordNoteInHistory(record_num, recordEl) {
 	let record_noteEl = null;
 		
-	if (recordEl.firstElementChild.nextElementSibling.className == 'note')
+	if (recordEl.firstElementChild.nextElementSibling.className === 'note')
 		record_noteEl = recordEl.firstElementChild.nextElementSibling;
 		
 	if (record_noteEl != null) {
@@ -5842,19 +6437,36 @@ function updateRecordNoteInHistory (record_num, recordEl) {
 	return record_noteEl;
 }
 
-function updateRecordCategoryInHistory (record_num, recordEl, record_noteEl, icon, title) {
+/**
+ * Update record category in the record history container.
+ *
+ * @param record_num - Number of a record in local storage.
+ * @param recordEl - Record HtmlDomElement.
+ * @param record_noteEl - Note html element of a record html element.
+ * @param icon - Category svg icon.
+ * @param name - Category name.
+ */
+function updateRecordCategoryInHistory(record_num, recordEl, record_noteEl, icon, name) {
 	
 	let categoryEl;
 	if (record_noteEl != null) categoryEl = record_noteEl.nextElementSibling;
 	else categoryEl = recordEl.lastElementChild.previousElementSibling;
 
-	categoryEl.setAttribute('categorynum', localStorage.getItem(`RC${record_num}`));
-	categoryEl.setAttribute('subcategorynum', localStorage.getItem(`RS${record_num}`));
+	categoryEl.setAttribute('data-categorynum', localStorage.getItem(`RC${record_num}`));
+	categoryEl.setAttribute('data-subcategorynum', localStorage.getItem(`RS${record_num}`));
 	categoryEl.firstElementChild.innerHTML = icon;
-	categoryEl.lastElementChild.innerHTML = title;
+	categoryEl.lastElementChild.innerHTML = name;
 }
 
-function checkRecordsOrderByDate (record_num) {
+/**
+ * Check order of all records in local storage by passed order number. Order based on records date.
+ *
+ * @param record_num - Number of a record in local storage.
+ *
+ * @return number - Based on a record order number passed to this function returnnew number if the order was changed
+ * and the same number if the order was kept.
+ */
+function checkRecordsOrderByDate(record_num) {
 
 	for (;
 		localStorage.getItem(`RD${record_num - 1}`) &&
@@ -5873,7 +6485,13 @@ function checkRecordsOrderByDate (record_num) {
 	return record_num;
 }
 
-function swapRecords (a, b) {
+/**
+ * Swap two records in the local storage.
+ *
+ * @param a - Number of the first record.
+ * @param b - Number of the second record.
+ */
+function swapRecords(a, b) {
 
 	let arr = [
 		// tyPe, amoUnt, Account, Category
@@ -5881,12 +6499,11 @@ function swapRecords (a, b) {
 		// Minute, Hour, Day, Month, Year
 		'M', 'H', 'D', 'N', 'Y'
 	];
-	let holded_var = '';
 
 	for (let i = 0; i < arr.length; i++) {
-		holded_var = localStorage.getItem(`R${arr[i]}${a}`);
+		let temp = localStorage.getItem(`R${arr[i]}${a}`);
 		localStorage.setItem(`R${arr[i]}${a}`, localStorage.getItem(`R${arr[i]}${b}`));
-		localStorage.setItem(`R${arr[i]}${b}`, holded_var);
+		localStorage.setItem(`R${arr[i]}${b}`, temp);
 	}
 	
 	// Subcategory and noTe (if exist)
@@ -5897,27 +6514,33 @@ function swapRecords (a, b) {
 		swapRecordsPartsByArray (['R', 'B'], a, b);
 }
 
-function swapRecordsPartsByArray (arr, a, b) {
-
+/**
+ * Swap only part of two records.
+ *
+ * @param arr - Array of two chars. Each one represents a data that has to be swapped.
+ * @param a - Number of the first record.
+ * @param b - Number of the second record.
+ */
+function swapRecordsPartsByArray(arr, a, b) {
 
 	for (let i = 0; i < arr.length; i++) {
 		if (localStorage.getItem(`R${arr[i]}${a}`) && localStorage.getItem(`R${arr[i]}${b}`)) {
 
-			holded_var = localStorage.getItem(`R${arr[i]}${a}`);
+			let temp = localStorage.getItem(`R${arr[i]}${a}`);
 			localStorage.setItem(`R${arr[i]}${a}`, localStorage.getItem(`R${arr[i]}${b}`));
-			localStorage.setItem(`R${arr[i]}${b}`, holded_var);
-			
+			localStorage.setItem(`R${arr[i]}${b}`, temp);
+
 		} else if (localStorage.getItem(`R${arr[i]}${a}`) || localStorage.getItem(`R${arr[i]}${b}`)) {
 			if (localStorage.getItem(`R${arr[i]}${a}`)) {
 
 				localStorage.setItem(`R${arr[i]}${b}`, localStorage.getItem(`R${arr[i]}${a}`));
 				localStorage.removeItem(`R${arr[i]}${a}`);
-	
+
 			} else if (localStorage.getItem(`R${arr[i]}${b}`)) {
 
 				localStorage.setItem(`R${arr[i]}${a}`, localStorage.getItem(`R${arr[i]}${b}`));
 				localStorage.removeItem(`R${arr[i]}${b}`);
-	
+
 			}
 		}
 	}
@@ -5927,8 +6550,7 @@ function swapRecordsPartsByArray (arr, a, b) {
 
 
 
-const settings_categories = id('settings-categories').getElementsByTagName('div');
-const settings_category_windows = id('root').getElementsByClassName('settings-category-window-cont');
+const SETTINGS_CATEGORIES = id('settings-categories').getElementsByTagName('div');
 
 id('settings-button-cont-mobile').onclick = function() {
 	openSettings(this);
@@ -5937,7 +6559,12 @@ id('settings-button-desktop').onclick = function() {
 	openSettings(this);
 }
 
-function openSettings (clickEl) {
+/**
+ * Open the settings modal for user configuration triggered by a click event on the specified element.
+ *
+ * @param {HTMLElement} clickEl - The HTML element triggering the settings modal.
+ */
+function openSettings(clickEl) {
 
 	let windowEl_cont = id('settings-cont'),
 		close_button = windowEl_cont.lastElementChild.lastElementChild;
@@ -5959,13 +6586,13 @@ function openSettings (clickEl) {
 }
 
 // set up click on settings categories
-for (let category of settings_categories) {
+for (let category of SETTINGS_CATEGORIES) {
 	category.onclick = function() {
 		
 		// open settings category window
 
 		let settings_transition = id('settings').style.transition;
-		prepareSettingsCategoryWindow(id('settings-category-window-cont'), this.lastElementChild.getAttribute('category-name'), this);
+		prepareSettingsCategoryWindow(id('settings-category-window-cont'), this.lastElementChild.getAttribute('data-category-name'), this);
 		
 		openWindowBlock(id('settings-category-window-cont'), id('settings-category-window-cont').lastElementChild);
 
@@ -5975,28 +6602,38 @@ for (let category of settings_categories) {
 			id('settings').style.transition = settings_transition;
 			closeSettingsCategoryWindow();
 
-			if (id('topmargin-preview-window').classList.contains('topmargin-preview-window-visible'))
-				closeTopmarginPreviewWindow();
+			if (id('top-margin-preview-window').classList.contains('top-margin-preview-window-visible'))
+				closeTopMarginPreviewWindow();
 		}
 
 	}
 }
 
-function prepareSettingsCategoryWindow (windowEl_cont, category, clickEl) {
+/**
+ * Prepares the settings category window with content based on the selected category.
+ *
+ * @param {HTMLElement} windowElCont - The container for the settings category window.
+ * @param {string} category - The selected category.
+ * @param {HTMLElement} clickEl - The HTML element triggering the settings category window.
+ */
+function prepareSettingsCategoryWindow(windowElCont, category, clickEl) {
 	let content_cont = id('settings-category-window-content');
 	let button_cont = id('settings-category-window-button');
 
-	windowEl_cont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.lastElementChild.value;
+	windowElCont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.lastElementChild.innerText;
 
-	if (category == 'Links') uploadSettingsCategoryData_Links(content_cont, button_cont);
-	else if (category == 'Reset data') uploadSettingsCategoryData_Reset(content_cont, button_cont);
-	else if (category == 'Language') uploadSettingsCategoryData_Language(content_cont, button_cont);
-	else if (category == 'Appearance') uploadSettingsCategoryData_Appearance(content_cont, button_cont);
-	else if (category == 'Top margin') uploadSettingsCategoryData_Margin(content_cont, button_cont);
-	else if (category == 'Accounts') uploadSettingsCategoryData_Accounts(content_cont, button_cont);
+	if (category === 'Other') uploadSettingsCategoryData_Other(content_cont, button_cont);
+	else if (category === 'Reset data') uploadSettingsCategoryData_Reset(content_cont, button_cont);
+	else if (category === 'Language') uploadSettingsCategoryData_Language(content_cont, button_cont);
+	else if (category === 'Appearance') uploadSettingsCategoryData_Appearance(content_cont, button_cont);
+	else if (category === 'Top margin') uploadSettingsCategoryData_Margin(content_cont, button_cont);
+	else if (category === 'Accounts') uploadSettingsCategoryData_Accounts(content_cont, button_cont);
 }
 
-function closeSettingsCategoryWindow () {
+/**
+ * Closes the settings category window, clearing its content.
+ */
+function closeSettingsCategoryWindow() {
 
 	closeWindowBlock(id('settings-category-window-cont'), id('settings-category-window-cont').lastElementChild);
 
@@ -6009,28 +6646,119 @@ function closeSettingsCategoryWindow () {
 
 
 
+/* Other */
+/**
+ * Uploads content for the 'Other' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Other' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Other' category.
+ */
+function uploadSettingsCategoryData_Other(contentCont, buttonCont) {
+	let lang = localStorage.getItem('L');
 
-// links - settings category content
-function uploadSettingsCategoryData_Links (content_cont, button_cont) {
-
-	content_cont.insertAdjacentHTML('afterbegin',
-	`erwineldermail@gmail.com`
+	contentCont.insertAdjacentHTML('afterbegin', `
+		<p class="description">
+			${getStrings(lang).notification_sound_setting_description}
+		</p>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="1">
+			<audio controls>
+				<source src="Main/sounds/notification_1.mp3" type="audio/mpeg">
+			</audio>
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="2">
+			<audio controls>
+				<source src="Main/sounds/notification_2.mp3" type="audio/mpeg">
+			</audio>
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="3">
+			<audio controls>
+				<source src="Main/sounds/notification_3.mp3" type="audio/mpeg">
+			</audio>
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="0">
+			${getStrings(lang).without_sound}
+		</label>
+	`);
+	buttonCont.insertAdjacentHTML('afterbegin',
+		`<hr class="big-hr">
+		<input type="button" value="Save" class="clickable-button" id="save-notification-sound-button">`
 	);
-	button_cont.classList.add('button-block-hide');
+
+	let soundNum = uploadSelectedNtfSoundToOtherSettingsWindow(contentCont);
+	id('save-notification-sound-button').setAttribute('data-ntf-num', soundNum);
+
+	setClickOnNftRadioButtonsInOtherSettingsWindow(contentCont);
+	setUpClickOnSaveNtfSoundButton();
 }
 
-// reset data - settings category content
-function uploadSettingsCategoryData_Reset (content_cont, button_cont) {
+/**
+ * Uploads the selected notification sound to the 'Change notification sound' window.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Other' category.
+ *
+ * @return {string} - Notification sound number saved in the local storage.
+ */
+function uploadSelectedNtfSoundToOtherSettingsWindow(contentCont) {
+	let soundNum = localStorage.getItem('NS');
+
+	for (let el of contentCont.getElementsByTagName('input'))
+		if (el.getAttribute('data-ntf-num') === soundNum)
+			el.setAttribute('checked', '');
+
+	return soundNum;
+}
+
+/**
+ * Sets up click events on radio buttons in the "Other settings" window to update the selected sound for saving.
+ *
+ * @param {HTMLElement} container - The container for the content in the 'Other' category.
+ */
+function setClickOnNftRadioButtonsInOtherSettingsWindow(container) {
+
+	for (let button of container.getElementsByTagName('input')) {
+		button.onclick = function () {
+			id('save-notification-sound-button').setAttribute(
+				"data-ntf-num",
+				this.getAttribute("data-ntf-num")
+			);
+		}
+	}
+}
+
+/**
+ * Sets up the click event for the 'Save' button in the 'Other' category.
+ */
+function setUpClickOnSaveNtfSoundButton() {
+	id('save-notification-sound-button').onclick = function() {
+		localStorage.setItem('NS', this.getAttribute("data-ntf-num"));
+		closeSettingsCategoryWindow();
+	}
+}
+
+
+
+/* Reset data */
+/**
+ * Uploads content for the 'Reset data' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Reset data' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Reset data' category.
+ */
+function uploadSettingsCategoryData_Reset(contentCont, buttonCont) {
 	let lang = localStorage.getItem('L');
 	
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 		`<p class="description">
-			${getDescription_ResetData(lang)}
+			${getStrings(lang).reset_data_message}
 		</p>
 		<input type="button" value="" class="clickable-button" id="reset-data-button">`
 	);
-	button_cont.classList.add('button-block-hide');
-	setUpButtonsValue_ResetData(id('reset-data-button'), lang);
+	buttonCont.classList.add('button-block-hide');
+	id('reset-data-button').value = getStrings(lang).reset_data;
 
 	id('reset-data-button').onclick = () => {
 		localStorage.clear();
@@ -6040,178 +6768,117 @@ function uploadSettingsCategoryData_Reset (content_cont, button_cont) {
 	}
 }
 
-function getDescription_ResetData (lang) {
-	
-	if (lang == 'en')
-		return ('Reset all data (accounts, records, settings), then application will be reloaded. <b>It is irreversible action!</b>');
-	else if (lang == 'de')
-		return ('Das wird alle Daten (Konten, Einträge, Einstellungen) zurücksetzen und die Web-Anwendung neu starten. <b>Dieser Vorgang kann man nicht rückgängig gemacht werden!</b>');
-	else if (lang == 'cz')
-		return ('Resetovat všechna data (účty, záznamy, nastavení), poté se web-aplikace restartuje. <b>Je to nevratná akce!</b>');
-	else if (lang == 'ru')
-		return ('Сбросить все данные (счета, записи, настройки), после чего приложение перезагрузится. <b>Это необратимое действие!</b>');
-	else if (lang == 'ua')
-		return ('Скинути всі дані (рахунки, записи, налаштування), після чого веб-програма буде перезавантажена. <b>Це незворотна дія!</b>');
-}
-
-function setUpButtonsValue_ResetData (button, lang) {
-
-	if (lang == 'en') {
-		button.value = 'Reset data';
-	} else if (lang == 'de') {
-		button.value = 'Daten löschen';
-	} else if (lang == 'cz') {
-		button.value = 'Resetovat data';
-	} else if (lang == 'ru') {
-		button.value = 'Сбросить данные';
-	} else if (lang == 'ua') {
-		button.value = 'Скинути дані';
-	}
-}
 
 
-
-// language - settings category content
-function uploadSettingsCategoryData_Language (content_cont, button_cont) {
+/* Language */
+/**
+ * Uploads content for the 'Language' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Language' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Language' category.
+ */
+function uploadSettingsCategoryData_Language(contentCont, buttonCont) {
 	let lang = localStorage.getItem('L');
 
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 		`<p class="description">
-			${getDescription_Language(lang)}
+			${getStrings(lang).language_setting_description}
 		</p>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="en">
-		</label>
-		<label class="radio-button-label">
-			<input type="radio" name="radio-language" lang="de">
+			${getStrings(lang).english}
 		</label>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="cz">
+			${getStrings(lang).czech}
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="radio-language" lang="de">
+			${getStrings(lang).german}
 		</label>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="ru">
+			${getStrings(lang).russian}
 		</label>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="ua">
+			${getStrings(lang).ukrainian}
 		</label>`
 	);
-	button_cont.insertAdjacentHTML('afterbegin',
+	buttonCont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
-		<input type="button" value="Save" class="clickable-button" id="save-language-button">`	
+		<input type="button" value="${getStrings(lang).save}" class="clickable-button" id="save-language-button">`
 	);
 
-	uploadChoosenLanguageToChangeLanguageWindow(content_cont);
+	uploadSelectedLanguageToChangeLanguageWindow(contentCont);
 	id('save-language-button').setAttribute('lang', lang);
 	
-	setUpButtonsValue_Language(id('settings-category-window-cont'), lang);
-	setClickOnLanguageButtons(content_cont);
-
-	setUpClickOnSaveLanguageButton(content_cont);
+	setClickOnLanguageButtons(contentCont);
+	setUpClickOnSaveLanguageButton();
 }
 
-function uploadChoosenLanguageToChangeLanguageWindow (content_cont) {
+/**
+ * Uploads the selected language to the 'Change Language' window.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Language' category.
+ */
+function uploadSelectedLanguageToChangeLanguageWindow(contentCont) {
 	let lang = localStorage.getItem('L');
 
-	for (let el of content_cont.getElementsByTagName('input'))
-		if (el.getAttribute('lang') == lang)
+	for (let el of contentCont.getElementsByTagName('input'))
+		if (el.getAttribute('lang') === lang)
 			el.setAttribute('checked', '');
 }
 
-function setClickOnLanguageButtons (container) {
+/**
+ * Sets up click events on language buttons to update the selected language for saving.
+ *
+ * @param {HTMLElement} container - The container for the content in the 'Language' category.
+ */
+function setClickOnLanguageButtons(container) {
 
-	for (let button of container.getElementsByClassName('language-button'))
-		button.onclick = function() {
+	for (let button of container.getElementsByTagName('input')) {
+		button.onclick = function () {
 			id('save-language-button').setAttribute('lang', this.getAttribute('lang'));
 		}
-}
-
-function getDescription_Language (lang) {
-	
-	if (lang == 'en')
-		return ('After setting the new language, web-application will be reloaded.');
-	else if (lang == 'de')
-		return ('Nach der Installation einer neuen Sprache wird die Webanwendung geladen.');
-	else if (lang == 'cz')
-		return ('Po nastavení nového jazyka se web-aplikace restartuje.');
-	else if (lang == 'ru')
-		return ('После установки нового языка веб-приложение будет перезагружено.');
-	else if (lang == 'ua')
-		return ('Після встановлення нової мови веб-додаток буде перезавантажено.');
-}
-
-function setUpButtonsValue_Language (container, lang) {
-	let els = container.getElementsByTagName('label'),
-		button = id('save-language-button');
-
-	if (lang == 'en') {
-		els[0].insertAdjacentText('beforeend', 'English');
-		els[1].insertAdjacentText('beforeend', 'German');
-		els[2].insertAdjacentText('beforeend', 'Czech');
-		els[3].insertAdjacentText('beforeend', 'Russian');
-		els[4].insertAdjacentText('beforeend', 'Ukrainian');
-		button.value = 'Save';
-	} else if (lang == 'de') {
-		els[0].insertAdjacentText('beforeend', 'Englisch');
-		els[1].insertAdjacentText('beforeend', 'Deutsch');
-		els[2].insertAdjacentText('beforeend', 'Tschechisch');
-		els[3].insertAdjacentText('beforeend', 'Russisch');
-		els[4].insertAdjacentText('beforeend', 'Ukrainisch');
-		button.value = 'Speichern';
-	} else if (lang == 'cz') {
-		els[0].insertAdjacentText('beforeend', 'Angličtina');
-		els[1].insertAdjacentText('beforeend', 'Němčina');
-		els[2].insertAdjacentText('beforeend', 'Čeština');
-		els[3].insertAdjacentText('beforeend', 'Ruština');
-		els[4].insertAdjacentText('beforeend', 'Ukrainština');
-		button.value = 'Uložit';
-	} else if (lang == 'ru') {
-		els[0].insertAdjacentText('beforeend', 'Английский');
-		els[1].insertAdjacentText('beforeend', 'Немецкий');
-		els[2].insertAdjacentText('beforeend', 'Чешский');
-		els[3].insertAdjacentText('beforeend', 'Русский');
-		els[4].insertAdjacentText('beforeend', 'Украинский');
-		button.value = 'Сохранить';
-	} else if (lang == 'ua') {
-		els[0].insertAdjacentText('beforeend', 'Англійська');
-		els[1].insertAdjacentText('beforeend', 'Німецька');
-		els[2].insertAdjacentText('beforeend', 'Чеська');
-		els[3].insertAdjacentText('beforeend', 'Російська');
-		els[4].insertAdjacentText('beforeend', 'Українська');
-		button.value = 'Зберегти';
 	}
 }
 
-function setUpClickOnSaveLanguageButton (content_cont) {
-	let save_button = id('save-language-button'),
-		lang = localStorage.getItem('L'),
-		choosen_lang = lang;
+/**
+ * Sets up the click event for the 'Save' button in the 'Language' category.
+ */
+function setUpClickOnSaveLanguageButton() {
+	let saveButton = id('save-language-button');
 
-	save_button.onclick = function() {
-
-		for (let el of content_cont.getElementsByTagName('input'))
-			if (el.checked) choosen_lang = el.getAttribute('lang');
-
-		if (choosen_lang != lang) {
-			localStorage.setItem('L', choosen_lang);
+	saveButton.onclick = function() {
+		if (localStorage.getItem('L') !== saveButton.getAttribute("lang")) {
+			localStorage.setItem('L', saveButton.getAttribute("lang"));
 			window.location.reload();
-		} else
+		} else {
 			closeSettingsCategoryWindow();
+		}
 	}
 }
 
 
 
-// appearance - settings category content
-function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
+/* Appearance */
+/**
+ * Uploads content for the 'Appearance' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Appearance' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Appearance' category.
+ */
+function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 
 	let lang = localStorage.getItem('L'),
-		off_word = getOffWordByLanguage(lang),
-		on_word = getOnWordByLanguage(lang);
+		off_word = getStrings(lang).off_turn_off_meaning,
+		on_word = getStrings(lang).on_turn_on_meaning;
 	
-	content_cont.insertAdjacentHTML('afterbegin',
+	contentCont.insertAdjacentHTML('afterbegin',
 		`<div class="switch-button-block">
 			<p class="description">
-				${getDescription_Blurring(lang)}
+				${getStrings(lang).enable_blurring}
 			</p>
 			<div class="switch-cont">
 				<p>${off_word}</p>
@@ -6224,7 +6891,7 @@ function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
 		</div>
 		<div class="switch-button-block">
 			<p class="description">
-				${getDescription_Preloader(lang)}
+				${getStrings(lang).run_animation_on_start}
 			</p>
 			<div class="switch-cont">
 				<p>${off_word}</p>
@@ -6238,7 +6905,7 @@ function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
 		<hr class="small-hr">
 		<div class="switch-button-block">
 			<p class="description">
-				${getDescription_AutoTheme(lang)}
+				${getStrings(lang).auto_adjust_theme}
 			</p>
 			<div class="switch-cont">
 				<p>${off_word}</p>
@@ -6267,17 +6934,17 @@ function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
 			</div>
 		</div>`
 	);
-	button_cont.classList.add('button-block-hide');
+	buttonCont.classList.add('button-block-hide');
 	
-	let switch_buttons = content_cont.getElementsByClassName('switch');
+	let switch_buttons = contentCont.getElementsByClassName('switch');
 	// blurring
 	switch_buttons[0].firstElementChild.onclick = function() {
-		localStorage.setItem('B', Number(this.checked));
-		reapplyBlur(Number(localStorage.getItem('B')));
+		localStorage.setItem('B', (this.checked === true).toString());
+		reapplyBlur(localStorage.getItem('B') === "true");
 	}
 	// start animation
 	switch_buttons[1].firstElementChild.onclick = function() {
-		localStorage.setItem('SA', Number(this.checked));
+		localStorage.setItem('SA', Number(this.checked).toString());
 	}
 	// auto theme
 	switch_buttons[2].firstElementChild.onclick = function() {
@@ -6285,81 +6952,36 @@ function uploadSettingsCategoryData_Appearance (content_cont, button_cont) {
 		applyTheme(localStorage.getItem('T'));
 	}
 	// set up click on themes
-	setUpClickOnThemes(content_cont, switch_buttons[2].firstElementChild);
+	setUpClickOnThemes(contentCont, switch_buttons[2].firstElementChild);
 }
 
-function getSwitchInput (blur_status) {
-
-	if (blur_status)
-		return (`<input type="checkbox" checked>`);
+/**
+ * Gets the HTML input element for the switch, either checked or unchecked.
+ *
+ * @param {number} checked - The value indicating whether the switch is checked.
+ *
+ * @returns {string} - The HTML code for the switch input.
+ */
+function getSwitchInput(checked) {
+	if (checked) return (`<input type="checkbox" checked>`);
 	else return (`<input type="checkbox">`);
 }
 
-function getOffWordByLanguage (lang) {
-	if (lang == 'en')
-		return ('Off');
-	else if (lang == 'de')
-		return ('Aus');
-	else if (lang == 'cz')
-		return ('Vyp');
-	else if (lang == 'ru')
-		return ('Выкл');
-	else if (lang == 'ua')
-		return ('Вимк');
-}
-
-function getOnWordByLanguage (lang) {
-	if (lang == 'en')
-		return ('On');
-	else if (lang == 'de')
-		return ('Ein');
-	else if (lang == 'cz')
-		return ('Zap');
-	else if (lang == 'ru')
-		return ('Вкл');
-	else if (lang == 'ua')
-		return ('Вкл');
-}
-
-function getDescription_Blurring (lang) {
-	if (lang == 'en') return ('Enable blurring');
-	else if (lang == 'de') return ('Unschärfe aktivieren');
-	else if (lang == 'cz') return ('Povolit rozmazání');
-	else if (lang == 'ru') return ('Включить размытие');
-	else if (lang == 'ua') return ('Увімкнути розмиття');
-}
-
-function getDescription_Preloader (lang) {
-	if (lang == 'en') return ('Run animation on start');
-	else if (lang == 'de') return ('Animation beim Start ausführen');
-	else if (lang == 'cz') return ('Spustit animaci při spuštění');
-	else if (lang == 'ru') return ('Запустить анимацию при запуске');
-	else if (lang == 'ua') return ('Запустити анімацію при запуску');
-}
-
-function getDescription_AutoTheme (lang) {
-
-	if (lang == 'en')
-		return ('Auto adjust theme');
-	else if (lang == 'de')
-		return ('Thema automatisch anpassen');
-	else if (lang == 'cz')
-		return ('Automaticky prizpůsobovat motiv');
-	else if (lang == 'ru')
-		return ('Автоматически адаптировать тему');
-	else if (lang == 'ua')
-		return ('Автоматично адаптувати тему');
-}
-
-function setUpClickOnThemes (container, switch_button) {
+/**
+ * Sets up the click event on theme elements within the 'Appearance' category.
+ *
+ * @param {HTMLElement} container - The container for the content in the 'Appearance' category.
+ * @param {HTMLInputElement} switchButton - The switch button for the 'Auto Adjust Theme' option.
+ */
+function setUpClickOnThemes(container, switchButton) {
 
 	for ( let el of container.lastElementChild.getElementsByClassName('theme-cont') )
 		el.onclick = () => {
-			if (el.getAttribute('theme') != localStorage.getItem('T')) {
+			if (el.getAttribute('theme') !== localStorage.getItem('T')) {
 
-				if (switch_button.checked) {
-					switch_button.checked = false;
-					changeAutomaticThemeStatusInStorage(switch_button);
+				if (switchButton.checked) {
+					switchButton.checked = false;
+					changeAutomaticThemeStatusInStorage(switchButton);
 				}
 
 				id('settings-category-window-cont').classList.add('dark');
@@ -6377,149 +6999,172 @@ function setUpClickOnThemes (container, switch_button) {
 		}
 }
 
-function changeAutomaticThemeStatusInStorage (switch_button) {
-	localStorage.setItem('TA', Number(switch_button.checked));
+/**
+ * Changes the automatic theme status in the storage based on the switch button.
+ *
+ * @param {HTMLInputElement} switchButton - The switch button for the 'Auto Adjust Theme' option.
+ */
+function changeAutomaticThemeStatusInStorage(switchButton) {
+	localStorage.setItem('TA', Number(switchButton.checked).toString());
 }
 
-function changeTheme (theme) {
+/**
+ * Changes the theme in the storage and applies the theme.
+ *
+ * @param {string} theme - The theme identifier.
+ */
+function changeTheme(theme) {
 	localStorage.setItem('T', theme);
 	applyTheme(theme);
 }
 
 
 
-// top margin - settings category content
-function uploadSettingsCategoryData_Margin (content_cont, button_cont) {
+/* Top margin */
+/**
+ * Uploads content for the 'Top Margin' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Top Margin' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Top Margin' category.
+ */
+function uploadSettingsCategoryData_Margin(contentCont, buttonCont) {
 	let lang = localStorage.getItem('L');
 	
-	content_cont.insertAdjacentHTML('afterbegin',
-		`<p class="description">${getDescription_TopMargin(lang)}</p>
-		<input topmargin="" type="range" class="topmargin-range interective-field" id="topmargin-range" value="0" min="0" max="25" step="1">`
+	contentCont.insertAdjacentHTML('afterbegin',
+		`<p class="description">${getStrings(lang).top_margin_setting_description}</p>
+		<input topmargin="" type="range" class="top-margin-range interactive-field" id="top-margin-range" value="0" min="0" max="25" step="1">`
 	);
-	button_cont.insertAdjacentHTML('afterbegin',
+	buttonCont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
-		<input type="button" value="Save" class="clickable-button" id="topmargin-save-button">`	
+		<input type="button" value="Save" class="clickable-button" id="top-margin-save-button">`
 	);
-	setUpButtonsValue_TopMargin(id('topmargin-save-button'), lang);
+	id('top-margin-save-button').value = getStrings(lang).save;
 
+	prepareTopMarginSettingsCategory();
 
-	prepareTopmarginSettingsCategory();
-
-	id('topmargin-save-button').onclick = () => {
-		localStorage.setItem('TM', Number(id('topmargin-range').value) * 2);
-		applyTopmargin();
-		closeTopmarginPreviewWindow();
+	id('top-margin-save-button').onclick = () => {
+		localStorage.setItem('TM', (Number(id('top-margin-range').value) * 2).toString());
+		applyTopMargin();
+		closeTopMarginPreviewWindow();
 		closeSettingsCategoryWindow();
 	}
 
-	openTopmarginPreviewWindow();
+	openTopMarginPreviewWindow();
 }
 
-function prepareTopmarginSettingsCategory () {
-	let preview_window = id('topmargin-preview-window');
+/**
+ * Prepares the top margin settings category, including the preview window and range slider.
+ */
+function prepareTopMarginSettingsCategory() {
+	let preview_window = id('top-margin-preview-window');
 
 	// upload account to preview top margin window
 	preview_window.innerHTML = constructAccountEl(1);
 
-	setUpListenerOnTopmarginRange();
+	setUpListenerOnTopMarginRange();
 	
-	id('topmargin-range').setAttribute('value', Number(localStorage.getItem('TM')) / 2);
+	id('top-margin-range').setAttribute(
+		'value',
+		(Number(localStorage.getItem('TM')) / 2).toString()
+	);
 	preview_window.firstElementChild.style.transition = 'transform .2s';
 	preview_window.firstElementChild.style.transform = `translateY(${Number(localStorage.getItem('TM'))}px)`;
 }
 
-function openTopmarginPreviewWindow () {
+/**
+ * Opens the top margin preview window with animation.
+ */
+function openTopMarginPreviewWindow() {
 
-  id('topmargin-preview-window').classList.add('topmargin-preview-window-visible');
+  id('top-margin-preview-window').classList.add('top-margin-preview-window-visible');
 
   setTimeout(() => {
-    id('topmargin-preview-window').classList.add('topmargin-preview-window-transform');
+    id('top-margin-preview-window').classList.add('top-margin-preview-window-transform');
   }, 300);
 }
 
-function closeTopmarginPreviewWindow () {
-  id('topmargin-preview-window').classList.remove('topmargin-preview-window-visible');
-  id('topmargin-preview-window').classList.remove('topmargin-preview-window-transform');
+/**
+ * Closes the top margin preview window with animation.
+ */
+function closeTopMarginPreviewWindow() {
+  id('top-margin-preview-window').classList.remove('top-margin-preview-window-visible');
+  id('top-margin-preview-window').classList.remove('top-margin-preview-window-transform');
 }
 
-function setUpListenerOnTopmarginRange () {
-  id('topmargin-range').addEventListener('input', readTopmarginRange);
-  readTopmarginRange.call(id('topmargin-range'));
-}
-function readTopmarginRange () {
-  id('topmargin-preview-window').firstElementChild.style.transform = `translateY(${Number(id('topmargin-range').value) * 2}px)`;
-}
-
-function getDescription_TopMargin (lang) {
-
-	if (lang == 'en')
-		return ('Set the top margin for easy viewing of the interface on the screen with notch.');
-	else if (lang == 'de')
-		return ('Setzen Sie den oberen Abstand, um eine bequeme Ansicht der Benutzeroberfläche auf einem Bildschirm mit Aussparung zu gewährleisten.');
-	else if (lang == 'cz')
-		return ('Nastavte horní okraj pro snadné prohlížení rozhraní na zářezové obrazovce.');
-	else if (lang == 'ru')
-		return ('Установите верхний отступ для удобного просмотра интерфейса на экране с вырезом.');
-	else if (lang == 'ua')
-		return ('Встановіть верхній відступ для зручного перегляду інтерфейсу на екрані з вирізом.');
+/**
+ * Sets up an event listener on the top margin range slider.
+ */
+function setUpListenerOnTopMarginRange() {
+  id('top-margin-range').addEventListener('input', readTopMarginRange);
+  readTopMarginRange.call(id('top-margin-range'));
 }
 
-function setUpButtonsValue_TopMargin (button, lang) {
-
-	if (lang == 'en') {
-		button.value = 'Save';
-	} else if (lang == 'de') {
-		button.value = 'Speichern';
-	} else if (lang == 'cz') {
-		button.value = 'Uložit';
-	} else if (lang == 'ru') {
-		button.value = 'Сохранить';
-	} else if (lang == 'ua') {
-		button.value = 'Зберегти';
-	}
+/**
+ * Reads the value from the top margin range slider and updates the preview window accordingly.
+ */
+function readTopMarginRange() {
+  id('top-margin-preview-window').firstElementChild.style.transform = `translateY(${Number(id('top-margin-range').value) * 2}px)`;
 }
 
 
 
-// accounts - settings category content
-function uploadSettingsCategoryData_Accounts (content_cont, button_cont) {
+/* Accounts */
+/**
+ * Uploads content for the 'Accounts' category in the settings modal.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Accounts' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Accounts' category.
+ */
+function uploadSettingsCategoryData_Accounts(contentCont, buttonCont) {
 
-	button_cont.insertAdjacentHTML('afterbegin',
+	buttonCont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
 		<input type="button" value="Add account" class="clickable-button" id="add-account">`	
 	);
-	setUpButtonsValue_Accounts(id('add-account'), localStorage.getItem('L'));
+	id('add-account').value = getStrings(localStorage.getItem('L')).add_account;
 
-	uploadAccountsToSettingsWindow(content_cont);
+	uploadAccountsToSettingsWindow(contentCont);
 
-	for (let account of content_cont.getElementsByClassName('account'))
+	for (let account of contentCont.getElementsByClassName('account'))
 		setUpClickOnAccount(account);
 
-	setUpClickOnAddAccountButton(content_cont);
+	setUpClickOnAddAccountButton(contentCont);
 }
 
-function uploadAccountsToSettingsWindow (windowEl_cont) {
+/**
+ * Uploads accounts to the settings window.
+ *
+ * @param {HTMLElement} windowElCont - The container for the accounts in the settings window.
+ */
+function uploadAccountsToSettingsWindow(windowElCont) {
 
 	for (let account_num = 1; account_num <= localStorage.getItem('ACount'); account_num++)
-  		windowEl_cont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_num) );
+  		windowElCont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_num) );
 }
 
-function setUpClickOnAccount (account) {
+/**
+ * Sets up click events on account elements.
+ *
+ * @param {HTMLElement} account - The account element to set up click events for.
+ */
+function setUpClickOnAccount(account) {
 	account.onclick = function() {
 
 		let clickEl = this,
 			windowEl_cont = id('edit-account-cont'),
 			windowEl = id('edit-account');
-		var hide_popup_notification;
+		let hidePopupNotification;
 		
 		enableScrolling();
 
 		// upload account's data to edit account window
-		prepareEditAccountWindow(clickEl.getAttribute('accountnum'));
+		prepareEditAccountWindow(clickEl.getAttribute('data-accountnum'));
 		// open edit account window
-		let top_position = openFloatingWindow(clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont));
-		windowEl.setAttribute('top-position-x', top_position.x);
-		windowEl.setAttribute('top-position-y', top_position.y);
+		let top_position = openFloatingWindow(
+			clickEl, windowEl_cont, windowEl, calculateScaleX(clickEl, windowEl_cont)
+		);
+		windowEl.setAttribute('data-top-position-x', (top_position.x).toString());
+		windowEl.setAttribute('data-top-position-y', (top_position.y).toString());
 
 		// set up closing edit account window
 		id('edit-account-cont').firstElementChild.onclick = () => {
@@ -6527,7 +7172,7 @@ function setUpClickOnAccount (account) {
 			
 			// hide remove notification if needed
 			if (notification_cont.classList.contains('show'))
-				hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
+				hidePopUpConnectedNotification(notification_cont, hidePopupNotification);
 
 			disableScrolling();
 			closeFloatingWindow(clickEl, windowEl_cont, windowEl);
@@ -6535,141 +7180,191 @@ function setUpClickOnAccount (account) {
 		}
 
 		// set up click on remove account button
-		hide_popup_notification = setUpClickOnRemoveAccountButton(hide_popup_notification, clickEl, windowEl_cont, windowEl);
+		hidePopupNotification = setUpClickOnRemoveAccountButton(clickEl, windowEl_cont, windowEl);
 
 		// set up click on save account button
-		setUpClickOnSaveAccountButton(hide_popup_notification, clickEl, windowEl_cont, windowEl);
+		setUpClickOnSaveAccountButton(hidePopupNotification, clickEl, windowEl_cont, windowEl);
 	}
 }
 
-function prepareEditAccountWindow (account_num) {
+/**
+ * Prepares the edit account window with data based on the account number.
+ *
+ * @param {number} accountNum - The account number.
+ */
+function prepareEditAccountWindow(accountNum) {
 
-	id('edit-account').setAttribute('accountnum', account_num);
+	id('edit-account').setAttribute('data-accountnum', accountNum.toString());
 
-	if (id('settings-category-window-cont').getElementsByClassName('account').length == 1) {
+	if (id('settings-category-window-cont').getElementsByClassName('account').length === 1) {
 		id('edit-account').classList.add('top-padding');
 		id('edit-account').firstElementChild.classList.add('element-hide');
 	}
 
-	// upload account to account preview field
-	// id('edit-account-preview').innerHTML = constructAccountEl(account_num);
-
 	// upload currency
-	id('edit-account-currency').value = localStorage.getItem(`ACurrency${account_num}`);
+	id('edit-account-currency').value = localStorage.getItem(`ACurrency${accountNum}`);
 	adaptInputLengthExplicitly(id('edit-account-currency'));
 	// upload balance
-	id('edit-account-balance').value = Number(localStorage.getItem(`ABalance${account_num}`)).toFixed(2);
+	id('edit-account-balance').value = Number(localStorage.getItem(`ABalance${accountNum}`)).toFixed(2);
 	adaptInputLengthExplicitly(id('edit-account-balance'));
 	// upload color
-	id('edit-account-color-button').style.background = '#' + localStorage.getItem(`AColor${account_num}`);
-	id('edit-account-color-button').setAttribute('color', localStorage.getItem(`AColor${account_num}`));
+	id('edit-account-color-button').style.background = '#' + localStorage.getItem(`AColor${accountNum}`);
+	id('edit-account-color-button').setAttribute('color', localStorage.getItem(`AColor${accountNum}`));
 	// check color if dark theme is on
 	checkColorOfEditAccountColorButton();
 
-	// upload status of 'hide account from topbar'
-	if (localStorage.getItem(`AHT${account_num}`) == '1')
-		id('hide-account-from-topbar-switch').checked = true;
+	// upload status of 'hide account from top-bar'
+	if (localStorage.getItem(`AHT${accountNum}`) === "true")
+		id('hide-account-from-top-bar-switch').checked = true;
 	// upload status of 'without account balance'
-	if (localStorage.getItem(`AWB${account_num}`) == '1')
+	if (localStorage.getItem(`AWB${accountNum}`) === "true")
 		id('without-account-balance-switch').checked = true;
 	// upload status of 'hide account balance'
-	if (localStorage.getItem(`AHB${account_num}`) == '1')
+	if (localStorage.getItem(`AHB${accountNum}`) === "true")
 		id('hide-account-balance-switch').checked = true;
 }
 
-id('without-account-balance-switch').onclick = function () {
-	if (this.checked)
+/**
+ * Sets up click events on the 'without account balance' and 'hide account balance' switch buttons.
+ */
+id('without-account-balance-switch').onclick = function() {
+	if (this.checked) {
 		id('hide-account-balance-switch').checked = false;
+	}
 }
-id('hide-account-balance-switch').onclick = function () {
-	if (this.checked)
+id('hide-account-balance-switch').onclick = function() {
+	if (this.checked) {
 		id('without-account-balance-switch').checked = false;
+	}
 }
 
-function checkColorOfEditAccountColorButton () {
+/**
+ * Checks the color of the edit account color button and adds or removes the 'invert-color' class accordingly.
+ */
+function checkColorOfEditAccountColorButton() {
 
 	if (
-		(localStorage.getItem('T') == 'b' || localStorage.getItem('T') == 'd') &&
-		id('edit-account-color-button').style.background == 'rgb(5, 5, 5)'
+		(localStorage.getItem('T') === 'b' || localStorage.getItem('T') === 'd') &&
+		id('edit-account-color-button').style.background === 'rgb(5, 5, 5)'
 	)
 		id('edit-account-color-button').classList.add('invert-color');
 	else
 		id('edit-account-color-button').classList.remove('invert-color');
 }
 
-function setUpClickOnRemoveAccountButton (hide_popup_notification, clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up click events on the 'remove account' button.
+ *
+ * @param {HTMLElement} clickEl - The element that was clicked.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ *
+ * @returns {number} - SetTimeout process id for hiding account deleting warning.
+ */
+function setUpClickOnRemoveAccountButton(
+	clickEl, windowElCont, windowEl
+) {
+	let hidePopupNotification;
+
 	id('remove-account').onclick = () => {
 		let notification_cont = id('popup-connected-notification-cont');
 
 		if (notification_cont.classList.contains('show')) {
-			// hide remove account notification
-			hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
-			// remove account
-			removeAccount(clickEl.getAttribute('accountnum'), clickEl, windowEl_cont, windowEl);
-			// reset edit account window data
+			hidePopUpConnectedNotification(notification_cont, hidePopupNotification);
+			removeAccount(
+				Number(clickEl.getAttribute('data-accountnum')), clickEl, windowElCont, windowEl
+			);
 			setTimeout(resetEditAccountWindow, 390);
-		} else
-			// show remove account notification
-			hide_popup_notification = showPopUpConnectedNotification('remove account', notification_cont, windowEl);
+		} else {
+			hidePopupNotification = showPopUpConnectedNotification(
+				'remove account', notification_cont, windowEl
+			);
+			playNotificationSound();
+		}
 
 	}
 
-	return hide_popup_notification;
+	return hidePopupNotification;
 }
 
-function setUpClickOnSaveAccountButton (hide_popup_notification, clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up click events on the 'save account' button.
+ *
+ * @param {number} hidePopupNotification - SetTimeout process id for hiding account deleting warning.
+ * @param {HTMLElement} clickEl - The element that was clicked.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ */
+function setUpClickOnSaveAccountButton(
+	hidePopupNotification, clickEl, windowElCont, windowEl
+) {
 	id('save-account').onclick = () => {
 		let notification_cont = id('popup-connected-notification-cont');
 
 		// hide remove notification if needed
 		if (notification_cont.classList.contains('show'))
-			hidePopUpConnectedNotification(notification_cont, hide_popup_notification);
+			hidePopUpConnectedNotification(notification_cont, hidePopupNotification);
 		// save account data
-		saveEditedAccount(clickEl.getAttribute('accountnum'), clickEl, windowEl_cont, windowEl);
+		saveEditedAccount(Number(clickEl.getAttribute('data-accountnum')), clickEl, windowElCont, windowEl);
 		// reset edit account window data
 		setTimeout(resetEditAccountWindow, 390);
 	}
 }
 
-function resetEditAccountWindow () {
+/**
+ * Resets the edit account window to its initial state.
+ */
+function resetEditAccountWindow() {
 
 	// show 'remove account' button
 	if (id('edit-account').classList.contains('top-padding')) {
 		id('edit-account').classList.remove('top-padding');
 		id('edit-account').firstElementChild.classList.remove('element-hide');
 	}
-	// uncheck 'hide account fron topbar' switch button
-	id('hide-account-from-topbar-switch').checked = false;
+	// uncheck 'hide account from top-bar' switch button
+	id('hide-account-from-top-bar-switch').checked = false;
 	// uncheck 'without account balance' switch button
 	id('without-account-balance-switch').checked = false;
 	// uncheck 'hide account balance' switch button
 	id('hide-account-balance-switch').checked = false;
 }
 
-function setUpClickOnAddAccountButton (content_cont) {
+/**
+ * Sets up click events on the 'Add account' button.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Accounts' category.
+ */
+function setUpClickOnAddAccountButton(contentCont) {
 
 	id('add-account').onclick = () => {
 
 		addAccount();
 
-		let account_count = localStorage.getItem('ACount');
+		let account_count = Number(localStorage.getItem('ACount'));
 		uploadAccount(account_count, id('accounts'));
-		setUpClickOnAccountsInTopbar();
+		setUpClickOnAccountsInTopBar();
 
-		content_cont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_count) );
+		contentCont.insertAdjacentHTML( 'beforeend', constructAccountEl(account_count) );
 
-		setUpClickOnAccount(content_cont.lastElementChild);
+		setUpClickOnAccount(contentCont.lastElementChild);
 
 		animateAddingAccount(
 			id('settings-category-window-cont').lastElementChild,
-			content_cont.lastElementChild,
+			contentCont.lastElementChild,
 			id('settings-category-window-cont').lastElementChild.lastElementChild
 		);
 
 	}
 }
 
-function animateAddingAccount (container, account, button_block) {
+/**
+ * Animates the addition of an account to the settings category window.
+ *
+ * @param {HTMLElement} container - The container for the accounts in the settings category window.
+ * @param {HTMLElement} account - The newly added account element.
+ * @param {HTMLElement} buttonBlock - The container for buttons in the settings category window.
+ */
+function animateAddingAccount(container, account, buttonBlock) {
 	let gap = account.getBoundingClientRect().top - account.previousElementSibling.getBoundingClientRect().top;
 	
 	container.style.transition = 'transform 0s';
@@ -6678,8 +7373,8 @@ function animateAddingAccount (container, account, button_block) {
 	account.style.transition = 'transform 0s';
 	account.style.transform = `translateY(${gap}px) scale(0)`;
 	
-	button_block.style.transition = 'transform 0s';
-	button_block.style.transform = `translateY(-${gap}px)`;
+	buttonBlock.style.transition = 'transform 0s';
+	buttonBlock.style.transform = `translateY(-${gap}px)`;
 	
 	setTimeout(() => {
 		container.style.transition = 'transform .3s';
@@ -6688,56 +7383,73 @@ function animateAddingAccount (container, account, button_block) {
 		account.style.transition = 'transform .3s';
 		account.style.transform = `translateY(0px) scale(1)`;
 		
-		button_block.style.transition = 'transform .3s';
-		button_block.style.transform = `translateY(0px)`;
+		buttonBlock.style.transition = 'transform .3s';
+		buttonBlock.style.transform = `translateY(0px)`;
 		
 		setTimeout(() => {
 			container.style = null;
 			account.style.transition = null;
-			button_block.style = null;
+			buttonBlock.style = null;
 		}, 300);
 	}, 1);
 }
 
-function getAccountInContByNum (cont, num) {
+/**
+ * Gets the account element in the container by its account number.
+ *
+ * @param {HTMLElement} cont - The container containing account elements.
+ * @param {number} num - The account number.
+ * @returns {HTMLElement} - The found account element.
+ */
+function getAccountInContByNum(cont, num) {
 	let searched_account;
 
 	for (let potential_account of cont.getElementsByClassName('account'))
-		if (potential_account.getAttribute('accountnum') == num) searched_account = potential_account;
+		if (Number(potential_account.getAttribute('data-accountnum')) === num) {
+			searched_account = potential_account;
+		}
 
 	return searched_account;
 }
 
-function removeAccount (account_num, clickEl, windowEl_cont, windowEl) {
+/**
+ * Removes an account from the settings and updates associated data.
+ *
+ * @param {number} accountNum - The account number to be removed.
+ * @param {HTMLElement} clickEl - The clicked account element.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ */
+function removeAccount(accountNum, clickEl, windowElCont, windowEl) {
 
 	// remove all storage records connected with this account
-	removeStorageRecordsOfAccount(account_num);
-	changeAccountNumInStorageRecords(account_num);
+	removeStorageRecordsOfAccount(accountNum);
+	decreaseAccountNumInStorageRecords(accountNum);
 		
 	// get this accounts
-	let account = getAccountInContByNum(id('settings-category-window-cont'), account_num);
+	let account = getAccountInContByNum(id('settings-category-window-cont'), accountNum);
 	
-	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);
+	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 	
 	setTimeout(() => {
 
 		// close edit account window
 		clickEl.classList.remove('account-block-animation');
 		clickEl.style.transition = clickEL_transition;
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
 		
 		// remove account
 		setTimeout(() => {
 			animateRemovingAccount(
 				id('settings-category-window-cont').lastElementChild,
-				account, account_num,
+				account, accountNum,
 				id('settings-category-window-cont').lastElementChild.lastElementChild
 			);
-			removeAccountFromStorage(account_num);
+			removeAccountFromStorage(accountNum);
 			
 			id('accounts').innerHTML = null;
 			for (let a = 1; a <= Number(localStorage.getItem('ACount')); a++) uploadAccount(a, id('accounts'));
-			setUpClickOnAccountsInTopbar();
+			setUpClickOnAccountsInTopBar();
 			
 			// update data in all widgets
 			updateWidgetsData(1, 0, 0, [1, 0], 0);
@@ -6746,13 +7458,18 @@ function removeAccount (account_num, clickEl, windowEl_cont, windowEl) {
 	}, 1);
 }
 
-function removeStorageRecordsOfAccount (account_num) {
+/**
+ * Removes storage records associated with an account.
+ *
+ * @param {number} accountNum - The account number.
+ */
+function removeStorageRecordsOfAccount(accountNum) {
 
 	for (let a = 1; a <= Number(localStorage.getItem('RCount')); a++) {
-		if (localStorage.getItem(`RA${a}`) == account_num) {
+		if (Number(localStorage.getItem(`RA${a}`)) === accountNum) {
 
 			if (!localStorage.getItem(`RR${a}`))
-				removeRecord(a, 0);
+				removeRecord(a, false);
 			else removeTransfer(a);
 
 			a--;
@@ -6761,9 +7478,12 @@ function removeStorageRecordsOfAccount (account_num) {
 	}
 }
 
-function removeRecordFromStorage (record_num) {
-
-
+/**
+ * Removes a record from storage.
+ *
+ * @param {number} recordNum - The record number.
+ */
+function removeRecordFromStorage(recordNum) {
 	let arr = [
 		// tyPe, amoUnt, Account, Category
 		'P', 'U', 'A', 'C',
@@ -6772,19 +7492,24 @@ function removeRecordFromStorage (record_num) {
 	];
 
 	for (let i = 0; i < arr.length; i++)
-		localStorage.removeItem(`R${arr[i]}${record_num}`);
+		localStorage.removeItem(`R${arr[i]}${recordNum}`);
 
 	// Subcategory and noTe (if exist)
 	arr = ['S', 'T'];
 
 	for (let i = 0; i < arr.length; i++)
-		if (localStorage.getItem(`R${arr[i]}${record_num}`))
-			localStorage.removeItem(`R${arr[i]}${record_num}`);
+		if (localStorage.getItem(`R${arr[i]}${recordNum}`))
+			localStorage.removeItem(`R${arr[i]}${recordNum}`);
 
-	localStorage.setItem('RCount', Number(localStorage.getItem('RCount')) - 1);
+	localStorage.setItem('RCount', (Number(localStorage.getItem('RCount')) - 1).toString());
 }
 
-function removeTransferFromStorage (record_num) {
+/**
+ * Removes a transfer record from storage.
+ *
+ * @param {number} recordNum - The record number.
+ */
+function removeTransferFromStorage(recordNum) {
 	
 	let arr = [
 		// tyPe, amoUnt, Rate, Account, Category, aBove category
@@ -6794,16 +7519,22 @@ function removeTransferFromStorage (record_num) {
 	];
 
 	for (let i = 0; i < arr.length; i++)
-		localStorage.removeItem(`R${arr[i]}${record_num}`);
+		localStorage.removeItem(`R${arr[i]}${recordNum}`);
 
 	// subcategory (if exist)
-	if (localStorage.getItem(`RS${record_num}`))
-		localStorage.removeItem(`RS${record_num}`);
+	if (localStorage.getItem(`RS${recordNum}`))
+		localStorage.removeItem(`RS${recordNum}`);
 
-	localStorage.setItem('RCount', Number(localStorage.getItem('RCount')) - 1);
+	localStorage.setItem('RCount', (Number(localStorage.getItem('RCount')) - 1).toString());
 }
 
-function moveRecord (from, to) {
+/**
+ * Moves a record in the local storage from one position to another.
+ *
+ * @param {number} from - The original position.
+ * @param {number} to - The target position.
+ */
+function moveRecord(from, to) {
 
 	let arr = [
 		// tyPe, amoUnt, Account, Category
@@ -6843,15 +7574,28 @@ function moveRecord (from, to) {
 			
 }
 
-function changeAccountNumInStorageRecords (account_num) {
-// change account's number in storage records to (account_num - 1) from account_num
+/**
+ * Changes the account number in storage records to (accountNum - 1) from accountNum.
+ *
+ * @param {number} accountNum - The account number.
+ */
+function decreaseAccountNumInStorageRecords(accountNum) {
+// change account's number in storage records to (accountNum - 1) from accountNum
 
 	for (let a = 1; a <= localStorage.getItem('RCount'); a++)
-		if (localStorage.getItem(`RA${a}`) > account_num)
-			localStorage.setItem(`RA${a}`, Number(localStorage.getItem(`RA${a}`)) - 1);
+		if (localStorage.getItem(`RA${a}`) > accountNum)
+			localStorage.setItem(`RA${a}`, (Number(localStorage.getItem(`RA${a}`)) - 1).toString());
 }
 
-function animateRemovingAccount (container, account, account_num, button_block) {
+/**
+ * Animates the removal of an account from the settings category window.
+ *
+ * @param {HTMLElement} container - The container for the accounts in the settings category window.
+ * @param {HTMLElement} account - The account element to be removed.
+ * @param {number} accountNum - The account number.
+ * @param {HTMLElement} buttonBlock - The container for buttons in the settings category window.
+ */
+function animateRemovingAccount(container, account, accountNum, buttonBlock) {
 	let gap;
 
 	if (account.previousElementSibling)
@@ -6865,22 +7609,22 @@ function animateRemovingAccount (container, account, account_num, button_block) 
 	account.style.transform = `scale(0)`;
 	
 	let accounts = container.getElementsByClassName('account');
-	for (let a = Number(account_num); a < accounts.length; a++) {
+	for (let a = Number(accountNum); a < accounts.length; a++) {
 		accounts[a].style.transition = 'transform .3s';
 		accounts[a].style.transform = `translateY(${-(gap)}px)`;
 	}
 	
-	button_block.style.transition = 'transform .3s';
-	button_block.style.transform = `translateY(-${gap}px)`;
+	buttonBlock.style.transition = 'transform .3s';
+	buttonBlock.style.transform = `translateY(-${gap}px)`;
 
 	setTimeout(() => {
 		container.style.transition = 'transform 0s';
 		container.style.transform = `translateY(1vh)`;
 		
-		button_block.style.transition = 'transform 0s';
-		button_block.style.transform = `translateY(0px)`;
+		buttonBlock.style.transition = 'transform 0s';
+		buttonBlock.style.transform = `translateY(0px)`;
 
-		for (let a = Number(account_num); a < accounts.length; a++) {
+		for (let a = Number(accountNum); a < accounts.length; a++) {
 			accounts[a].style.transition = 'transform 0s';
 			accounts[a].style.transform = `translateY(0px)`;
 		}
@@ -6901,32 +7645,49 @@ function animateRemovingAccount (container, account, account_num, button_block) 
 	// }, 402);
 }
 
-function removeAccountFromStorage (account_num) {
+/**
+ * Removes an account from storage and updates the account numbers.
+ *
+ * @param {number} accountNum - The account number to be removed.
+ */
+function removeAccountFromStorage(accountNum) {
 	
-	for (let a = Number(account_num); a <= localStorage.getItem('ACount'); a++) {
+	for (let a = Number(accountNum); a <= localStorage.getItem('ACount'); a++) {
 		if ( a < Number(localStorage.getItem('ACount')) ) moveAccount(a + 1, a);
-		else if ( a == Number(localStorage.getItem('ACount')) ) {
+		else if ( a === Number(localStorage.getItem('ACount')) ) {
 			localStorage.removeItem(`AColor${a}`);
 			localStorage.removeItem(`ACurrency${a}`);
 			localStorage.removeItem(`ABalance${a}`);
-			localStorage.setItem('ACount', Number(localStorage.getItem('ACount')) - 1);
+			localStorage.setItem('ACount', (Number(localStorage.getItem('ACount')) - 1).toString());
 		}
 	}
 }
 
-function moveAccount (from, to) {
+/**
+ * Moves account data in the local storage from one position to another.
+ *
+ * @param {number} from - The original position.
+ * @param {number} to - The target position.
+ */
+function moveAccount(from, to) {
 	
 	localStorage.setItem(`AColor${to}`, localStorage.getItem(`AColor${from}`));
 	localStorage.setItem(`ACurrency${to}`, localStorage.getItem(`ACurrency${from}`));
 	localStorage.setItem(`ABalance${to}`, localStorage.getItem(`ABalance${from}`));
 }
 
-function updateAccountsNumbers () {
+/**
+ * Updates the account numbers attribute on accounts in the settings.
+ */
+function updateAccountsNumbers() {
 	let accounts = id('settings-category-window-cont').getElementsByClassName('account');
 
-	for (let a = 1; a <= accounts.length; a++) accounts[a - 1].setAttribute('accountnum', a);
+	for (let a = 1; a <= accounts.length; a++) accounts[a - 1].setAttribute('data-accountnum', a);
 }
 
+/**
+ * Handles the click event on the account color button in the edit account window.
+ */
 id('edit-account-color-button').onclick = function() {
 
 	let clickEl = this,
@@ -6934,8 +7695,9 @@ id('edit-account-color-button').onclick = function() {
 		windowEl = id('edit-account-color');
 
 	// check color if dark theme is on
-	if (localStorage.getItem('T') == 'b' || localStorage.getItem('T') == 'd')
+	if (localStorage.getItem('T') === 'b' || localStorage.getItem('T') === 'd') {
 		id('edit-account-color-choose').lastElementChild.classList.add('invert-color');
+	}
 
 	// set up click on accounts
 	setUpChoosingAccountColor(clickEl, windowEl_cont, windowEl);
@@ -6948,113 +7710,188 @@ id('edit-account-color-button').onclick = function() {
 	
 }
 
-function setUpChoosingAccountColor (clickEl, windowEl_cont, windowEl) {
+/**
+ * Sets up the click event for choosing an account color in the edit account window.
+ *
+ * @param {HTMLElement} clickEl - The clicked account color button.
+ * @param {HTMLElement} windowElCont - The container for the edit account color window.
+ * @param {HTMLElement} windowEl - The edit account color window.
+ */
+function setUpChoosingAccountColor(clickEl, windowElCont, windowEl) {
 
 	for (let button of windowEl.getElementsByClassName('color'))
 		button.onclick = function() {
 
-			let color = button.getAttribute('color');
+			let color = getAccountColorByAccountColorButtonId(button.id);
 			clickEl.setAttribute('color', color);
 			clickEl.style.background = '#' + color;
 
 			// check color if dark theme is on
 			checkColorOfEditAccountColorButton();
 			
-			closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+			closeFloatingWindow(clickEl, windowElCont, windowEl);
 			
 		}
 }
 
-function saveEditedAccount (account_num, clickEl, windowEl_cont, windowEl) {
+/**
+ * Gets the account color based on the account color button ID.
+ *
+ * @param {string} id - The ID of the account color button.
+ *
+ * @returns {string} The corresponding account color.
+ */
+function getAccountColorByAccountColorButtonId(id) {
+	if (id === "account-color-1") {
+		return "cc4343";
+	} else if (id === "account-color-2") {
+		return "ab4545";
+	} else if (id === "account-color-3") {
+		return "c92898";
+	} else if (id === "account-color-4") {
+		return "994f82";
+	} else if (id === "account-color-5") {
+		return "9232c8";
+	} else if (id === "account-color-6") {
+		return "946aab";
+	} else if (id === "account-color-7") {
+		return "3830cb";
+	} else if (id === "account-color-8") {
+		return "5f5ba1";
+	} else if (id === "account-color-9") {
+		return "29a8d0";
+	} else if (id === "account-color-10") {
+		return "649aab";
+	} else if (id === "account-color-11") {
+		return "6ebeab";
+	} else if (id === "account-color-12") {
+		return "20b65a";
+	} else if (id === "account-color-13") {
+		return "62b180";
+	} else if (id === "account-color-14") {
+		return "afb32b";
+	} else if (id === "account-color-15") {
+		return "acae6e";
+	} else if (id === "account-color-16") {
+		return "d8731a";
+	} else if (id === "account-color-17") {
+		return "b38c69";
+	} else if (id === "account-color-18") {
+		return "8c7154";
+	} else if (id === "account-color-19") {
+		return "ae9479";
+	} else {
+		return "050505";
+	}
+}
 
-	let prev_color = localStorage.getItem(`AColor${account_num}`),
-		prev_currency = localStorage.getItem(`ACurrency${account_num}`),
-		prev_HT_status = Number(localStorage.getItem(`AHT${account_num}`)),
-		prev_WB_status = Number(localStorage.getItem(`AWB${account_num}`)),
-		prev_HB_status = Number(localStorage.getItem(`AHB${account_num}`));
+/**
+ * Saves the edited account data to storage and updates UI elements.
+ *
+ * @param {number} accountNum - The account number.
+ * @param {HTMLElement} clickEl - The clicked account element.
+ * @param {HTMLElement} windowElCont - The container for the edit account window.
+ * @param {HTMLElement} windowEl - The edit account window.
+ */
+function saveEditedAccount(accountNum, clickEl, windowElCont, windowEl) {
+
+	let prev_color = localStorage.getItem(`AColor${accountNum}`),
+		prev_currency = localStorage.getItem(`ACurrency${accountNum}`),
+		prev_HT_status = Number(localStorage.getItem(`AHT${accountNum}`)),
+		prev_WB_status = Number(localStorage.getItem(`AWB${accountNum}`)),
+		prev_HB_status = Number(localStorage.getItem(`AHB${accountNum}`));
 	
 	// save new account's data to storage
-	localStorage.setItem( `AColor${account_num}`, id('edit-account-color-button').getAttribute('color') );
-	localStorage.setItem( `ACurrency${account_num}`, id('edit-account-currency').value );
-	localStorage.setItem( `ABalance${account_num}`, Number(id('edit-account-balance').value).toFixed(2) );
-	localStorage.setItem( `AHT${account_num}`, Number(id('hide-account-from-topbar-switch').checked) );
-	localStorage.setItem( `AWB${account_num}`, Number(id('without-account-balance-switch').checked) );
-	localStorage.setItem( `AHB${account_num}`, Number(id('hide-account-balance-switch').checked) );
+	localStorage.setItem( `AColor${accountNum}`, id('edit-account-color-button').getAttribute('color') );
+	localStorage.setItem( `ACurrency${accountNum}`, id('edit-account-currency').value );
+	localStorage.setItem( `ABalance${accountNum}`, Number(id('edit-account-balance').value).toFixed(2) );
+	localStorage.setItem( `AHT${accountNum}`, id('hide-account-from-top-bar-switch').checked );
+	localStorage.setItem( `AWB${accountNum}`, id('without-account-balance-switch').checked );
+	localStorage.setItem( `AHB${accountNum}`, id('hide-account-balance-switch').checked );
 
 	// update account color, currency and balance everywhere
 	clickEl.classList.add('account-block-animation');
-	updateUIDataOfAccount(account_num);
+	updateUIDataOfAccount(accountNum);
 
 	// update widgets' data if needed
-	updateWigdetsDataAfterEditingAccount(account_num, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status);
+	updateWidgetsDataAfterEditingAccount(accountNum, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status);
 
 	// close edit account window
-	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowEl_cont, windowEl);
+	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
 	setTimeout(() => {
 		clickEl.classList.remove('account-block-animation');
 		clickEl.style.transition = clickEL_transition;
-		closeFloatingWindow(clickEl, windowEl_cont, windowEl);
+		closeFloatingWindow(clickEl, windowElCont, windowEl);
 	}, 1);
 }
 
-function updateWigdetsDataAfterEditingAccount (account_num, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status) {
+/**
+ * Updates widgets' data after editing an account.
+ *
+ * @param {number} accountNum - The account number.
+ * @param {string} prevColor - The previous account color.
+ * @param {string} prevCurrency - The previous account currency.
+ * @param {number} prev_HT_status - The previous hide from top-bar status.
+ * @param {number} prev_WB_status - The previous without account balance status.
+ * @param {number} prev_HB_status - The previous hide account balance status.
+ */
+function updateWidgetsDataAfterEditingAccount(
+	accountNum, prevColor, prevCurrency, prev_HT_status, prev_WB_status, prev_HB_status
+) {
 
 	// update data of all widgets because of new account currency
 	if (
-		prev_currency != id('edit-account-currency').value &&
-		id('accounts').getAttribute('accountnum') == account_num
+		prevCurrency !== id('edit-account-currency').value &&
+		Number(id('accounts').getAttribute('data-accountnum')) === accountNum
 	)
 		updateWidgetsData(1, 0, 0, [1, 0], 0);
 	// reupload records in history because of new account color
 	// (transfers records have field 'from/to account' colored with appropriate account color)
-	if (prev_color != id('edit-account-color-button').getAttribute('color'))
+	if (prevColor !== id('edit-account-color-button').getAttribute('color'))
 		uploadRecordsToHistory();
-	// reupload accounts to topbar if account now is hiden in topbar
+	// reupload accounts to top-bar if account now is hidden in top-bar
 	if (
-		prev_HT_status != Number(id('hide-account-from-topbar-switch').checked) ||
-		prev_WB_status != Number(id('without-account-balance-switch').checked) ||
-		prev_HB_status != Number(id('hide-account-balance-switch').checked)
+		prev_HT_status !== Number(id('hide-account-from-top-bar-switch').checked) ||
+		prev_WB_status !== Number(id('without-account-balance-switch').checked) ||
+		prev_HB_status !== Number(id('hide-account-balance-switch').checked)
 	) {
 		id('accounts').innerHTML = null;
 		for (let a = 1; a <= localStorage.getItem('ACount'); a++)
 			uploadAccount(a, id('accounts'));
-		setUpClickOnAccountsInTopbar();
+		setUpClickOnAccountsInTopBar();
 	}
 }
 
-function setUpButtonsValue_Accounts (button, lang) {
-
-	if (lang == 'en')
-		button.value = 'Add account';
-	else if (lang == 'de')
-		button.value = 'Konto hinzufügen';
-	else if (lang == 'cz')
-		button.value = 'Přidat účet';
-	else if (lang == 'ru')
-		button.value = 'Добавить счёт';
-	else if (lang == 'ua')
-		button.value = 'Додати рахунок';
-}
 
 
 
 
-
-
-function disableScrolling () {
-	var x = window.scrollX;
-	var y = window.scrollY;
+/**
+ * Disables scrolling by locking the current scroll position.
+ */
+function disableScrolling() {
+	let x = window.scrollX;
+	let y = window.scrollY;
 	window.onscroll = function() {
 		window.scrollTo(x, y);
 	};
 }
-function enableScrolling () {
+
+/**
+ * Enables scrolling by removing the scroll lock.
+ */
+function enableScrolling() {
 	window.onscroll = function(){};
 }
 
 
 
-function animateEmptyFieldError (el) {
+/**
+ * Animates an error for an empty field.
+ *
+ * @param {HTMLElement} el - The element to animate.
+ */
+function animateEmptyFieldError(el) {
 	el.classList.add('empty-field-transform1');
 
   setTimeout(() => {
@@ -7068,34 +7905,47 @@ function animateEmptyFieldError (el) {
 }
 
 
-// change width of all active inputs while typing
 
 setTypingListenerForAllInputs(id('root').getElementsByClassName('active-input'));
-function setTypingListenerForAllInputs (inputs_arr) {
 
-	for (let input of inputs_arr) setTypingListenerForInput(input);
+/**
+ * Sets typing listener for all inputs in the given array.
+ *
+ * @param {HTMLCollectionOf<Element>} inputsArr - The array of input elements.
+ */
+function setTypingListenerForAllInputs(inputsArr) {
+
+	for (let input of inputsArr) setTypingListenerForInput(input);
 }
 
-function setTypingListenerForInput (input) {
+/**
+ * Sets typing listener for the input element.
+ *
+ * @param {HTMLElement} input - The input element.
+ */
+function setTypingListenerForInput(input) {
 	input.addEventListener('input', adaptInputLength);
 	adaptInputLength.call(input);
 }
 
-function adaptInputLength () {
+/**
+ * Adapts the input length based on its value and placeholder.
+ */
+function adaptInputLength() {
 	let less_length, bigger_length;
 	let lang = localStorage.getItem('L');
 
-	if (lang == 'en' || lang == 'de' || lang == 'cz') {
+	if (lang === LANG_ENUM.en || lang === LANG_ENUM.cz || lang === LANG_ENUM.de) {
 		less_length = 3.5;
 		bigger_length = 1.1;
-	} else if (lang == 'ru' || lang == 'ua') {
+	} else if (lang === LANG_ENUM.ru || lang === LANG_ENUM.ua) {
 		less_length = 4;
 		bigger_length = 1.1;
 	}
 	
-	if (this.value.length == 0 && this.placeholder.length < 4)
+	if (this.value.length === 0 && this.placeholder.length < 4)
 		this.style.width = less_length + 'ch';
-	else if (this.value.length == 0 && this.placeholder.length >= 4)
+	else if (this.value.length === 0 && this.placeholder.length >= 4)
 		this.style.width = this.placeholder.length * bigger_length + 'ch';
 	else if (this.value.length < 4)
 		this.style.width = less_length + 'ch';
@@ -7103,22 +7953,26 @@ function adaptInputLength () {
 		this.style.width = this.value.length * bigger_length + 'ch';
 }
 
-// change width of input by its characters count
-function adaptInputLengthExplicitly (el) {
+/**
+ * Adapts the input length explicitly based on its value and placeholder.
+ *
+ * @param {HTMLInputElement} el - The input element.
+ */
+function adaptInputLengthExplicitly(el) {
 	let less_length, bigger_length;
 	let lang = localStorage.getItem('L');
 
-	if (lang == 'en' || lang == 'de' || lang == 'cz') {
+	if (lang === LANG_ENUM.en || lang === LANG_ENUM.cz || lang === LANG_ENUM.de) {
 		less_length = 3.5;
 		bigger_length = 1.1;
-	} else if (lang == 'ru' || lang == 'ua') {
+	} else if (lang === LANG_ENUM.ru || lang === LANG_ENUM.ua) {
 		less_length = 4;
 		bigger_length = 1.25;
 	}
 	
-	if (el.value.length == 0 && el.placeholder.length < 4)
+	if (el.value.length === 0 && el.placeholder.length < 4)
 		el.style.width = less_length + 'ch';
-	else if (el.value.length == 0 && el.placeholder.length >= 4)
+	else if (el.value.length === 0 && el.placeholder.length >= 4)
 		el.style.width = el.placeholder.length * bigger_length + 'ch';
 	else if (el.value.length < 4)
 		el.style.width = less_length + 'ch';
@@ -7129,5 +7983,5 @@ function adaptInputLengthExplicitly (el) {
 
 
 if (localStorage.getItem('L')) {
-	startPreloaderAnimation();
+	startPreloaderAnimation().then();
 }

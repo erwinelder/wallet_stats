@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WalletStats</title>
     <link rel="stylesheet" href="Main/main.css">
-	<link rel="icon" type="svg" href="Main/Icons/wallet_icon_new.svg">
-	<link rel="apple-touch-icon" sizes="144x144" href="Main/Icons/wallet_icon_bg_new_144.png"/>
-	<link rel="manifest" href="WalletStats.webmanifest"/>
+	<link rel="icon" type="text/xml" href="Main/Icons/wallet_icon_new.svg">
+	<link rel="apple-touch-icon" sizes="144x144" href="Main/Icons/wallet_icon_bg_new_144.png">
+	<link rel="manifest" href="WalletStats.webmanifest">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body id="body">
 
-	<div class="hello-screen hide" id="hello-screen" animstatus="done">
+	<div class="hello-screen hide" id="hello-screen" data-animstatus="done">
 
 		<h1 id="hello-title">Hello!</h1>
 
@@ -24,7 +24,7 @@
 					<polyline style="fill: none; stroke-linecap: round; stroke-miterlimit: 5; stroke-width: 50px; stroke-linejoin: round;" points="220 30 30 250 220 470"></polyline>
 				</svg>
 			</button>
-			<h3 id="hello-language" langnum="">English</h3>
+			<h3 id="hello-language" data-langnum="">English</h3>
 			<button class="slider-button">
 				<svg viewBox="0 0 250 500" xmlns="http://www.w3.org/2000/svg">
 					<polyline style="fill: none; stroke-linecap: round; stroke-miterlimit: 5; stroke-width: 50px; stroke-linejoin: round;" points="220 30 30 250 220 470"></polyline>
@@ -41,7 +41,7 @@
 	</div>
 	
     <div class="preloader" id="preloader">
-		<svg class="preloader-svg" id="preloader-svg" viewBox="0 0 1080 1080" rel="preload" as="image">
+		<svg class="preloader-svg" id="preloader-svg" viewBox="0 0 1080 1080">
 			<defs>
 				<radialGradient gradientUnits="userSpaceOnUse" cx="123.319" cy="884.955" r="393" id="gradient-0" gradientTransform="matrix(0.657606, 1.729281, -2.895, 1.1009, 2757.028809, -433.412048)" spreadMethod="pad">
 					<stop offset="0" style="stop-color: rgb(167, 120, 137);"></stop>
@@ -52,7 +52,7 @@
 			<rect class="preloader-svg-card1" id="preloader-svg-card1" x="192" y="301.332" width="696" height="479.275" style="fill: rgb(113, 93, 126);" rx="50.877" ry="50.877"></rect>
 			<g class="preloader-svg-wallet" id="preloader-svg-wallet">
 				<rect x="147" y="388.206" width="786" height="541.251" style="fill: url(#gradient-0);" rx="60.772" ry="60.772"></rect>
-				<text style="fill: rgb(103, 77, 86); font-family: Poppins; font-size: 57px; font-weight: 300; text-anchor: middle; white-space: pre;" x="181.548" y="1003.75" dx="668.016 -6.502" dy="-136.696 20.232">WS</text>
+				<text style="fill: rgb(103, 77, 86); font-family: Poppins, sans-serif; font-size: 57px; font-weight: 300; text-anchor: middle; white-space: pre;" x="181.548" y="1003.75" dx="668.016 -6.502" dy="-136.696 20.232">WS</text>
 			</g>
 		</svg>
 	</div>
@@ -61,24 +61,24 @@
 
 		<div class="content" id="content">
 
-			<div class="sticky-topbar blur" id="sticky-topbar">
+			<div class="sticky-top-bar blur" id="sticky-top-bar">
 
-				<div accountnum="" class="accounts" id="accounts"></div>
+				<div data-accountnum="" class="accounts" id="accounts"></div>
 				<!-- container with accounts -->
 
-				<div class="history-nav history-nav-period" id="history-period-nav-cont">
-					<div period="month 0" class="window-floating-nav" id="history-period-nav">
-						<div period="month 0" class="active-input-cont">
-							<input type="button" value="">
+				<nav class="history-nav history-nav-period" id="history-period-nav-cont">
+					<div class="window-floating-nav" id="history-period-nav">
+						<div class="active-input-cont" id="this-month-period">
+							<button></button>
 						</div>
-						<div period="month -1">
-							<input type="button" value="">
+						<div id="last-month-period">
+							<button></button>
 						</div>
-						<div period="custom">
-							<input type="button" value="">
+						<div id="custom-period">
+							<button></button>
 						</div>
 					</div>
-				</div> <!-- history-nav period -->
+				</nav> <!-- history-nav period -->
 
 			</div>
 
@@ -88,44 +88,42 @@
 					
 					<div class="date-filter-other" id="date-filter-other">
 
-						<input type="text" period="thisweek" readonly>
-						<input type="text" period="7days" readonly>
-						<input type="text" period="thisyear" readonly>
-						<input type="text" period="prevyear" readonly>
-						
+						<button id="date-filter-other-this-week"></button>
+						<button id="date-filter-other-seven-days"></button>
+						<button id="date-filter-other-this-year"></button>
+						<button id="date-filter-other-last-year"></button>
+
 					</div>
 
 					<div class="date-filter-months" id="date-filter-months">
-
-						<input type="text" num="0" readonly>
-						<input type="text" num="1" readonly>
-						<input type="text" num="2" readonly>
-						<input type="text" num="3" readonly>
-						<input type="text" num="4" readonly>
-						<input type="text" num="5" readonly>
-						<input type="text" num="6" readonly>
-						<input type="text" num="7" readonly>
-						<input type="text" num="8" readonly>
-						<input type="text" num="9" readonly>
-						<input type="text" num="10" readonly>
-						<input type="text" num="11" readonly>
-						
+						<button data-num="0"></button>
+						<button data-num="1"></button>
+						<button data-num="2"></button>
+						<button data-num="3"></button>
+						<button data-num="4"></button>
+						<button data-num="5"></button>
+						<button data-num="6"></button>
+						<button data-num="7"></button>
+						<button data-num="8"></button>
+						<button data-num="9"></button>
+						<button data-num="10"></button>
+						<button data-num="11"></button>
 					</div>
 					
 					<hr class="small-hr">
 					
 					<div class="field">
-						<h6 class="field-title"></h6>
-						<input class="field-date interective-field" type="datetime-local">
+						<label for="date-filter-menu-date-from" id="date-filter-menu-date-from-label">From</label>
+						<input class="field-date interactive-field" id="date-filter-menu-date-from" type="datetime-local">
 					</div>
 					<div class="field">
-						<h6 class="field-title"></h6>
-						<input class="field-date interective-field" type="datetime-local">
+						<label for="date-filter-menu-date-to" id="date-filter-menu-date-to-label">To</label>
+						<input class="field-date interactive-field" id="date-filter-menu-date-to" type="datetime-local">
 					</div>
 
 					<div class="button-block-bottom">
 						<hr class="small-hr">
-						<input type="button" value="" class="clickable-button" id="submit-date-filter">
+						<input type="button" value="Confirm" class="clickable-button" id="submit-date-filter">
 					</div>
 
 				</div> <!-- date-filter-menu -->
@@ -134,9 +132,9 @@
 			<div class="widget-cont today-widget">
 				<div class="today-stats widget">
 
-					<h2 id="today-stats-title"></h2>
+					<h2 id="today-stats-title">Title</h2>
 					
-					<p id="today-stats-despription"></p>
+					<p id="today-stats-description">Message</p>
 
 				</div>
 			</div>
@@ -144,11 +142,11 @@
 			<div class="widget-cont expenses-incomes-widget">
 				<div class="expenses-incomes-columns-cont widget" id="stats-column">
 
-					<h2 id="incomes-expenses-month-title"></h2>
+					<h2 id="incomes-expenses-month-title">Title</h2>
 					
 					<div class="incomes-expenses-total-cont" id="incomes-expenses-total-cont">
-						<h3 id="incomes-expenses-total-title"></h3>
-						<h3 id="incomes-expenses-total"></h3>
+						<h3 id="incomes-expenses-total-title">Total:</h3>
+						<h3 id="incomes-expenses-total">0.0</h3>
 					</div>
 
 					<hr class="big-hr">
@@ -158,9 +156,9 @@
 
 							<div>
 								<h3>Incomes</h3>
-								<h3 id="incomes-column-percent"></h3>
+								<h3 id="incomes-column-percent">0%</h3>
 							</div>
-							<h3 class="amount" id="incomes-column-amount"></h3>
+							<h3 class="amount" id="incomes-column-amount">0.0</h3>
 
 						</div>
 						<div>
@@ -173,9 +171,9 @@
 
 							<div>
 								<h3>Expenses</h3>
-								<h3 id="expenses-column-percent"></h3>
+								<h3 id="expenses-column-percent">0%</h3>
 							</div>
-							<h3 class="amount" id="expenses-column-amount"></h3>
+							<h3 class="amount" id="expenses-column-amount">0.0</h3>
 
 						</div>
 						<div>
@@ -189,15 +187,15 @@
 			<div class="widget-block history-widget">
 
 				<div class="history-nav">
-					<div history-type="all" class="window-floating-nav" id="history-type-nav">
-						<div history-type="-">
-							<input type="button" value="Expenses">
+					<div data-history-type="all" class="window-floating-nav" id="history-type-nav">
+						<div data-history-type="-">
+							<button>Expenses</button>
 						</div>
-						<div history-type="+">
-							<input type="button" value="Incomes">
+						<div data-history-type="+">
+							<button>Incomes</button>
 						</div>
-						<div history-type="all" class="active-input-cont">
-							<input type="button" value="View all">
+						<div data-history-type="all" class="active-input-cont">
+							<button>View all</button>
 						</div>
 					</div>
 				</div> <!-- history-nav type (incomes or expenses) -->
@@ -209,7 +207,7 @@
 				</div>
 
 				<div class="enable-widget-scroll-button-cont">
-					<input type="button" value="" id="enable-history-scroll-button">
+					<input type="button" value="Enable scrolling" id="enable-history-scroll-button">
 				</div>
 
 			</div> <!-- history-block -->
@@ -225,7 +223,7 @@
 		
 							<div class="pie-chart-background" id="pie-chart-background">
 								<div class="adaptive-background">
-									<h3 id="pie-chart-amount"></h3>
+									<h3 id="pie-chart-amount">0.0</h3>
 								</div>
 							</div>
 							
@@ -237,7 +235,7 @@
 				</div> <!-- pie-chart -->
 
 				<div class="enable-widget-scroll-button-cont">
-					<input type="button" value="" id="enable-categories-details-scroll-button">
+					<input type="button" value="Enable scrolling" id="enable-categories-details-scroll-button">
 				</div>
 
 			</div>
@@ -249,7 +247,7 @@
 						<path d="M 418.961 230.018 C 423.932 267.662 471.234 302.655 456.396 337.608 C 441.557 372.563 383.527 362.843 352.995 385.42 C 322.364 408.069 314.592 466.217 276.743 470.546 C 239.219 474.839 218.802 420.16 184.036 405.403 C 149.27 390.646 95.755 413.94 72.777 383.967 C 49.601 353.734 86.024 307.748 81.039 269.98 C 76.068 232.336 28.766 197.344 43.604 162.391 C 58.442 127.435 116.47 137.158 147.003 114.579 C 177.634 91.929 185.408 33.782 223.258 29.454 C 260.781 25.162 281.198 79.84 315.967 94.597 C 350.732 109.353 404.248 86.058 427.226 116.033 C 450.401 146.266 413.976 192.251 418.961 230.018 Z" transform="matrix(0.390731, 0.920505, -0.920505, 0.390731, 382.44353, -77.808985)"></path>
 						<ellipse cx="250" cy="249.999" rx="71.222" ry="71.222"></ellipse>
 					</svg>
-					<input type="button" value="Home screen">
+					<button value="Home screen">Home screen</button>
 				</div>
 
 				<div class="plate-button" id="settings-button-cont-mobile">
@@ -257,12 +255,12 @@
 						<path d="M 418.961 230.018 C 423.932 267.662 471.234 302.655 456.396 337.608 C 441.557 372.563 383.527 362.843 352.995 385.42 C 322.364 408.069 314.592 466.217 276.743 470.546 C 239.219 474.839 218.802 420.16 184.036 405.403 C 149.27 390.646 95.755 413.94 72.777 383.967 C 49.601 353.734 86.024 307.748 81.039 269.98 C 76.068 232.336 28.766 197.344 43.604 162.391 C 58.442 127.435 116.47 137.158 147.003 114.579 C 177.634 91.929 185.408 33.782 223.258 29.454 C 260.781 25.162 281.198 79.84 315.967 94.597 C 350.732 109.353 404.248 86.058 427.226 116.033 C 450.401 146.266 413.976 192.251 418.961 230.018 Z" transform="matrix(0.390731, 0.920505, -0.920505, 0.390731, 382.44353, -77.808985)"></path>
 						<ellipse cx="250" cy="249.999" rx="71.222" ry="71.222"></ellipse>
 					</svg>
-					<input type="button" value="Settings">
+					<button value="Settings">Settings</button>
 				</div>
 
 			</div> <!-- content-buttons -->
 
-			<div class="sticky-bottombar blur">
+			<div class="sticky-bottom-bar blur">
 				<input type="button" value="Settings" class="button-for-floating-window settings-button-desktop clickable-button" id="settings-button-desktop">
 				<input type="button" value="New record" class="button-for-floating-window make-record-button clickable-button" id="make-record-button">
 			</div>
@@ -293,16 +291,16 @@
 
 			<div></div>
 
-			<div id="make-record-window" recordnum="" status="">
+			<div id="make-record-window" data-recordnum="" data-status="">
 
-				<div class="window-nav" id="record-types" record-type="-">
-					<div id="record-type-transfer" record-type=">">
+				<div class="window-nav" id="record-types" data-record-type="-">
+					<div id="record-type-transfer" data-record-type=">">
 						<input type="button" value="Transfer">
 					</div>
-					<div class="active-input-cont" id="record-type-expense" record-type="-">
+					<div class="active-input-cont" id="record-type-expense" data-record-type="-">
 						<input type="button" value="Expense">
 					</div>
-					<div id="record-type-income" record-type="+">
+					<div id="record-type-income" data-record-type="+">
 						<input type="button" value="Income">
 					</div>
 				</div>
@@ -310,52 +308,52 @@
 				<div class="floating-window-content">
 				
 					<div class="field make-rec-date">
-						<h6 class="field-title">Date</h6>
-						<input class="field-date interective-field" type="datetime-local" id="make-record-date">
+						<label class="field-label" for="make-record-date">Date</label>
+						<input class="field-date interactive-field" type="datetime-local" id="make-record-date">
 					</div>
 					
 					<div class="field make-rec-note">
-						<h6 class="field-title">Note</h6>
-						<input type="text" class="active-input interective-field make-record-note" id="make-record-note">
+						<label class="field-label" for="make-record-note">Note</label>
+						<input type="text" class="active-input interactive-field make-record-note" id="make-record-note">
 					</div>
 
 					<div class="field">
-						<h6 class="field-title">Account</h6>
-						<div class="slide-hide-anim-el" id="make-record-account" accountnum=""></div>
+						<h3 class="field-label">Account</h3>
+						<div class="slide-hide-anim-el" id="make-record-account" data-accountnum=""></div>
 					</div>
 
 					<div class="field make-transfer-to-account">
-						<h6 class="field-title">To account</h6>
-						<div class="slide-hide-anim-el" id="make-transfer-to-account" accountnum=""></div>
+						<h3 class="field-label">To account</h3>
+						<div class="slide-hide-anim-el" id="make-transfer-to-account" data-accountnum=""></div>
 					</div>
 
 					<div class="horizontal-field-cont">
 						<div class="field make-transfer-rate">
-							<h6 class="field-title">Start rate</h6>
-							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-transfer-start-rate">
+							<label class="field-label" for="make-transfer-start-rate">Start rate</label>
+							<input type="number" placeholder="0" class="window-el-amount active-input interactive-field input-ban-specsym" id="make-transfer-start-rate">
 						</div>
 						<div class="field">
-							<h6 class="field-title">Amount</h6>
-							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-record-amount">
+							<label class="field-label" for="make-record-amount">Amount</label>
+							<input type="number" placeholder="0" class="window-el-amount active-input interactive-field input-ban-specsym" id="make-record-amount">
 						</div>
 					</div>
 
 					<div class="horizontal-field-cont make-transfer-final-amount">
 						<div class="field make-transfer-rate">
-							<h6 class="field-title">Final rate</h6>
-							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-transfer-final-rate">
+							<label class="field-label" for="make-transfer-final-rate">Rate</label>
+							<input type="number" placeholder="0" class="window-el-amount active-input interactive-field input-ban-specsym" id="make-transfer-final-rate">
 						</div>
 						<div class="field">
-							<h6 class="field-title">Final amount</h6>
-							<input type="number" placeholder="0" class="window-el-amount active-input interective-field input-ban-specsym" id="make-transfer-final-amount">
+							<label class="field-label" for="make-transfer-final-amount">Final amount</label>
+							<input type="number" placeholder="0" class="window-el-amount active-input interactive-field input-ban-specsym" id="make-transfer-final-amount">
 						</div>
 					</div>
 
 					<div class="field category-cont" id="make-record-category-cont">
-						<h6 class="field-title">Category</h6>
-						<div class="button-for-floating-window interective-field slide-hide-anim-el" id="make-record-category" categorynum="-" subcategorynum="">
+						<label class="field-label" for="make-record-category-button">Category</label>
+						<div class="button-for-floating-window interactive-field slide-hide-anim-el" id="make-record-category" data-categorynum="-" data-subcategorynum="">
 							<div></div>
-							<input type="button" placeholder="None" readonly>
+							<input type="button" value="None" id="make-record-category-button">
 						</div>
 					</div>
 					
@@ -386,14 +384,14 @@
         
 		<div class="floating-window-cont categories-cont" id="categories-expense-cont">
 			<div></div>
-			<div class="floating-window" id="categories-expense" categorynum="" top-position="">
+			<div class="floating-window" id="categories-expense" data-categorynum="" data-top-position="">
 
                 <!-- place for expense categories -->
 
 				<div class="subcategories-cont adaptive-background" id="subcategories-cont">
 
 					<div class="subcategories-title-cont">
-						<h1 class="subcategories-title" id="subcategories-title"></h1>
+						<h1 class="subcategories-title" id="subcategories-title">Subcategories title</h1>
 						<hr class="big-hr">
 					</div>
 
@@ -418,7 +416,7 @@
 
 		<div class="floating-window-cont categories-cont" id="categories-income-cont">
 			<div></div>
-			<div class="floating-window" id="categories-income" categorynum="" top-position=""></div>
+			<div class="floating-window" id="categories-income" data-categorynum="" data-top-position=""></div>
 		</div> <!-- categories-income-cont -->
 
 
@@ -429,8 +427,8 @@
 
 				<div class="title-block">
 					<div>
-						<h1>Settings</h1>
-						<h4></h4>
+						<h1 id="settings-title">Settings</h1>
+						<h4 id="settings-version-title">Version</h4>
 					</div>
 					<hr class="big-hr">
 				</div>
@@ -449,7 +447,7 @@
 							<ellipse cx="369.999" cy="130.001" rx="29.999" ry="29.999"></ellipse>
 							<ellipse cx="369.999" cy="369.999" rx="29.999" ry="29.999"></ellipse>
 						</svg>
-						<input type="button" category-name="Links">
+						<button data-category-name="Other">Category name</button>
 					</div>
 					<!-- Reset data -->
 					<div class="bubble-queue-el">
@@ -457,7 +455,7 @@
 							<path d="M 379.29 396.79 C 341.733 434.348 289.848 457.576 232.538 457.576 C 175.228 457.576 123.343 434.348 85.786 396.79 C 48.23 359.233 25 307.348 25 250.038 C 25 192.728 48.23 140.843 85.786 103.286 C 123.343 65.73 175.228 42.5 232.538 42.5 C 289.848 42.5 341.733 65.73 379.29 103.286 C 416.848 140.843 440.076 192.728 440.076 250.038"></path>
 							<polyline points="366.285 168.406 442.382 252.344 475 150.104"></polyline>
 						  </svg>
-						<input type="button" category-name="Reset data">
+						<button data-category-name="Reset data">Category name</button>
 					</div>
 					<!-- Language -->
 					<div class="bubble-queue-el">
@@ -470,18 +468,18 @@
 							<path d="M 250 25 C 250 25 127 90 127 250 C 127 410 250 475 250 475"></path>
 							<path d="M 250 25 C 250 25 373 90 373 250 C 373 410 250 475 250 475"></path>
 						</svg>
-						<input type="button" category-name="Language">
+						<button data-category-name="Language">Category name</button>
 					</div>
 					<!-- Appearance -->
 					<div class="bubble-queue-el">
 						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-							<path d="M 88.283 408.423 C 88.283 408.423 142.40349429970922 456.5814850032518 176.47 465.902 C 214.6648344065022 476.35201591933395 297.52605704623085 477.6159729018327 308.669 460.147 C 316.3882481913236 448.0454090615718 282.6559914485967 419.9255812195042 284.427 401.454 C 286.1702903474402 383.2715190535344 301.467375306329 359.7337622614359 318.294 350.083 C 337.2416595612019 339.2157368878346 372.03093010650065 354.636885612145 396.202 345.908 C 421.9795808935503 336.5989559250362 455.38696059218273 318.28431869311396 467.399 292.946 C 481.3204032298374 263.5800497465069 474.09339081688574 209.4474892559454 461.936 173.884 C 450.1295640259311 139.3471437584762 425.3425515901969 105.75918735461154 397.272 81.941 C 368.3372604226768 57.38953915338593 327.2988643911892 37.19008000284888 289.698 30.056 C 252.4508909909046 22.989038645569416 207.96510204693476 26.740911204751214 172.826 38.767 C 138.890529903029 50.381154970425165 105.45466088536791 72.8901416606342 81.703 99.134 C 57.82352648785901 125.51908199893228 38.23982274947128 161.0560470114425 30.147 196.852 C 21.518651200090876 235.0166772173037 24.080161899163123 285.6992261431088 35.269 322.338 C 45.3077847825923 355.21082934408446 88.283 408.423 88.283 408.423 C 88.28300000000002 408.4230000000001 88.283 408.423 88.283 408.423" bx:d="M 88.283 408.423 R 176.47 465.902 R 308.669 460.147 R 284.427 401.454 R 318.294 350.083 R 396.202 345.908 R 467.399 292.946 R 461.936 173.884 R 397.272 81.941 R 289.698 30.056 R 172.826 38.767 R 81.703 99.134 R 30.147 196.852 R 35.269 322.338 R 88.283 408.423 Z 1@1963239d"></path>
+							<path d="M 88.283 408.423 C 88.283 408.423 142.40349429970922 456.5814850032518 176.47 465.902 C 214.6648344065022 476.35201591933395 297.52605704623085 477.6159729018327 308.669 460.147 C 316.3882481913236 448.0454090615718 282.6559914485967 419.9255812195042 284.427 401.454 C 286.1702903474402 383.2715190535344 301.467375306329 359.7337622614359 318.294 350.083 C 337.2416595612019 339.2157368878346 372.03093010650065 354.636885612145 396.202 345.908 C 421.9795808935503 336.5989559250362 455.38696059218273 318.28431869311396 467.399 292.946 C 481.3204032298374 263.5800497465069 474.09339081688574 209.4474892559454 461.936 173.884 C 450.1295640259311 139.3471437584762 425.3425515901969 105.75918735461154 397.272 81.941 C 368.3372604226768 57.38953915338593 327.2988643911892 37.19008000284888 289.698 30.056 C 252.4508909909046 22.989038645569416 207.96510204693476 26.740911204751214 172.826 38.767 C 138.890529903029 50.381154970425165 105.45466088536791 72.8901416606342 81.703 99.134 C 57.82352648785901 125.51908199893228 38.23982274947128 161.0560470114425 30.147 196.852 C 21.518651200090876 235.0166772173037 24.080161899163123 285.6992261431088 35.269 322.338 C 45.3077847825923 355.21082934408446 88.283 408.423 88.283 408.423 C 88.28300000000002 408.4230000000001 88.283 408.423 88.283 408.423"></path>
 							<ellipse cx="131.166" cy="212.713" rx="29.137" ry="28.377"></ellipse>
 							<ellipse cx="201.361" cy="131.923" rx="29.137" ry="28.377"></ellipse>
 							<ellipse cx="298.044" cy="133.248" rx="29.137" ry="28.377"></ellipse>
 							<ellipse cx="368.239" cy="210.064" rx="29.137" ry="28.377"></ellipse>
 						</svg>
-						<input type="button" category-name="Appearance">
+						<button data-category-name="Appearance">Category name</button>
 					</div>
 					<!-- Top margin -->
 					<div class="bubble-queue-el">
@@ -490,18 +488,18 @@
 							<line x1="250" y1="25" x2="250" y2="475"></line>
 							<polyline points="175 375 250 475 325 375"></polyline>
 						</svg>
-						<input type="button" category-name="Top margin">
+						<button data-category-name="Top margin">Category name</button>
 					</div>
 					<!-- Accounts -->
 					<div class="bubble-queue-el">
 						<svg class="settings-category-icon" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-							<path d="M 125.924 134.134 L 125.924 462.134" transform="matrix(0.984808, -0.173648, 0.173648, 0.984808, -49.857361, 26.395797)" bx:d="M 125.924 134.134 R 125.924 462.134 1@fa9a0077"></path>
-							<path d="M 199.396 192.315 C 199.396 192.315 180.51718870975748 180.91488179909405 170.303 176.942 C 159.9681326873713 172.92217939465212 148.76471368260695 169.22651605307428 137.712 168.419 C 126.5781655331104 167.6055572272597 114.53607474910234 168.79057101665538 103.735 172.169 C 92.67050856576773 175.62982213258326 79.96329741125498 181.1880275920867 72.193 189.252 C 64.68732721165507 197.04134641296613 59.05220576521044 208.32594649209105 57.356 219.253 C 55.52131816567745 231.0721241798687 57.1633917500757 247.20821786861237 63.257 257.963 C 69.51767726540616 269.01264697807926 83.92161504319517 277.09725011860064 95.107 284.308 C 105.69841214205435 291.13584044913057 117.10053637896056 295.48644368622627 128.411 300.566 C 139.8163462388417 305.68816832478166 152.75328724915457 308.2181289789429 163.265 314.896 C 173.92337250965397 321.66704089513155 185.44900897906516 331.0129454711618 191.828 341.073 C 197.66266801136192 350.27462423169027 202.1299206568254 361.5757205523521 201.446 372.027 C 200.70750403232094 383.31226774582433 193.62571363016238 397.7975904417562 185.624 406.349 C 177.9448770523995 414.55565777459327 166.04393869881955 419.43572361376164 155.05 422.986 C 143.76181020510097 426.6312989933907 130.8127736818871 428.12049520798655 118.647 427.611 C 106.24235378617796 427.091500955552 91.96795994989905 423.56848380854257 81.335 419.655 C 72.63365544932083 416.45245139903807 65.86391157641042 411.94898886219266 58.856 407.513 C 52.1735948716263 403.283055829199 40.132 393.763 40.132 393.763" transform="matrix(0.984808, -0.173648, 0.173648, 0.984808, -49.901191, 25.507182)" bx:d="M 199.396 192.315 R 170.303 176.942 R 137.712 168.419 R 103.735 172.169 R 72.193 189.252 R 57.356 219.253 R 63.257 257.963 R 95.107 284.308 R 128.411 300.566 R 163.265 314.896 R 191.828 341.073 R 201.446 372.027 R 185.624 406.349 R 155.05 422.986 R 118.647 427.611 R 81.335 419.655 R 58.856 407.513 R 40.132 393.763 1@ac5350f2"></path>
+							<path d="M 125.924 134.134 L 125.924 462.134" transform="matrix(0.984808, -0.173648, 0.173648, 0.984808, -49.857361, 26.395797)"></path>
+							<path d="M 199.396 192.315 C 199.396 192.315 180.51718870975748 180.91488179909405 170.303 176.942 C 159.9681326873713 172.92217939465212 148.76471368260695 169.22651605307428 137.712 168.419 C 126.5781655331104 167.6055572272597 114.53607474910234 168.79057101665538 103.735 172.169 C 92.67050856576773 175.62982213258326 79.96329741125498 181.1880275920867 72.193 189.252 C 64.68732721165507 197.04134641296613 59.05220576521044 208.32594649209105 57.356 219.253 C 55.52131816567745 231.0721241798687 57.1633917500757 247.20821786861237 63.257 257.963 C 69.51767726540616 269.01264697807926 83.92161504319517 277.09725011860064 95.107 284.308 C 105.69841214205435 291.13584044913057 117.10053637896056 295.48644368622627 128.411 300.566 C 139.8163462388417 305.68816832478166 152.75328724915457 308.2181289789429 163.265 314.896 C 173.92337250965397 321.66704089513155 185.44900897906516 331.0129454711618 191.828 341.073 C 197.66266801136192 350.27462423169027 202.1299206568254 361.5757205523521 201.446 372.027 C 200.70750403232094 383.31226774582433 193.62571363016238 397.7975904417562 185.624 406.349 C 177.9448770523995 414.55565777459327 166.04393869881955 419.43572361376164 155.05 422.986 C 143.76181020510097 426.6312989933907 130.8127736818871 428.12049520798655 118.647 427.611 C 106.24235378617796 427.091500955552 91.96795994989905 423.56848380854257 81.335 419.655 C 72.63365544932083 416.45245139903807 65.86391157641042 411.94898886219266 58.856 407.513 C 52.1735948716263 403.283055829199 40.132 393.763 40.132 393.763" transform="matrix(0.984808, -0.173648, 0.173648, 0.984808, -49.901191, 25.507182)"></path>
 							<path d="M 379.409 32.232 C 297.044 32.232 245.565 121.393 286.747 192.725 C 327.93 264.056 430.887 264.056 472.069 192.725 C 475.421 186.917 478.222 180.805 480.433 174.471" transform="matrix(0.629321, 0.777146, -0.777146, 0.629321, 247.702725, -240.864608)"></path>
 							<line x1="227.313" y1="94.022" x2="381.628" y2="94.022" transform="matrix(0.965926, 0.258819, -0.258819, 0.965926, 34.709249, -75.599012)"></line>
 							<line x1="213.371" y1="146.05" x2="367.687" y2="146.05" transform="matrix(0.965926, 0.258819, -0.258819, 0.965926, 47.700035, -70.217886)"></line>
 						</svg>
-						<input type="button" category-name="Accounts">
+						<button data-category-name="Accounts">Category name</button>
 					</div>
 
 				</div>
@@ -515,7 +513,7 @@
 								<line style="stroke-linecap: round; stroke-miterlimit: 5; stroke-width: 50px;" x1="470" y1="30" x2="30" y2="470"></line>
 							</svg>
 						</div>
-						<input type="button" value="Close" class="close-button">
+						<button value="Close" class="close-button">Category name</button>
 					</div>
 				</div>
 
@@ -529,7 +527,7 @@
 			<div class="settings-category window-block">
 
                 <div class="title-block">
-                    <h1></h1>
+                    <h1>Title</h1>
                     <hr class="big-hr">
                 </div>
 
@@ -542,7 +540,7 @@
 
 
         
-		<div class="topmargin-preview-window adaptive-background" id="topmargin-preview-window"></div>
+		<div class="top-margin-preview-window adaptive-background" id="top-margin-preview-window"></div>
         
 
 
@@ -552,11 +550,11 @@
 			<div class="popup-connected-notification-cont" id="popup-connected-notification-cont">
 				<div class="popup-connected-notification adaptive-background">
 					<div class="timer-line-cont"><hr></div>
-					<div class="notification-content"><h3></h3></div>
+					<div class="notification-content"><h3>Notification content</h3></div>
 				</div>
 			</div>
 
-			<div class="floating-window" id="edit-account" accountnum="">
+			<div class="floating-window" id="edit-account" data-accountnum="">
 
 				<div class="button-block-top">
 					<input type="button" value="Remove account" class="clickable-button" id="remove-account">
@@ -568,9 +566,9 @@
 					<div class="switch-button-block">
 						<p class="description"></p>
 						<div class="switch-cont">
-							<p>Off</p>
+							<label for="hide-account-from-top-bar-switch">Off</label>
 							<div class="switch">
-								<input type="checkbox" id="hide-account-from-topbar-switch">
+								<input type="checkbox" id="hide-account-from-top-bar-switch">
 								<span class="switch-slider"></span>
 							</div>
 							<p>On</p>
@@ -578,18 +576,18 @@
 					</div>
 
 					<div class="field">
-						<h3 class="field-title">Currency</h3>
-						<input type="text" value="" class="field-input active-input interective-field" id="edit-account-currency">
+						<label for="edit-account-currency">Currency</label>
+						<input type="text" value="" class="field-input active-input interactive-field" id="edit-account-currency">
 					</div>
 
 					<div class="field">
-						<h3 class="field-title">Balance</h3>
-						<input type="number" value="" class="field-input active-input interective-field input-ban-specsym" id="edit-account-balance">
+						<label for="edit-account-balance">Balance</label>
+						<input type="number" value="" class="field-input active-input interactive-field input-ban-specsym" id="edit-account-balance">
 					</div>
 					<div class="switch-button-block">
 						<p class="description"></p>
 						<div class="switch-cont">
-							<p>Off</p>
+							<label for="without-account-balance-switch">Off</label>
 							<div class="switch">
 								<input type="checkbox" id="without-account-balance-switch">
 								<span class="switch-slider"></span>
@@ -600,7 +598,7 @@
 					<div class="switch-button-block">
 						<p class="description"></p>
 						<div class="switch-cont">
-							<p>Off</p>
+							<label for="hide-account-balance-switch">Off</label>
 							<div class="switch">
 								<input type="checkbox" id="hide-account-balance-switch">
 								<span class="switch-slider"></span>
@@ -610,7 +608,7 @@
 					</div>
 
 					<div class="field">
-						<h3 class="field-title">Color</h3>
+						<h3 class="field-label">Color</h3>
 						<div class="edit-account-color-button" id="edit-account-color-button"></div>
 					</div>
 
@@ -628,26 +626,26 @@
 			<div></div>
 			<div class="floating-window" id="edit-account-color">
 				<div class="edit-account-color-choose" id="edit-account-color-choose">
-					<input class="color" type="button" style="background: #cc4343" color="cc4343">
-					<input class="color" type="button" style="background: #ab4545" color="ab4545">
-					<input class="color" type="button" style="background: #c92898" color="c92898">
-					<input class="color" type="button" style="background: #994f82" color="994f82">
-					<input class="color" type="button" style="background: #9232c8" color="9232c8">
-					<input class="color" type="button" style="background: #946aab" color="946aab">
-					<input class="color" type="button" style="background: #3830cb" color="3830cb">
-					<input class="color" type="button" style="background: #5f5ba1" color="5f5ba1">
-					<input class="color" type="button" style="background: #29a8d0" color="29a8d0">
-					<input class="color" type="button" style="background: #649aab" color="649aab">
-					<input class="color" type="button" style="background: #6ebeab" color="6ebeab">
-					<input class="color" type="button" style="background: #20b65a" color="20b65a">
-					<input class="color" type="button" style="background: #62b180" color="62b180">
-					<input class="color" type="button" style="background: #afb32b" color="afb32b">
-					<input class="color" type="button" style="background: #acae6e" color="acae6e">
-					<input class="color" type="button" style="background: #d8731a" color="d8731a">
-					<input class="color" type="button" style="background: #b38c69" color="b38c69">
-					<input class="color" type="button" style="background: #8c7154" color="8c7154">
-					<input class="color" type="button" style="background: #ae9479" color="ae9479">
-					<input class="color" type="button" style="background: #050505" color="050505">
+					<button class="color" id="account-color-1" style="background: #cc4343"></button>
+					<button class="color" id="account-color-2" style="background: #ab4545"></button>
+					<button class="color" id="account-color-3" style="background: #c92898"></button>
+					<button class="color" id="account-color-4" style="background: #994f82"></button>
+					<button class="color" id="account-color-5" style="background: #9232c8"></button>
+					<button class="color" id="account-color-6" style="background: #946aab"></button>
+					<button class="color" id="account-color-7" style="background: #3830cb"></button>
+					<button class="color" id="account-color-8" style="background: #5f5ba1"></button>
+					<button class="color" id="account-color-9" style="background: #29a8d0"></button>
+					<button class="color" id="account-color-10" style="background: #649aab"></button>
+					<button class="color" id="account-color-11" style="background: #6ebeab"></button>
+					<button class="color" id="account-color-12" style="background: #20b65a"></button>
+					<button class="color" id="account-color-13" style="background: #62b180"></button>
+					<button class="color" id="account-color-14" style="background: #afb32b"></button>
+					<button class="color" id="account-color-15" style="background: #acae6e"></button>
+					<button class="color" id="account-color-16" style="background: #d8731a"></button>
+					<button class="color" id="account-color-17" style="background: #b38c69"></button>
+					<button class="color" id="account-color-18" style="background: #8c7154"></button>
+					<button class="color" id="account-color-19" style="background: #ae9479"></button>
+					<button class="color" id="account-color-20" style="background: #050505"></button>
 				</div>
 			</div>
 		</div> <!-- edit-account-color-cont -->
@@ -657,13 +655,13 @@
 
 				<div class="timer-line-cont"><hr id="notification-timer-line"></div>
 
-				<h3 id="notification-title"></h3>
+				<h3 id="notification-title">Notification title</h3>
 
-				<p id="notification-details"></p>
+				<p id="notification-details">Notification details</p>
 
 				<div class="notification-button-block" id="notification-button-block">
 					<hr class="small-hr">
-					<input type="button" value="" id="notification-show-details-button">
+					<button id="notification-show-details-button">Show details</button>
 				</div>
 
 			</div>
@@ -672,17 +670,15 @@
 		<div class="floating-window-cont update-details-cont" id="update-details-cont">
 			<div></div>
 			<div class="floating-window" id="update-details">
-				<h2 id="update-details-title"></h2>
+				<h2 id="update-details-title">Update details</h2>
 				<hr class="big-hr">
-				<div id="update-details-paragraphs"></div>
+				<div id="update-details-paragraphs">Update description</div>
 			</div>
 		</div>
 
 	</div>
     
-    <!-- <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+    <script src="/scripts/language.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
