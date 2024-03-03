@@ -1,7 +1,18 @@
+if (navigator.serviceWorker) {
+	try {
+		await navigator.serviceWorker.register('sw.js');
+		console.log('Service worker registration success.')
+	} catch {
+		console.log('Service worker registration failed.')
+	}
+}
+window.addEventListener('load', async () => {
+	startApp();
+});
+
 const id = function(id) {
 	return document.getElementById(id);
 }
-
 
 
 
@@ -730,20 +741,6 @@ const category_list_hr = `<hr class="categories-hr">`;
 
 
 
-
-window.addEventListener('load', async () => {
-
-	if (navigator.serviceWorker) {
-		try {
-			await navigator.serviceWorker.register('sw.js');
-			console.log('Service worker registration success.')
-		} catch {
-			console.log('Service worker registration failed.')
-		}
-	}
-	
-	startApp();
-});
 
 /**
  * Start the application by checking if data exists in local storage.
