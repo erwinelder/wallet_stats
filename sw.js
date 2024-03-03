@@ -21,6 +21,10 @@ self.addEventListener('install', async () => {
 
 
 self.addEventListener('activate', async () => {
+    await fetchCache();
+});
+
+async function fetchCache() {
     const cache_names = await caches.keys();
     const current_cache = cache_names.find(name => name.startsWith(cache_name_prefix));
 
@@ -37,14 +41,12 @@ self.addEventListener('activate', async () => {
             .filter(name => name !== cache_version)
             .map(name => caches.delete(name))
     );
-});
-
-
-self.addEventListener('fetch', e => {
-    e.respondWith(cacheFirst(e.request));
-});
-
-async function cacheFirst (request) {
-    const cached = await caches.match(request);
-    return cached ?? await fetch(request);
 }
+
+
+self.addEventListener('fetch', async e => {
+    // await fetchCache();
+    const cached = await caches.match(e.request);
+    const response = cached ?? await fetch(e.request);
+    e.respondWith(response);
+});
