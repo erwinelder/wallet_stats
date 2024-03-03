@@ -1,4 +1,4 @@
-const cache_version = 'v3.1.3';
+const cache_version = 'v3.2.0';
 const asset_files = [
     'index.html',
     'Main/main.css',
@@ -9,13 +9,13 @@ const asset_files = [
 ];
 
 
-self.addEventListener('install', async e => {
+self.addEventListener('install', async () => {
     const cache = await caches.open(cache_version);
     await cache.addAll(asset_files);
 });
 
 
-self.addEventListener('activate', async e => {
+self.addEventListener('activate', async () => {
     const cache_names = await caches.keys();
     console.log(cache_names);
     await Promise.all(

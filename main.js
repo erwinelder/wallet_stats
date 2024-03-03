@@ -1064,7 +1064,7 @@ function uploadAppData() {
  * Checks and displays version update notifications.
  */
 function uploadVersionUpdate() {
-	let version = '3.1.3';
+	let version = '3.2.0';
 
 	if (!localStorage.getItem('V')) {
 
@@ -1325,7 +1325,8 @@ function uploadUpdateDetailsToItsWindow(type) {
 	let container = id('update-details-paragraphs');
 
 	let paragraphs = getUpdateDetailsArrayByLang(type);
-	
+
+	id('update-details-paragraphs').innerText = null;
 	for (let a = 0; a < paragraphs.length; a++)
 		container.insertAdjacentHTML('beforeend', paragraphs[a]);
 }
@@ -1442,37 +1443,67 @@ function getUpdateDetailsArrayByLang(type) {
 		
 		if (lang === LANG_ENUM.en)
 			return [
+				`<h3>Sound notifications</h3>
+				<p>
+					Now you can select which sound will play on internal app notifications.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Other</h3>
 				<p>
-					Bug fixing.
+					Code optimization and bug fixing.
 				</p>`
 			];
 		else if (lang === LANG_ENUM.cz)
 			return [
+				`<h3>Zvuková oznámení</h3>
+				<p>
+					Nyní můžete vybrat, který zvuk se přehraje při interních oznámeních aplikace.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Ostatní</h3>
 				<p>
-					Opravy chyb.
+					Optimalizace kódu a opravy chyb.
 				</p>`
 			];
 		else if (lang === LANG_ENUM.de)
 			return [
+				`<h3>Töne für Benachrichtigungen</h3>
+				<p>
+					Jetzt können Sie auswählen, welcher Ton bei internen App-Benachrichtigungen abgespielt wird.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Sonstiges</h3>
 				<p>
-					Fehlerbehebungen.
+					Codeoptimierung und Fehlerbehebung.
 				</p>`
 			];
 		else if (lang === LANG_ENUM.ru)
 			return [
+				`<h3>Звуковые уведомления</h3>
+				<p>
+					Теперь вы можете выбрать, какой звук будет воспроизводиться при внутренних уведомлениях приложения.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Другое</h3>
 				<p>
-					Исправление ошибок.
+					Оптимизация кода и исправление ошибок.
 				</p>`
 			];
 		else if (lang === LANG_ENUM.ua)
 			return [
+				`<h3>Звукові сповіщення</h3>
+				<p>
+					Тепер ви можете вибрати, який звук буде відтворюватися при внутрішніх сповіщеннях програми.
+				</p>`,
+				`<hr class="small-hr">`,
+
 				`<h3>Інше</h3>
 				<p>
-					Виправлення помилок.
+					Оптимізація коду та виправлення помилок.
 				</p>`
 			];
 	}
