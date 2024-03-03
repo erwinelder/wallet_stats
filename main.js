@@ -580,9 +580,9 @@ const DATE_RANGE_ENUM = {
 }
 
 const ACCOUNT_INFO = {
-	currency: "currency",
-	balance: "balance",
-	color: "color"
+	currency: "Currency",
+	balance: "Balance",
+	color: "Color"
 }
 
 let uiState = {
@@ -1020,13 +1020,13 @@ function uploadAppData() {
 	// apply theme
 	if (!localStorage.getItem('T')) {
 		localStorage.setItem('T', 'l');
-		localStorage.setItem('TA', '0');
+		localStorage.setItem('TA', "false");
 	}
 	applyTheme(localStorage.getItem('T'));
 
 	// set setting 'run animation on start' on the first run of the app
 	if (!localStorage.getItem('SA'))
-		localStorage.setItem('SA', '1');
+		localStorage.setItem('SA', "true");
 
 	// apply top margin
 	if (!(localStorage.getItem('TM'))) localStorage.setItem('TM', (0).toString());
@@ -1064,7 +1064,7 @@ function uploadAppData() {
  * Checks and displays version update notifications.
  */
 function uploadVersionUpdate() {
-	let version = '3.2.0';
+	let version = '3.2.1';
 
 	if (!localStorage.getItem('V')) {
 
@@ -3218,7 +3218,7 @@ function returnRecordAmountToBalance(recordNum) {
 	else if (type === '+') localStorage.setItem(`ABalance${accountId}`, (balance - amount).toString());
 
 	setTimeout(() => {
-		updateAccountInfoInCont(accountId, 'Balance', id('accounts'));
+		updateAccountInfoInCont(accountId, ACCOUNT_INFO.balance, id('accounts'));
 	}, 400);
 }
 
@@ -4576,7 +4576,7 @@ function setUpClickOnAccountsInTopBar() {
 			
 			listenDoubleClickOnAccount(account, e);
 		}
-		updateAccountInfo(account, Number(account.getAttribute('data-accountnum')), 'Balance');
+		updateAccountInfo(account, Number(account.getAttribute('data-accountnum')), ACCOUNT_INFO.balance);
 	}
 
 	id('accounts').firstElementChild.classList.add('active-account');
@@ -4592,7 +4592,7 @@ function setUpClickOnAccountsInTopBar() {
  * @param {Event} event - The click event.
  */
 function listenDoubleClickOnAccount(account, event) {
-	let account_num = Number(account.getAttribute('data-accountnum'));
+	let accountNum = Number(account.getAttribute('data-accountnum'));
 
 	// prevent zoom by double tap
 	event.preventDefault();
@@ -4600,12 +4600,12 @@ function listenDoubleClickOnAccount(account, event) {
 	let tap_time = (new Date()).getTime();
 	
 	// if it was double tap
-	if (tap_time - accountTapTime < 400 && localStorage.getItem(`AWB${account_num}`) === "false") {
+	if (tap_time - accountTapTime < 400 && localStorage.getItem(`AWB${accountNum}`) === "false") {
 		localStorage.setItem(
-			`AHB${account_num}`,
-			localStorage.getItem(`AHB${account_num}`) === "true" ? "false" : "true"
+			`AHB${accountNum}`,
+			localStorage.getItem(`AHB${accountNum}`) === "true" ? "false" : "true"
 		);
-		updateAccountInfo(account, account_num, 'Balance');
+		updateAccountInfo(account, accountNum, ACCOUNT_INFO.balance);
 	}
 
 	accountTapTime = tap_time;
@@ -5591,7 +5591,7 @@ function onSaveRecordButton(clickEl, windowEl_cont, windowEl) {
 
 	// update account balance
 	updateStorageAccountBalance(record.num, record.type, record.accountId, record.amount, record_status);
-	updateAccountInfoInCont(record.accountId, 'Balance', id('accounts'));
+	updateAccountInfoInCont(record.accountId, ACCOUNT_INFO.balance, id('accounts'));
 
 	// save record to storage
 	localStorage.setItem(`RP${record.num}`, record.type);
@@ -5638,10 +5638,10 @@ function saveTransfer(clickEl, windowEl_cont, windowEl) {
 
 	// decrease balance of 'from account'
 	updateStorageAccountBalance(transfer.num, '-', transfer.fromAccountId, transfer.startAmount, record_status);
-	updateAccountInfoInCont(transfer.fromAccountId, 'Balance', accounts_cont);
+	updateAccountInfoInCont(transfer.fromAccountId, ACCOUNT_INFO.balance, accounts_cont);
 	// increase balance of 'to account'
 	updateStorageAccountBalance(transfer.num + 1, '+', transfer.toAccountId, transfer.finalAmount, record_status);
-	updateAccountInfoInCont(transfer.toAccountId, 'Balance', accounts_cont);
+	updateAccountInfoInCont(transfer.toAccountId, ACCOUNT_INFO.balance, accounts_cont);
 
 	saveTransferRecordToStorage(transfer);
 
@@ -5900,7 +5900,7 @@ function updateStorageAccountBalance_EditedRecord(
 
 	for (let account of id('accounts').getElementsByClassName('account')) {
 		if (Number(account.getAttribute('data-accountnum')) === storageAccountId) {
-			updateAccountInfoInCont(storageAccountId, 'Balance', id('accounts'));
+			updateAccountInfoInCont(storageAccountId, ACCOUNT_INFO.balance, id('accounts'));
 		}
 	}
 }
@@ -5937,14 +5937,14 @@ function updateStorageAccountBalance_EditedTransfer(
 
 	for (let account of id('accounts').getElementsByClassName('account')) {
 		if (Number(account.getAttribute('data-accountnum')) === storageAccountId) {
-			updateAccountInfoInCont(storageAccountId, 'Balance', id('accounts'));
+			updateAccountInfoInCont(storageAccountId, ACCOUNT_INFO.balance, id('accounts'));
 		}
 	}
 }
 
 
 /**
- * Calls updateAllAccountInfo() function withpassed accountId and for every data (color, balance and currency).
+ * Calls updateAllAccountInfo() function with passed accountId and for every data (color, balance and currency).
  *
  * @param {number} accountId - Account ID.
  */
@@ -5955,7 +5955,7 @@ function updateUIDataOfAccount(accountId) {
 }
 
 /**
- * Calls updateAccountInfoInCont() function withpassed account info and accountId for all containers that contains
+ * Calls updateAccountInfoInCont() function with passed account info and accountId for all containers that contains
  * accounts (top-bar container and container in settings).
  *
  * @param {number} accountId - Account ID.
@@ -6662,7 +6662,7 @@ function uploadSettingsCategoryData_Other(contentCont, buttonCont) {
 		</p>
 		<label class="radio-button-label">
 			<input type="radio" name="notification-sound" data-ntf-num="1">
-			<audio controls>
+			<audio controls >
 				<source src="Main/sounds/notification_1.mp3" type="audio/mpeg">
 			</audio>
 		</label>
@@ -6883,7 +6883,7 @@ function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 			<div class="switch-cont">
 				<p>${off_word}</p>
 				<div class="switch">
-					${getSwitchInput(Number(localStorage.getItem('B')))}
+					${getSwitchInput(localStorage.getItem('B') === "true")}
 					<span class="switch-slider"></span>
 				</div>
 				<p>${on_word}</p>
@@ -6896,7 +6896,7 @@ function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 			<div class="switch-cont">
 				<p>${off_word}</p>
 				<div class="switch">
-					${getSwitchInput(Number(localStorage.getItem('SA')))}
+					${getSwitchInput( localStorage.getItem('SA') === "true" )}
 					<span class="switch-slider"></span>
 				</div>
 				<p>${on_word}</p>
@@ -6910,7 +6910,7 @@ function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 			<div class="switch-cont">
 				<p>${off_word}</p>
 				<div class="switch">
-					${getSwitchInput(Number(localStorage.getItem('TA')))}
+					${getSwitchInput( localStorage.getItem('TA') === "true" )}
 					<span class="switch-slider"></span>
 				</div>
 				<p>${on_word}</p>
@@ -6939,12 +6939,12 @@ function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 	let switch_buttons = contentCont.getElementsByClassName('switch');
 	// blurring
 	switch_buttons[0].firstElementChild.onclick = function() {
-		localStorage.setItem('B', (this.checked === true).toString());
+		localStorage.setItem('B', this.checked.toString());
 		reapplyBlur(localStorage.getItem('B') === "true");
 	}
 	// start animation
 	switch_buttons[1].firstElementChild.onclick = function() {
-		localStorage.setItem('SA', Number(this.checked).toString());
+		localStorage.setItem('SA', this.checked.toString());
 	}
 	// auto theme
 	switch_buttons[2].firstElementChild.onclick = function() {
@@ -6958,7 +6958,7 @@ function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 /**
  * Gets the HTML input element for the switch, either checked or unchecked.
  *
- * @param {number} checked - The value indicating whether the switch is checked.
+ * @param {boolean} checked - The value indicating whether the switch is checked.
  *
  * @returns {string} - The HTML code for the switch input.
  */
@@ -7005,7 +7005,7 @@ function setUpClickOnThemes(container, switchButton) {
  * @param {HTMLInputElement} switchButton - The switch button for the 'Auto Adjust Theme' option.
  */
 function changeAutomaticThemeStatusInStorage(switchButton) {
-	localStorage.setItem('TA', Number(switchButton.checked).toString());
+	localStorage.setItem('TA', switchButton.checked.toString());
 }
 
 /**
@@ -7797,9 +7797,9 @@ function saveEditedAccount(accountNum, clickEl, windowElCont, windowEl) {
 
 	let prev_color = localStorage.getItem(`AColor${accountNum}`),
 		prev_currency = localStorage.getItem(`ACurrency${accountNum}`),
-		prev_HT_status = Number(localStorage.getItem(`AHT${accountNum}`)),
-		prev_WB_status = Number(localStorage.getItem(`AWB${accountNum}`)),
-		prev_HB_status = Number(localStorage.getItem(`AHB${accountNum}`));
+		prev_HT_status = localStorage.getItem(`AHT${accountNum}`) === "true",
+		prev_WB_status = localStorage.getItem(`AWB${accountNum}`) === "true",
+		prev_HB_status = localStorage.getItem(`AHB${accountNum}`) === "true";
 	
 	// save new account's data to storage
 	localStorage.setItem( `AColor${accountNum}`, id('edit-account-color-button').getAttribute('color') );
@@ -7814,7 +7814,9 @@ function saveEditedAccount(accountNum, clickEl, windowElCont, windowEl) {
 	updateUIDataOfAccount(accountNum);
 
 	// update widgets' data if needed
-	updateWidgetsDataAfterEditingAccount(accountNum, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status);
+	updateWidgetsDataAfterEditingAccount(
+		accountNum, prev_color, prev_currency, prev_HT_status, prev_WB_status, prev_HB_status
+	);
 
 	// close edit account window
 	let clickEL_transition = changeFloatingWindowTransformation(clickEl, windowElCont, windowEl);
@@ -7831,12 +7833,13 @@ function saveEditedAccount(accountNum, clickEl, windowElCont, windowEl) {
  * @param {number} accountNum - The account number.
  * @param {string} prevColor - The previous account color.
  * @param {string} prevCurrency - The previous account currency.
- * @param {number} prev_HT_status - The previous hide from top-bar status.
- * @param {number} prev_WB_status - The previous without account balance status.
- * @param {number} prev_HB_status - The previous hide account balance status.
+ * @param {boolean} prev_HT_status - The previous hide from top-bar status.
+ * @param {boolean} prev_WB_status - The previous without account balance status.
+ * @param {boolean} prev_HB_status - The previous hide account balance status.
  */
 function updateWidgetsDataAfterEditingAccount(
-	accountNum, prevColor, prevCurrency, prev_HT_status, prev_WB_status, prev_HB_status
+	accountNum, prevColor, prevCurrency,
+	prev_HT_status, prev_WB_status, prev_HB_status
 ) {
 
 	// update data of all widgets because of new account currency
@@ -7851,9 +7854,9 @@ function updateWidgetsDataAfterEditingAccount(
 		uploadRecordsToHistory();
 	// reupload accounts to top-bar if account now is hidden in top-bar
 	if (
-		prev_HT_status !== Number(id('hide-account-from-top-bar-switch').checked) ||
-		prev_WB_status !== Number(id('without-account-balance-switch').checked) ||
-		prev_HB_status !== Number(id('hide-account-balance-switch').checked)
+		prev_HT_status !== id('hide-account-from-top-bar-switch').checked ||
+		prev_WB_status !== id('without-account-balance-switch').checked ||
+		prev_HB_status !== id('hide-account-balance-switch').checked
 	) {
 		id('accounts').innerHTML = null;
 		for (let a = 1; a <= localStorage.getItem('ACount'); a++)

@@ -1,4 +1,4 @@
-const cache_version = 'v3.2.0';
+const cache_version = 'v3.2.1';
 const asset_files = [
     'index.html',
     'Main/main.css',
@@ -21,7 +21,6 @@ self.addEventListener('install', async () => {
 
 self.addEventListener('activate', async () => {
     const cache_names = await caches.keys();
-    console.log(cache_names);
     await Promise.all(
         cache_names
             .filter(name => name !== cache_version)
@@ -44,10 +43,9 @@ async function cacheFirst (request) {
     try {
         const response = await fetch(request);
         const cache = await caches.open(cache_version);
-        await cache.put(request, response.clone()); // Update the cache with the new resource
+        await cache.put(request, response.clone());
         return response;
     } catch (error) {
-        // Handle fetch errors here
         console.error('Error fetching resource:', error);
     }
 }
