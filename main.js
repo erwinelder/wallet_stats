@@ -1064,7 +1064,7 @@ function uploadAppData() {
  * Checks and displays version update notifications.
  */
 function uploadVersionUpdate() {
-	let version = '3.2.4';
+	let version = '3.2.5';
 
 	if (!localStorage.getItem('V')) {
 
