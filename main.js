@@ -631,9 +631,7 @@ function getAccountBalance(num) {
 		return ('∞');
 	} else if (localStorage.getItem(`AHB${num}`) === "false") {
 		return getReadableNumber(
-			Number(
-				Number(localStorage.getItem('ABalance' + num)).toFixed(2)
-			)
+			Number(localStorage.getItem('ABalance' + num))
 		);
 	} else {
 		return ('???');
@@ -648,7 +646,7 @@ function getAccountBalance(num) {
  * @return {string} - Returns the formatted number as a string with commas as a thousand separators.
  */
 function getReadableNumber(number) {
-	let formattedNumber = number.toString();
+	let formattedNumber = number.toFixed(2);
 
 	let number_len = formattedNumber.length - 3;
 	formattedNumber = formattedNumber.split('');
@@ -997,9 +995,15 @@ function uploadAppData() {
 	uploadLanguage(lang);
 
 	// upload blur
-	if (!(localStorage.getItem('B')))
-		localStorage.setItem('B', '1');
+	if (!localStorage.getItem('B')) {
+		localStorage.setItem('B', "true");
+	}
 	reapplyBlur(localStorage.getItem('B') === "true");
+
+	// upload notification sound
+	if (!localStorage.getItem('NS')) {
+		localStorage.setItem('NS', "0");
+	}
 
 	// upload categories to its windows
 
@@ -1187,32 +1191,32 @@ function updateStorageDataToV3_1_0() {
  */
 function showNotification(type, timer) {
 
-	let notification_contEl = id('notification-cont'),
+	let notificationContEl = id('notification-cont'),
 		notificationEl = id('notification'),
 		timerLine = id('notification-timer-line');
-	let hide_notification;
+	let hideNotificationTimeout;
 
-	// upload message
 	uploadNotificationMessage(type, id('notification-title'), id('notification-details'));
 	// show or hide buttons block
 	uploadNotificationButtons(type, notificationEl);
-	
+
+	playNotificationSound();
 	// start show notification animation
-	notification_contEl.style.visibility = 'visible';
-	notification_contEl.classList.add('show');
+	notificationContEl.style.visibility = 'visible';
+	notificationContEl.classList.add('show');
 	// show timer line
 	if (timer > 0) timerLine.style.transition = `${timer / 1000}s width linear`;
 	else timerLine.style.width = '0%';
 	
 	setTimeout(() => {
 		// end show notification animation
-		notification_contEl.classList.add('animate-end');
-		notification_contEl.classList.remove('show');
+		notificationContEl.classList.add('animate-end');
+		notificationContEl.classList.remove('show');
 		// start timer to hide notification
 		if (timer > 0) {
 			timerLine.style.width = '0%';
-			hide_notification = setTimeout(() => {
-				hideNotification(notification_contEl);
+			hideNotificationTimeout = setTimeout(() => {
+				hideNotification(notificationContEl);
 			}, timer);
 		}
 	}, 400);
@@ -1220,8 +1224,8 @@ function showNotification(type, timer) {
 	// hide notification by click on it
 	notificationEl.onclick = e => {
 		if (e.target.id !== 'notification-show-details-button') {
-			clearTimeout(hide_notification);
-			hideNotification(notification_contEl);
+			clearTimeout(hideNotificationTimeout);
+			hideNotification(notificationContEl);
 		}
 	}
 }
@@ -1294,6 +1298,20 @@ function hideNotification(notificationContEl) {
 	setTimeout(() => {
 		notificationContEl.style.visibility = 'hidden';
 	}, 400);
+}
+
+/**
+ * Plays notification sound based on the saved setting in the local storage.
+ */
+function playNotificationSound() {
+	if (localStorage.getItem("NS") === "0") {
+		return;
+	}
+
+	let audio = new Audio(`Main/sounds/notification_${localStorage.getItem("NS")}.mp3`);
+	audio.play()
+		.then(() => {})
+		.catch(() => {});
 }
 
 
@@ -2327,7 +2345,7 @@ function uploadLanguageToButtons(lang) {
 		els[a].value = getStrings(lang).back;
 
 	els = id('settings-categories').getElementsByTagName('button');
-	els[0].innerText = getStrings(lang).links;
+	els[0].innerText = getStrings(lang).other;
 	els[1].innerText = getStrings(lang).reset_data;
 	els[2].innerText = getStrings(lang).language;
 	els[3].innerText = getStrings(lang).appearance;
@@ -6573,7 +6591,7 @@ function prepareSettingsCategoryWindow(windowElCont, category, clickEl) {
 
 	windowElCont.lastElementChild.firstElementChild.firstElementChild.innerHTML = clickEl.lastElementChild.innerText;
 
-	if (category === 'Links') uploadSettingsCategoryData_Links(content_cont, button_cont);
+	if (category === 'Other') uploadSettingsCategoryData_Other(content_cont, button_cont);
 	else if (category === 'Reset data') uploadSettingsCategoryData_Reset(content_cont, button_cont);
 	else if (category === 'Language') uploadSettingsCategoryData_Language(content_cont, button_cont);
 	else if (category === 'Appearance') uploadSettingsCategoryData_Appearance(content_cont, button_cont);
@@ -6597,19 +6615,97 @@ function closeSettingsCategoryWindow() {
 
 
 
-/* Links */
+/* Other */
 /**
- * Uploads content for the 'Links' category in the settings modal.
+ * Uploads content for the 'Other' category in the settings modal.
  *
- * @param {HTMLElement} contentCont - The container for the content in the 'Links' category.
- * @param {HTMLElement} buttonCont - The container for the buttons in the 'Links' category.
+ * @param {HTMLElement} contentCont - The container for the content in the 'Other' category.
+ * @param {HTMLElement} buttonCont - The container for the buttons in the 'Other' category.
  */
-function uploadSettingsCategoryData_Links(contentCont, buttonCont) {
+function uploadSettingsCategoryData_Other(contentCont, buttonCont) {
+	let lang = localStorage.getItem('L');
 
-	contentCont.insertAdjacentHTML('afterbegin',
-	`erwineldermail@gmail.com`
+	contentCont.insertAdjacentHTML('afterbegin', `
+		<p class="description">
+			${getStrings(lang).notification_sound_setting_description}
+		</p>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="1">
+			<audio controls>
+				<source src="Main/sounds/notification_1.mp3" type="audio/mpeg">
+			</audio>
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="2">
+			<audio controls>
+				<source src="Main/sounds/notification_2.mp3" type="audio/mpeg">
+			</audio>
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="3">
+			<audio controls>
+				<source src="Main/sounds/notification_3.mp3" type="audio/mpeg">
+			</audio>
+		</label>
+		<label class="radio-button-label">
+			<input type="radio" name="notification-sound" data-ntf-num="0">
+			${getStrings(lang).without_sound}
+		</label>
+	`);
+	buttonCont.insertAdjacentHTML('afterbegin',
+		`<hr class="big-hr">
+		<input type="button" value="Save" class="clickable-button" id="save-notification-sound-button">`
 	);
-	buttonCont.classList.add('button-block-hide');
+
+	let soundNum = uploadSelectedNtfSoundToOtherSettingsWindow(contentCont);
+	id('save-notification-sound-button').setAttribute('data-ntf-num', soundNum);
+
+	setClickOnNftRadioButtonsInOtherSettingsWindow(contentCont);
+	setUpClickOnSaveNtfSoundButton();
+}
+
+/**
+ * Uploads the selected notification sound to the 'Change notification sound' window.
+ *
+ * @param {HTMLElement} contentCont - The container for the content in the 'Other' category.
+ *
+ * @return {string} - Notification sound number saved in the local storage.
+ */
+function uploadSelectedNtfSoundToOtherSettingsWindow(contentCont) {
+	let soundNum = localStorage.getItem('NS');
+
+	for (let el of contentCont.getElementsByTagName('input'))
+		if (el.getAttribute('data-ntf-num') === soundNum)
+			el.setAttribute('checked', '');
+
+	return soundNum;
+}
+
+/**
+ * Sets up click events on radio buttons in the "Other settings" window to update the selected sound for saving.
+ *
+ * @param {HTMLElement} container - The container for the content in the 'Other' category.
+ */
+function setClickOnNftRadioButtonsInOtherSettingsWindow(container) {
+
+	for (let button of container.getElementsByTagName('input')) {
+		button.onclick = function () {
+			id('save-notification-sound-button').setAttribute(
+				"data-ntf-num",
+				this.getAttribute("data-ntf-num")
+			);
+		}
+	}
+}
+
+/**
+ * Sets up the click event for the 'Save' button in the 'Other' category.
+ */
+function setUpClickOnSaveNtfSoundButton() {
+	id('save-notification-sound-button').onclick = function() {
+		localStorage.setItem('NS', this.getAttribute("data-ntf-num"));
+		closeSettingsCategoryWindow();
+	}
 }
 
 
@@ -6659,32 +6755,35 @@ function uploadSettingsCategoryData_Language(contentCont, buttonCont) {
 		</p>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="en">
+			${getStrings(lang).english}
 		</label>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="cz">
+			${getStrings(lang).czech}
 		</label>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="de">
+			${getStrings(lang).german}
 		</label>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="ru">
+			${getStrings(lang).russian}
 		</label>
 		<label class="radio-button-label">
 			<input type="radio" name="radio-language" lang="ua">
+			${getStrings(lang).ukrainian}
 		</label>`
 	);
 	buttonCont.insertAdjacentHTML('afterbegin',
 		`<hr class="big-hr">
-		<input type="button" value="Save" class="clickable-button" id="save-language-button">`	
+		<input type="button" value="${getStrings(lang).save}" class="clickable-button" id="save-language-button">`
 	);
 
 	uploadSelectedLanguageToChangeLanguageWindow(contentCont);
 	id('save-language-button').setAttribute('lang', lang);
 	
-	setUpButtonsValue_Language(id('settings-category-window-cont'), lang);
 	setClickOnLanguageButtons(contentCont);
-
-	setUpClickOnSaveLanguageButton(contentCont);
+	setUpClickOnSaveLanguageButton();
 }
 
 /**
@@ -6707,49 +6806,26 @@ function uploadSelectedLanguageToChangeLanguageWindow(contentCont) {
  */
 function setClickOnLanguageButtons(container) {
 
-	for (let button of container.getElementsByClassName('language-button'))
-		button.onclick = function() {
+	for (let button of container.getElementsByTagName('input')) {
+		button.onclick = function () {
 			id('save-language-button').setAttribute('lang', this.getAttribute('lang'));
 		}
-}
-
-/**
- * Sets up the text content for language buttons and the 'Save' button.
- *
- * @param {HTMLElement} container - The container for the content in the 'Language' category.
- * @param {string} lang - The current language.
- */
-function setUpButtonsValue_Language(container, lang) {
-	let els = container.getElementsByTagName('label');
-	els[0].insertAdjacentText('beforeend', getStrings(lang).english);
-	els[1].insertAdjacentText('beforeend', getStrings(lang).czech);
-	els[2].insertAdjacentText('beforeend', getStrings(lang).german);
-	els[3].insertAdjacentText('beforeend', getStrings(lang).russian);
-	els[4].insertAdjacentText('beforeend', getStrings(lang).ukrainian);
-
-	id('save-language-button').value = getStrings(lang).save;
+	}
 }
 
 /**
  * Sets up the click event for the 'Save' button in the 'Language' category.
- *
- * @param {HTMLElement} contentCont - The container for the content in the 'Language' category.
  */
-function setUpClickOnSaveLanguageButton(contentCont) {
-	let save_button = id('save-language-button'),
-		lang = localStorage.getItem('L'),
-		chosenLang = lang;
+function setUpClickOnSaveLanguageButton() {
+	let saveButton = id('save-language-button');
 
-	save_button.onclick = function() {
-
-		for (let el of contentCont.getElementsByTagName('input'))
-			if (el.checked) chosenLang = el.getAttribute('lang');
-
-		if (chosenLang !== lang) {
-			localStorage.setItem('L', chosenLang);
+	saveButton.onclick = function() {
+		if (localStorage.getItem('L') !== saveButton.getAttribute("lang")) {
+			localStorage.setItem('L', saveButton.getAttribute("lang"));
 			window.location.reload();
-		} else
+		} else {
 			closeSettingsCategoryWindow();
+		}
 	}
 }
 
@@ -6832,7 +6908,7 @@ function uploadSettingsCategoryData_Appearance(contentCont, buttonCont) {
 	let switch_buttons = contentCont.getElementsByClassName('switch');
 	// blurring
 	switch_buttons[0].firstElementChild.onclick = function() {
-		localStorage.setItem('B', Number(this.checked).toString());
+		localStorage.setItem('B', (this.checked === true).toString());
 		reapplyBlur(localStorage.getItem('B') === "true");
 	}
 	// start animation
@@ -7172,6 +7248,7 @@ function setUpClickOnRemoveAccountButton(
 			hidePopupNotification = showPopUpConnectedNotification(
 				'remove account', notification_cont, windowEl
 			);
+			playNotificationSound();
 		}
 
 	}

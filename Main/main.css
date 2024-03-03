@@ -3447,6 +3447,12 @@ body.font2 .plate-button {
 
 
 
+	#edit-account {
+		max-height: 80vh;
+	}
+
+
+
 	.subcategories-back .back-button {
 		font-size: 1.8em;
 	}

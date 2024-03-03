@@ -102,7 +102,9 @@ const STRING_RES = {
         enable_blurring: "Enable blurring",
         run_animation_on_start: "Run animation on start",
         auto_adjust_theme: "Auto adjust theme",
-        top_margin_setting_description: "Set the top margin for easy viewing of the interface on the screen with notch."
+        top_margin_setting_description: "Set the top margin for easy viewing of the interface on the screen with notch.",
+        notification_sound_setting_description: "Select a sound that will play on internal app notifications.",
+        without_sound: "Without sound"
     },
     [LANG_ENUM.cz]: {
         hello: "Ahoj!",
@@ -199,7 +201,9 @@ const STRING_RES = {
         enable_blurring: "Povolit rozmazání",
         run_animation_on_start: "Spustit animaci při spuštění",
         auto_adjust_theme: "Automaticky prizpůsobovat motiv",
-        top_margin_setting_description: "Nastavte horní okraj pro snadné prohlížení rozhraní na zářezové obrazovce."
+        top_margin_setting_description: "Nastavte horní okraj pro snadné prohlížení rozhraní na zářezové obrazovce.",
+        notification_sound_setting_description: "Vyberte zvuk, který se přehraje při interních oznámeních aplikace.",
+        without_sound: "Bez zvuku"
     },
     [LANG_ENUM.de]: {
         hello: "Hallo!",
@@ -296,7 +300,9 @@ const STRING_RES = {
         enable_blurring: "Unschärfe aktivieren",
         run_animation_on_start: "Animation beim Start ausführen",
         auto_adjust_theme: "Thema automatisch anpassen",
-        top_margin_setting_description: "Setzen Sie den oberen Abstand, um eine bequeme Ansicht der Benutzeroberfläche auf einem Bildschirm mit Aussparung zu gewährleisten."
+        top_margin_setting_description: "Setzen Sie den oberen Abstand, um eine bequeme Ansicht der Benutzeroberfläche auf einem Bildschirm mit Aussparung zu gewährleisten.",
+        notification_sound_setting_description: "Wählen Sie einen Ton für interne App-Benachrichtigungen aus.",
+        without_sound: "Ohne Ton"
     },
     [LANG_ENUM.ru]: {
         hello: "Привет!",
@@ -393,7 +399,9 @@ const STRING_RES = {
         enable_blurring: "Включить размытие",
         run_animation_on_start: "Запустить анимацию при запуске",
         auto_adjust_theme: "Автоматически адаптировать тему",
-        top_margin_setting_description: "Установите верхний отступ для удобного просмотра интерфейса на экране с вырезом."
+        top_margin_setting_description: "Установите верхний отступ для удобного просмотра интерфейса на экране с вырезом.",
+        notification_sound_setting_description: "Выберите звук для внутренних уведомлений приложения.",
+        without_sound: "Без звука"
     },
     [LANG_ENUM.ua]: {
         hello: "Привіт!",
@@ -490,7 +498,9 @@ const STRING_RES = {
         enable_blurring: "Увімкнути розмиття",
         run_animation_on_start: "Запустити анімацію при запуску",
         auto_adjust_theme: "Автоматично адаптувати тему",
-        top_margin_setting_description: "Встановіть верхній відступ для зручного перегляду інтерфейсу на екрані з вирізом."
+        top_margin_setting_description: "Встановіть верхній відступ для зручного перегляду інтерфейсу на екрані з вирізом.",
+        notification_sound_setting_description: "Виберіть звук для внутрішніх сповіщень додатку.",
+        without_sound: "Без звуку"
     }
 }
 
