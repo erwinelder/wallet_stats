@@ -33,7 +33,7 @@ input::-webkit-inner-spin-button {
 }
 button {
 	border: none;
-	color: var(--opposite-color);
+	color: var(--solid-color);
 	background-color: transparent;
 	font-size: inherit;
 }
