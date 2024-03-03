@@ -1,9 +1,9 @@
-const cache_version = 'v3.2.4';
+const cache_version = 'v3.2.5';
 const asset_files = [
     'index.html',
     'Main/main.css',
     'main.js',
-    'scripts/language.js',
+    'language.js',
     'Main/svg/background-l.svg',
     'Main/svg/background-d.svg',
     'Main/svg/background-b.svg',
