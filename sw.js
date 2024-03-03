@@ -1,10 +1,10 @@
 const cache_name_prefix = 'app-cache-';
-const cache_version = 'v3.2.2';
+const cache_version = 'v3.2.3';
 const asset_files = [
     'index.html',
     'Main/main.css',
-    'main.js',
     'scripts/language.js',
+    'main.js',
     'Main/svg/background-l.svg',
     'Main/svg/background-d.svg',
     'Main/svg/background-b.svg',
@@ -45,7 +45,7 @@ async function fetchCache() {
 
 
 self.addEventListener('fetch', async e => {
-    // await fetchCache();
+    await fetchCache();
     const cached = await caches.match(e.request);
     const response = cached ?? await fetch(e.request);
     e.respondWith(response);
