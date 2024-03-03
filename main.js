@@ -1064,7 +1064,7 @@ function uploadAppData() {
  * Checks and displays version update notifications.
  */
 function uploadVersionUpdate() {
-	let version = '3.2.1';
+	let version = '3.2.2';
 
 	if (!localStorage.getItem('V')) {
 
@@ -1112,12 +1112,12 @@ function updateStorageDataToV3_1_0() {
 	localStorage.removeItem('AT');
 	// add status 'Hide from Top-bar', 'WithoutBalance' and 'Hide Balance' to accounts
 	for (let a = 1; a <= Number(localStorage.getItem('ACount')); a++) {
-		localStorage.setItem(`AHT${a}`, '0');
-		localStorage.setItem(`AWB${a}`, '0');
-		localStorage.setItem(`AHB${a}`, '0');
+		localStorage.setItem(`AHT${a}`, "false");
+		localStorage.setItem(`AWB${a}`, "false");
+		localStorage.setItem(`AHB${a}`, "false");
 	}
 	// add setting 'start animation'
-	localStorage.setItem('SA', '1');
+	localStorage.setItem('SA', "true");
 
 	// change records' variables to compact ones
 
@@ -1527,7 +1527,7 @@ async function startPreloaderAnimation() {
 
 	disableScrolling();
 
-	if (Number(localStorage.getItem('SA'))) {
+	if (localStorage.getItem('SA') === "true") {
 		
 		id('preloader-svg').classList.add('default');
 
@@ -2502,7 +2502,7 @@ function operateElementsArrayClass(array, classToRemove, classToAdd) {
  */
 function applyTheme(theme) {
 
-	if (Number(localStorage.getItem('TA')) === 1) {
+	if (localStorage.getItem('TA') === "true") {
 		if (window.matchMedia('(prefers-color-scheme: dark)').matches)
 			theme = 'd';
 		else theme = 'l';
@@ -3420,7 +3420,7 @@ function uploadTodayStatsData(
 	if (todayAmount === 0) {
 		descriptionEl.innerText = getStrings(lang).greetings_no_expenses_message;
 	} else if (
-		!Number(localStorage.getItem(`AWB${accountNum}`)) &&
+		localStorage.getItem(`AWB${accountNum}`) === "false" &&
 		Number(localStorage.getItem(`ABalance${accountNum}`)) >= 0
 	) {
 		let default_account_balance = todayAmount + Number(localStorage.getItem(`ABalance${accountNum}`));
