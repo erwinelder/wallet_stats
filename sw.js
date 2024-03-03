@@ -1,4 +1,4 @@
-const cache_version = 'v3.2.1';
+const cache_version = 'v3.2.2';
 const asset_files = [
     'index.html',
     'Main/main.css',
@@ -6,7 +6,10 @@ const asset_files = [
     'scripts/language.js',
     'Main/svg/background-l.svg',
     'Main/svg/background-d.svg',
-    'Main/svg/background-b.svg'
+    'Main/svg/background-b.svg',
+    'Main/sounds/notification_1.mp3',
+    'Main/sounds/notification_2.mp3',
+    'Main/sounds/notification_3.mp3'
 ];
 
 
