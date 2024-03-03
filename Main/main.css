@@ -33,6 +33,7 @@ input::-webkit-inner-spin-button {
 }
 button {
 	border: none;
+	color: var(--opposite-color);
 	background-color: transparent;
 	font-size: inherit;
 }
@@ -76,6 +77,13 @@ input[type="radio"]:checked {
 }
 input[type="radio"]:checked::before {
 	transform: scale(1);
+}
+
+audio::-webkit-media-controls-current-time-display {
+	display: none;
+}
+audio::-webkit-media-controls-time-remaining-display {
+	display: none;
 }
 
 
@@ -2962,7 +2970,6 @@ body.font2 .plate-button {
 	opacity: 0 !important;
 	transform: scale(0.75) !important;
 }
-
 
 
 
