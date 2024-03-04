@@ -5,8 +5,6 @@
 
 ### Functionality of the application
 
-How it works.
-
 - Adding new accounts by specifying a balance, name, color, and settings to hide the account from the top bar of the application, hide the account balance, or indicate if the does not have a specified balance.
 - Deleting accounts along with all connected records.
 - Creating a new record by specifying a date, note, account, record type (expense or income), category, subcategory, and amount.
