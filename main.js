@@ -1064,7 +1064,7 @@ function uploadAppData() {
  * Checks and displays version update notifications.
  */
 function uploadVersionUpdate() {
-	let version = '3.2.3';
+	let version = '3.2.4';
 
 	if (!localStorage.getItem('V')) {
 
@@ -5571,7 +5571,7 @@ function closeCategoriesWindow(clickEl, windowElCont, windowEl) {
  * Checks if the 'make-record-amount' field is not empty before saving the record.
  */
 id('make-record-save-button').onclick = () => {
-	if (id('make-record-amount').value !== 0) {
+	if (id('make-record-amount').value !== "0") {
 		onSaveRecordButton(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
 	} else {
 		animateEmptyFieldError(id('make-record-amount'));
@@ -5612,7 +5612,7 @@ function onSaveRecordButton(clickEl, windowEl_cont, windowEl) {
  */
 id('make-transfer-button').onclick = () => {
 	
-	if (id('make-record-amount').value !== 0 && id('make-transfer-final-amount').value !== 0) {
+	if (id('make-record-amount').value !== "0" && id('make-transfer-final-amount').value !== "0") {
 		saveTransfer(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
 	} else {
 		if (id('make-record-amount').value === 0) {
