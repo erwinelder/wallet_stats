@@ -1064,7 +1064,7 @@ function uploadAppData() {
  * Checks and displays version update notifications.
  */
 function uploadVersionUpdate() {
-	let version = '3.2.4';
+	let version = '3.2.5';
 
 	if (!localStorage.getItem('V')) {
 
@@ -5571,7 +5571,7 @@ function closeCategoriesWindow(clickEl, windowElCont, windowEl) {
  * Checks if the 'make-record-amount' field is not empty before saving the record.
  */
 id('make-record-save-button').onclick = () => {
-	if (id('make-record-amount').value !== "0") {
+	if (Number(id('make-record-amount').value) !== 0) {
 		onSaveRecordButton(id('make-record-button'), id('make-record-window-cont'), id('make-record-window'));
 	} else {
 		animateEmptyFieldError(id('make-record-amount'));
@@ -5977,7 +5977,7 @@ function updateAccountInfoInCont(accountId, info, cont) {
 	let accounts = cont.getElementsByClassName('account');
 
 	for (let account of accounts) {
-		if (Number(account.getAttribute('data-accountnum')) === accountId) {
+		if (Number(account.getAttribute('data-accountnum')) === Number(accountId)) {
 			updateAccountInfo(account, accountId, info);
 		}
 	}
